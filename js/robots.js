@@ -9,7 +9,7 @@ robots = {};
     robots.PLAYER_DAMPING = .8;
 
     robots.preload = function preload() {
-        game.load.image('rocket', 'images/grenada.png');
+        game.load.image('rocket', 'img/grenada.png');
         game.load.image('sky', 'assets/sky.png');
         game.load.image('ground', 'assets/platform.png');
         game.load.image('star', 'assets/star.png');
