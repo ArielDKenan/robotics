@@ -4,6 +4,7 @@ robots = {};
 (function (robots) {
 
     var cursors;
+    var wasd;
 
     robots = robots || {};
 
@@ -11,7 +12,7 @@ robots = {};
     robots.PLAYER_DAMPING = .8;
 
     robots.preload = function preload() {
-        game.load.image('rocket', 'images/grenada.png');
+        game.load.image('rocket', 'img/grenada.png');
         game.load.image('sky', 'assets/sky.png');
         game.load.image('ground', 'assets/platform.png');
         game.load.image('star', 'assets/star.png');
@@ -71,12 +72,20 @@ robots = {};
 
         cursors = game.input.keyboard.createCursorKeys();
         cursors.space = game.input.keyboard.addKey(32);
+
+        wasd = {
+            up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+            down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+            left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
+
     };
 
     var Missile = function (game, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'rocket');
-        this.anchor.setTo(.5,.5);
-        this.scale.setTo(.1,.1);
+        this.anchor.setTo(.5, .5);
+        this.scale.setTo(.1, .1);
         game.physics.p2.enable(this);
         this.body.angularVelocity = 50;
         this.body.rotation = mgun.body.rotation - 1.5;
@@ -103,12 +112,12 @@ robots = {};
             robots.boost_energy += 10;
         }
 
-        if (cursors.left.isDown) {
+        if (cursors.left.isDown || wasd.left.isDown) {
             //badguy.body.rotateLeft(180);
             badguy.body.angle = 270;
             badguy.body.thrust(thrustSpeed);
             badguy.animations.play('left');
-        } else if (cursors.right.isDown) {
+        } else if (cursors.right.isDown || wasd.right.isDown) {
             //badguy.body.rotateRight(180);
             badguy.body.angle = 90;
             badguy.body.thrust(thrustSpeed);
@@ -119,10 +128,10 @@ robots = {};
             badguy.frame = 4;
         }
 
-        if (cursors.up.isDown) {
+        if (cursors.up.isDown || wasd.up.isDown) {
             badguy.body.angle = 0;
             badguy.body.thrust(thrustSpeed);
-        } else if (cursors.down.isDown) {
+        } else if (cursors.down.isDown || wasd.down.isDown) {
             badguy.body.angle = 180;
             badguy.body.thrust(thrustSpeed);
             //badguy.body.reverse(thrustSpeed);
