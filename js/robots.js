@@ -24,6 +24,7 @@ robots = {};
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
+        game.physics.p2.defaultRestitution = 0.8;
 
         game.stage.backgroundColor = '#2d2d2d';
         game.add.sprite(0, 0, 'sky');
@@ -50,35 +51,33 @@ robots = {};
         mgun = game.add.sprite(500, 500, 'gun');
         mgun.scale.setTo(.2, .2);
 
-        //  We need to enable physics on the player
         game.physics.p2.enable(badguy);
         game.physics.p2.enable(mgun);
         game.camera.follow(badguy);
 
-        //  Player physics properties. Give the little guy a slight bounce.
-        /*badguy.body.bounce.y = .2;
-         badguy.body.gravity.y = 1000;
-         badguy.body.collideWorldBounds = true;*/
         badguy.body.fixedRotation = true;
         badguy.body.mass = robots.PLAYER_MASS;
         badguy.body.damping = robots.PLAYER_DAMPING;
         badguy.body.data.gravityScale = 1.5;
 
-        //  Our two animations, walking left and right.
+        mgun.body.collisionResponse = false;
+
         badguy.animations.add('left', [3, 2, 1, 0], 10, true);
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
+
+        var rockets = game.add.group();
 
         cursors = game.input.keyboard.createCursorKeys();
         cursors.space = game.input.keyboard.addKey(32);
     };
 
-    // Missile constructor
     var Missile = function (game, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'rocket');
-        this.anchor.setTo(0.5, 0.5);
+        this.anchor.setTo(.5,.5);
+        this.scale.setTo(.1,.1);
         game.physics.p2.enable(this);
-        this.body.angularVelocity = 250;
-        this.body.rotation = mgun.body.rotation;
+        this.body.angularVelocity = 50;
+        this.body.rotation = mgun.body.rotation - 1.5;
     };
 
     Missile.prototype = Object.create(Phaser.Sprite.prototype);
@@ -89,6 +88,7 @@ robots = {};
     robots.boost_energy = 1000;
     robots.boost_wait = 0;
     robots.BOOST_MAX_WAIT = 1000;
+    robots.nextFire = 0;
 
     robots.update = function update() {
         game.physics.arcade.collide(badguy, platforms);
@@ -126,16 +126,15 @@ robots = {};
             //badguy.body.reverse(thrustSpeed);
         }
 
-        var FIRE_RATE = 1000000;
+        var FIRE_RATE = 400;
 
         mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y,
             game.input.activePointer.x, game.input.activePointer.y);
+
         if (game.input.activePointer.isDown) {
-            var nextFire = nextFire || 0;
-            if (game.time.now > nextFire) {
-                nextFire = game.time.now + FIRE_RATE;
-                var newM = game.add.existing(new Missile(this.game, mgun.body.x, mgun.body.y))
-                newM.scale.setTo(.1,.1);
+            if (game.time.now > robots.nextFire) {
+                robots.nextFire = game.time.now + FIRE_RATE;
+                var newM = game.add.existing(new Missile(this.game, mgun.body.x, mgun.body.y));
             }
         }
     }
