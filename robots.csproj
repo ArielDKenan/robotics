@@ -22,14 +22,23 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.css" />
-    <Content Include="index.html" />
+    <Content Include=".gitignore" />
+    <Content Include="css\jquery-ui.min.css" />
+    <Content Include="css\workshop.css" />
+    <Content Include="img\grenada.png" />
+    <Content Include="img\machinegun.png" />
+    <Content Include="img\rpg.png" />
+    <Content Include="img\scifi-sniper.jpg" />
+    <Content Include="img\shotgun.JPG" />
+    <Content Include="img\turret.png" />
+    <Content Include="js\jquery-2.2.1.min.js" />
+    <Content Include="js\jquery-ui.min.js" />
+    <Content Include="js\workshop.js" />
     <Content Include="web.config" />
+    <Content Include="workshop.html" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="img\laser.pdn" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
