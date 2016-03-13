@@ -3,6 +3,8 @@ robots = {};
 
 (function (robots) {
 
+    var cursors;
+
     robots = robots || {};
 
     robots.PLAYER_MASS = 1;
