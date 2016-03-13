@@ -23,6 +23,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="assets\baddie.png" />
+    <Content Include="assets\diamond.png" />
+    <Content Include="assets\dude.png" />
+    <Content Include="assets\firstaid.png" />
+    <Content Include="assets\machinegun.png" />
+    <Content Include="assets\platform.png" />
+    <Content Include="assets\sky.png" />
+    <Content Include="assets\star.png" />
     <Content Include="css\jquery-ui.min.css" />
     <Content Include="css\workshop.css" />
     <Content Include="img\grenada.png" />
@@ -31,14 +39,19 @@
     <Content Include="img\scifi-sniper.jpg" />
     <Content Include="img\shotgun.JPG" />
     <Content Include="img\turret.png" />
+    <Content Include="index.html" />
     <Content Include="js\jquery-2.2.1.min.js" />
     <Content Include="js\jquery-ui.min.js" />
+    <Content Include="js\machine.js" />
+    <Content Include="js\phaser.min.js" />
+    <Content Include="js\robots.js" />
     <Content Include="js\workshop.js" />
     <Content Include="web.config" />
     <Content Include="workshop.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="img\laser.pdn" />
+    <Content Include="README.md" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
