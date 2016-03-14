@@ -5,6 +5,9 @@ robots = {};
 
     var cursors;
     var wasd;
+    var ROCKETS_BIT = 1;//Math.pow(2, 0),
+    var PLAYER_BIT = 1;//Math.pow(2, 1),
+    var GUN_BIT = 1;//Math.pow(2, 2);
 
     robots = robots || {};
 
@@ -32,7 +35,10 @@ robots = {};
         game.stage.backgroundColor = '#2d2d2d';
         game.add.sprite(0, 0, 'sky');
 
-        game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+        game.physics.p2.setBoundsToWorld(true, true, true, true, true);
+
+        var playerGroup = game.physics.p2.createCollisionGroup();
+        var gunGroup = game.physics.p2.createCollisionGroup();
 
         //  The platforms group contains the ground and the ledges
         platforms = game.add.group();
@@ -62,8 +68,12 @@ robots = {};
         badguy.body.mass = robots.PLAYER_MASS;
         badguy.body.damping = robots.PLAYER_DAMPING;
         badguy.body.data.gravityScale = 1.5;
+        badguy.body.collisionGroup = PLAYER_BIT;
+        badguy.body.setCollisionGroup(playerGroup);
 
         mgun.body.collisionResponse = false;
+        mgun.body.collisionGroup = GUN_BIT;
+        mgun.body.setCollisionGroup(playerGroup);
 
         badguy.animations.add('left', [3, 2, 1, 0], 10, true);
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
@@ -80,6 +90,8 @@ robots = {};
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
 
+        badguy.body.collisionMask = PLAYER_BIT
+
     };
 
     var Missile = function (game, x, y) {
@@ -87,6 +99,7 @@ robots = {};
         this.anchor.setTo(.5, .5);
         this.scale.setTo(.1, .1);
         game.physics.p2.enable(this);
+        this.collisionGroup = ROCKETS_BIT;
         this.body.angularVelocity = 50;
         this.body.rotation = mgun.body.rotation - 1.5;
     };
