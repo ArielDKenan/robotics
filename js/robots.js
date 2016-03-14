@@ -78,8 +78,8 @@ robots = {};
         this.anchor.setTo(.5,.5);
         this.scale.setTo(.1,.1);
         game.physics.p2.enable(this);
-        this.body.angularVelocity = 50;
         this.body.rotation = mgun.body.rotation - 1.5;
+        this.body.angularVelocity = 50;
     };
 
     Missile.prototype = Object.create(Phaser.Sprite.prototype);
