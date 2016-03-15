@@ -5,6 +5,8 @@ robots = {};
 
     robots = robots || {};
 
+    robots.DEBUG_MODE = false;
+
     robots.preload = function preload() {
 
         game.load.image('rocket', 'img/grenada.png');
@@ -19,26 +21,29 @@ robots = {};
 
     var cursors, wasd, pointer, badguy, platforms, stars, scoreText, mgun, score = 0;
     var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup;
-
+    var ROCKET_LAUNCHER = 1,
+        MACHINEGUN = 2,
+        selectedGun = ROCKET_LAUNCHER;
     var PLAYER_MASS = 1,
         PLAYER_DAMPING = .8;
-
+    
     robots.create = function create() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
-        game.physics.p2.gravity.y = 100;
+        game.physics.p2.gravity.y = 1000;
         game.physics.p2.restitution = 1; // Default value for collision 'bouncing'
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
         gunCollisionGroup = game.physics.p2.createCollisionGroup();
+        game.physics.p2.updateBoundsCollisionGroup();
 
         // game.stage.backgroundColor = '#2d2d2d';
         game.add.sprite(0, 0, 'sky');
 
-        game.physics.p2.setBoundsToWorld(true, true, true, true, true);
+        // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
 
         //  The platforms group contains the ground and the ledges
@@ -46,8 +51,8 @@ robots = {};
         platforms.enableBody = true;
 
         // Here we create the ground.
-        var ground = platforms.create(0, game.world.height - 64, 'ground');
-        ground.scale.setTo(2, 2);
+        var ground = platforms.create(0, game.world.height - 8, 'ground');
+        ground.scale.setTo(2, .2);
         ground.body.immovable = false;
 
         //  Now let's create two ledges
@@ -60,28 +65,40 @@ robots = {};
         badguy = game.add.sprite(300, game.world.height - 150, 'dude');
         badguy.scale.setTo(1.2);
 
-        mgun = game.add.sprite(500, 500, 'gun');
+        mgun = game.add.sprite(300, game.world.height - 140, 'gun');
         mgun.scale.setTo(.2, .2);
 
-        game.physics.p2.enable(badguy);
-        game.physics.p2.enable(mgun);
+        bullets = game.add.group();
+        bullets.enableBody = true;
+        bullets.physicsBodyType = Phaser.Physics.P2JS;
+        //bullets.createMultiple(50, 'rocket');
+        for (var ctr=0; ctr<50; ctr++) {
+            var bullet = bullets.create();
+        }
+        bullets.setAll('checkWorldBounds', true);
+        bullets.setAll('outOfBoundsKill', true);
+
+        game.physics.p2.enable(badguy, robots.DEBUG_MODE);
+        game.physics.p2.enable(mgun, robots.DEBUG_MODE);
         game.camera.follow(badguy);
 
+        badguy.body.setCircle(28);
         badguy.body.fixedRotation = true;
         badguy.body.mass = PLAYER_MASS;
         badguy.body.damping = PLAYER_DAMPING;
-        badguy.body.data.gravityScale = 0;
+        badguy.body.data.gravityScale = 1;
         badguy.body.setCollisionGroup(playerCollisionGroup);
-        badguy.body.collides([projectileCollisionGroup, gunCollisionGroup]);
+        //badguy.body.collides([projectileCollisionGroup]);
 
         mgun.body.setCollisionGroup(gunCollisionGroup);
-        mgun.body.collides(playerCollisionGroup);
+        mgun.body.collides([]);
         mgun.body.data.gravityScale = 0;
+        mgun.body.damping = PLAYER_DAMPING;
 
         badguy.animations.add('left', [3, 2, 1, 0], 10, true);
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
 
-        var rockets = game.add.group();
+        var constraint = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 0);
 
         cursors = game.input.keyboard.createCursorKeys();
         cursors.space = game.input.keyboard.addKey(32);
@@ -95,7 +112,8 @@ robots = {};
 
     };
 
-    var Missile = function (game, x, y, x2, y2) {
+    var Missile = function (game, x, y) {
+        //this.rocket = missiles.getFirstDead();
         this.acceleration = 500;
         Phaser.Sprite.call(this, game, x, y, 'rocket');
         this.anchor.setTo(1, .5); // Set the pivot point for this sprite to the center
@@ -104,7 +122,8 @@ robots = {};
         //this.collisionGroup = ROCKETS_BIT;
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(projectileCollisionGroup);
-        this.body.collides([projectileCollisionGroup, playerCollisionGroup], missleHit, this);
+        this.body.collides([playerCollisionGroup], missleHit, this);
+        this.body.collideWorldBounds = false;
         this.body.angle = mgun.body.angle - 90;
         //this.body.reverse(12000);
     };
@@ -118,22 +137,22 @@ robots = {};
     }
 
     function missleHit(missile, player) {
-        //missile.destroy();
+        missile.destroy();
         missile.visible = false;
         console.log('hit!');
     }
 
-    MOVE_SPEED = 200;
-    THRUST_SPEED = 0;
-    BOOST_SPEED = 15000;
-    BOOST_COST = 30;
-    BOOST_MAX_ENERGY = 4000;
-    boost_energy = BOOST_MAX_ENERGY;
-    boost_recharge_amount = 10;
-    BOOST_DEPLETED_BONUS = 500;
-    BOOST_WAIT_TIME = 1000;
-    boost_recharge_time = 0;
-    nextFire = 0;
+    var MOVE_SPEED = 200,
+        THRUST_SPEED = 0,
+        BOOST_SPEED = 15000;
+    var BOOST_COST = 30,
+        BOOST_MAX_ENERGY = 8000,
+        boost_energy = BOOST_MAX_ENERGY,
+        boost_recharge_amount = 10,
+        BOOST_DEPLETED_BONUS = 1500,
+        BOOST_WAIT_TIME = 1000,
+        boost_recharge_time = 0;
+    var nextFire = 0;
 
     robots.update = function update() {
 
@@ -180,21 +199,26 @@ robots = {};
             badguy.body.moveUp(MOVE_SPEED);
             badguy.body.thrust(thrustSpeed);
         } else if (cursors.down.isDown || wasd.down.isDown) {
-            badguy.body.moveDown(MOVE_SPEED);
+            // badguy.body.moveDown(MOVE_SPEED);
             badguy.body.angle = 180;
             badguy.body.thrust(thrustSpeed);
         }
 
-        var FIRE_RATE = 400;
+        var ROCKET_FIRE_RATE = 150,
+            MACHINE_FIRE_RATE = 100;
         var mouseX = game.input.activePointer.x;
         var mouseY = game.input.activePointer.y;
 
         mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
 
         if (game.input.activePointer.isDown) {
-            if (game.time.now > nextFire) {
-                nextFire = game.time.now + FIRE_RATE;
-                var newM = game.add.existing(new Missile(this.game, mgun.body.x, mgun.body.y, mouseX, mouseY));
+            if (selectedGun === ROCKET_LAUNCHER) {
+                if (game.time.now > nextFire) {
+                    nextFire = game.time.now + ROCKET_FIRE_RATE;
+                    var newM = game.add.existing(new Missile(this.game, mgun.body.x, mgun.body.y));
+                }
+            } else if (selectedGun === MACHINEGUN) {
+
             }
         }
 
