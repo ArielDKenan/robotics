@@ -48,7 +48,7 @@ robots = {};
         game.stage.backgroundColor = '#2d2d2d';
         game.add.sprite(0, 0, 'sky');
 
-        game.physics.p2.setBoundsToWorld(true, true, true, true, true);
+        //game.physics.p2.setBoundsToWorld(true, true, true, true, true);
 
         var playerGroup = game.physics.p2.createCollisionGroup();
         var gunGroup = game.physics.p2.createCollisionGroup();
