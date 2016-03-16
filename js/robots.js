@@ -1,6 +1,6 @@
 
 robots = {};
-
+var mgun;
 (function (robots) {
 
     robots = robots || {};
@@ -27,22 +27,22 @@ robots = {};
 
     };
 
-    var badguy, wheel1, wheel2, mgun, platforms,
+    var badguy, wheel1, wheel2, platforms,
         cursors, wasd, pointer;
     var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
         MACHINEGUN = 2,
-        selectedGun = MACHINEGUN;
+        selectedGun = ROCKET_LAUNCHER;
     var PLAYER_MASS = 1,
-        PLAYER_DAMPING = .8;
+        PLAYER_DAMPING = 0;//.8;
     
     robots.create = function create() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
-        game.physics.p2.gravity.y = 1500;
+        game.physics.p2.gravity.y = 400;
         game.physics.p2.restitution = .2; // Default value for collision 'bouncing'
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -94,12 +94,14 @@ robots = {};
 
         wheel1.body.mass = 1;
         wheel2.body.mass = 1;
+        wheel1.body.setCircle(18);
+        wheel2.body.setCircle(18);
         wheel1.body.setCollisionGroup(wheelCollisionGroup);
         wheel2.body.setCollisionGroup(wheelCollisionGroup);
         //wheel1.body.collides(playerCollisionGroup);
         //wheel2.body.collides(playerCollisionGroup);
 
-        badguy.body.setCircle(28);
+        badguy.body.setCircle(25);
         badguy.body.fixedRotation = true;
         badguy.body.mass = PLAYER_MASS;
         badguy.body.damping = PLAYER_DAMPING;
@@ -142,7 +144,7 @@ robots = {};
         Phaser.Sprite.call(this, game, x, y, sprite);
         this.anchor.setTo(.5, .5);
 
-        game.physics.p2.enable(this);
+        game.physics.p2.enable(this, robots.DEBUG_MODE);
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(projectileCollisionGroup);
         this.body.collides([playerCollisionGroup], this.collideCallback, this);
@@ -174,7 +176,7 @@ robots = {};
 
     var Bullet = function (x, y) {
         Projectile.call(this, x, y, 'bullet');
-        this.scale.setTo(.3, .3);
+        this.scale.setTo(.34, .34);
         this._speed = 2000;
         //this._acceleration = 1200;
     }
@@ -191,7 +193,7 @@ robots = {};
     var MOVE_SPEED = 200,
         MOTOR_SPEED = 20,
         THRUST_SPEED = 0,
-        BOOST_SPEED = 15000;
+        BOOST_SPEED = 17000;
     var BOOST_COST = 30,
         BOOST_MAX_ENERGY = 8000,
         boost_energy = BOOST_MAX_ENERGY,
@@ -229,7 +231,7 @@ robots = {};
             //badguy.body.rotateLeft(180);
             //badguy.body.angle = 270;
             badguy.body.moveLeft(MOVE_SPEED);
-            badguy.body.thrust(thrustSpeed);
+            //badguy.body.thrust(thrustSpeed);
             //constraint2.setMotorSpeed(MOTOR_SPEED);
             constraint3.setMotorSpeed(MOTOR_SPEED);
             badguy.animations.play('left');
@@ -237,7 +239,7 @@ robots = {};
             //badguy.body.rotateRight(180);
             //badguy.body.angle = 90;
             badguy.body.moveRight(MOVE_SPEED);
-            badguy.body.thrust(thrustSpeed);
+            //badguy.body.thrust(thrustSpeed);
             constraint2.setMotorSpeed(-MOTOR_SPEED);
             //constraint3.setMotorSpeed(-MOTOR_SPEED);
             badguy.animations.play('right');
