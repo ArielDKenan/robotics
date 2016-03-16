@@ -33,7 +33,7 @@ robots = {};
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
         game.physics.p2.gravity.y = 1000;
-        game.physics.p2.restitution = 1; // Default value for collision 'bouncing'
+        game.physics.p2.restitution = .2; // Default value for collision 'bouncing'
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -56,11 +56,11 @@ robots = {};
         ground.body.immovable = false;
 
         //  Now let's create two ledges
-        var ledge = platforms.create(400, 400, 'ground');
+        /*var ledge = platforms.create(400, 400, 'ground');
         ledge.body.immovable = false;
 
         ledge = platforms.create(-150, 250, 'ground');
-        ledge.body.immovable = true;
+        ledge.body.immovable = true;*/
 
         badguy = game.add.sprite(300, game.world.height - 150, 'dude');
         badguy.scale.setTo(1.2);
@@ -98,7 +98,7 @@ robots = {};
         badguy.animations.add('left', [3, 2, 1, 0], 10, true);
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
 
-        var constraint = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 0);
+        var constraint = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, 2000);
 
         cursors = game.input.keyboard.createCursorKeys();
         cursors.space = game.input.keyboard.addKey(32);
@@ -124,12 +124,14 @@ robots = {};
         this.body.setCollisionGroup(projectileCollisionGroup);
         this.body.collides([playerCollisionGroup], missleHit, this);
         this.body.collideWorldBounds = false;
+        this.body.outOfBoundsKill = true;
         this.body.angle = mgun.body.angle - 90;
         //this.body.reverse(12000);
     };
 
     Missile.prototype = Object.create(Phaser.Sprite.prototype);
     Missile.prototype.constructor = Missile;
+
     Missile.prototype.update = function() {
         if (this.body) {
             this.body.reverse(this.acceleration);
@@ -204,7 +206,7 @@ robots = {};
             badguy.body.thrust(thrustSpeed);
         }
 
-        var ROCKET_FIRE_RATE = 150,
+        var ROCKET_FIRE_RATE = 250,
             MACHINE_FIRE_RATE = 100;
         var mouseX = game.input.activePointer.x;
         var mouseY = game.input.activePointer.y;
