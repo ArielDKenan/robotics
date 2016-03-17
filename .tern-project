@@ -1,7 +1,6 @@
 {
   "libs": ["browser"],
   "plugins" : {
- 	"phaser" : {},
- 	"doc_comment": {}
+ 	"phaser" : {}
   }
 }

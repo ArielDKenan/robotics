@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = false;
+    robots.DEBUG_MODE = true;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -30,23 +30,26 @@ var mgun;
 
     };
 
-    var badguy, wheel1, wheel2, platforms, bullets,
+    var badguy, wheel1, wheel2, platforms, bullets, leftWheel, rightWheel,
         cursors, wasd, pointer;
     var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
         MACHINEGUN = 2,
-        selectedGun = MACHINEGUN;
+        selectedGun = ROCKET_LAUNCHER;
     var PLAYER_MASS = 1,
-        PLAYER_DAMPING = .8;
+        PLAYER_DAMPING = 0;//.8;
     
     robots.create = function create() {
+
+        var MAX_FORCE = 20000;
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
-        game.physics.p2.gravity.y = 400;
-        game.physics.p2.restitution = .2; // Default value for collision 'bouncing'
+        game.physics.p2.gravity.y = 1000;
+        game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
+        game.physics.p2.friction = 100;
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -106,7 +109,7 @@ var mgun;
         //wheel2.body.collides(playerCollisionGroup);
 
         badguy.body.setCircle(25);
-        badguy.body.fixedRotation = true;
+        badguy.body.fixedRotation = false;
         badguy.body.mass = PLAYER_MASS;
         badguy.body.damping = PLAYER_DAMPING;
         badguy.body.data.gravityScale = 1;
@@ -121,12 +124,14 @@ var mgun;
         badguy.animations.add('left', [3, 2, 1, 0], 10, true);
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
 
-        constraint1 = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, 2000);
-        constraint2 = game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2), badguy.height/2], wheel1, [0, 0]);
-        constraint3 = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2, badguy.height/2], wheel2, [0, 0]);
+        constraint1 = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, MAX_FORCE);
+        leftWheel = game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2),
+            badguy.height/2], wheel1, [0, 0], MAX_FORCE);
+        rightWheel = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
+            badguy.height/2], wheel2, [0, 0], MAX_FORCE);
         // Phaser.Physics.P2.addConstraint(constraint)
-        constraint2.enableMotor();
-        constraint3.enableMotor();
+        //constraint2.enableMotor();
+        //constraint3.enableMotor();
 
         cursors = game.input.keyboard.createCursorKeys();
         cursors.space = game.input.keyboard.addKey(32);
@@ -161,7 +166,9 @@ var mgun;
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
 
-        this.body.angle = mgun.body.angle - 90;
+        this.body.maintainAngle = mgun.body.angle - 90;
+        this.body.angle = this.body.maintainAngle;
+        this.fixedRotate = true;
     };
 
     Projectile.prototype = Object.create(Phaser.Sprite.prototype);
@@ -169,6 +176,7 @@ var mgun;
 
     Projectile.prototype.update = function() {
         if (this.body) {
+            if (this.fixedRotate) this.body.angle = this.body.maintainAngle;
             if (this._speed) this.body.moveBackward(this._speed);
             this.body.reverse(this._acceleration);
         } else if (this.destroy) {
@@ -180,6 +188,8 @@ var mgun;
         this.collideCallback = missleHit;
         Projectile.call(this, x, y, 'rocket');
         this.scale.setTo(.15, .1);
+        this.body.setCircle(15);
+        this.body.data.gravityScale = 0;
         this._acceleration = 800;
     }
 
@@ -202,7 +212,7 @@ var mgun;
         console.log('hit!');
     }
 
-    var MOVE_SPEED = 200,
+    var MOVE_SPEED = 0,
         MOTOR_SPEED = 20,
         THRUST_SPEED = 0,
         BOOST_SPEED = 17000;
@@ -219,11 +229,13 @@ var mgun;
 
         // badguy.body.setZeroVelocity();
         var thrustSpeed = THRUST_SPEED;
-        constraint2.setMotorSpeed(0);
-        constraint3.setMotorSpeed(0);
+        leftWheel.setMotorSpeed(0);
+        rightWheel.setMotorSpeed(0);
+        leftWheel.disableMotor();
+        rightWheel.disableMotor();
         if (cursors.space.isDown && boost_energy>0) {
             thrustSpeed = BOOST_SPEED;
-            boost_energy -= BOOST_COST;
+            if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
         } else if (boost_energy < BOOST_MAX_ENERGY) {
             if (!boost_energy) {
                 if (cursors.space.isDown) {
@@ -242,18 +254,18 @@ var mgun;
         if (cursors.left.isDown || wasd.left.isDown) {
             //badguy.body.rotateLeft(180);
             //badguy.body.angle = 270;
-            badguy.body.moveLeft(MOVE_SPEED);
+            //badguy.body.moveLeft(MOVE_SPEED);
             //badguy.body.thrust(thrustSpeed);
-            //constraint2.setMotorSpeed(MOTOR_SPEED);
-            constraint3.setMotorSpeed(MOTOR_SPEED);
+            leftWheel.enableMotor();
+            leftWheel.setMotorSpeed(MOTOR_SPEED);
             badguy.animations.play('left');
         } else if (cursors.right.isDown || wasd.right.isDown) {
             //badguy.body.rotateRight(180);
             //badguy.body.angle = 90;
-            badguy.body.moveRight(MOVE_SPEED);
+            //badguy.body.moveRight(MOVE_SPEED);
             //badguy.body.thrust(thrustSpeed);
-            constraint2.setMotorSpeed(-MOTOR_SPEED);
-            //constraint3.setMotorSpeed(-MOTOR_SPEED);
+            rightWheel.enableMotor();
+            rightWheel.setMotorSpeed(-MOTOR_SPEED);
             badguy.animations.play('right');
         } else {
             badguy.body.setZeroRotation();
@@ -271,8 +283,8 @@ var mgun;
             badguy.body.reverse(thrustSpeed);
         }
 
-        var ROCKET_FIRE_RATE = 250,
-            MACHINE_FIRE_RATE = 50;
+        var ROCKET_FIRE_RATE = 400,
+            MACHINE_FIRE_RATE = 70;
         var mouseX = game.input.activePointer.x;
         var mouseY = game.input.activePointer.y;
 
