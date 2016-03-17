@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = true;
+    robots.DEBUG_MODE = false;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -24,21 +24,24 @@ var mgun;
         game.load.image('ground', 'assets/platform.png');
         game.load.image('star', 'assets/star.png');
         game.load.image('gun', 'assets/machinegun.png');
+        game.load.image('thruster', 'img/thruster.png');
         game.load.image('body1', 'img/body1.png');
+        game.load.image('body2', 'img/body2.png');
         game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         game.load.spritesheet('baddie', 'assets/baddie.png', 32, 32);
 
     };
 
-    var badguy, wheel1, wheel2, platforms, bullets, leftWheel, rightWheel,
+    var badguy, wheel1, wheel2, thruster1, thruster2, platforms, bullets, leftWheel, rightWheel,
         cursors, wasd, pointer;
-    var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup;
+    var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup,
+        thrusterCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
         MACHINEGUN = 2,
         selectedGun = ROCKET_LAUNCHER;
-    var PLAYER_MASS = 1,
-        PLAYER_DAMPING = 0;//.8;
+    var PLAYER_MASS = 2,
+        PLAYER_DAMPING = .1;//.8;
     
     robots.create = function create() {
 
@@ -47,7 +50,7 @@ var mgun;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
-        game.physics.p2.gravity.y = 1000;
+        game.physics.p2.gravity.y = 1500;
         game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
         game.physics.p2.friction = 100;
 
@@ -55,6 +58,7 @@ var mgun;
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
         gunCollisionGroup = game.physics.p2.createCollisionGroup();
         wheelCollisionGroup = game.physics.p2.createCollisionGroup();
+        thrusterCollisionGroup = game.physics.p2.createCollisionGroup();
         game.physics.p2.updateBoundsCollisionGroup();
         // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
@@ -77,9 +81,14 @@ var mgun;
         wheel1.scale.set(.04);
         wheel2.scale.set(.04);
 
+        thruster1 = game.add.sprite(270, game.world.height - 150, 'thruster');
+        thruster1.scale.setTo(.3, .3);
+        thruster2 = game.add.sprite(330, game.world.height - 150, 'thruster');
+        thruster2.scale.setTo(.3, .3);
+
         //badguy = game.add.sprite(300, game.world.height - 150, 'dude');
         //badguy.scale.setTo(1.2);
-        badguy = game.add.sprite(300, game.world.height - 150, 'body1');
+        badguy = game.add.sprite(300, game.world.height - 150, 'body2');
         badguy.scale.set(.08);
 
         mgun = game.add.sprite(300, game.world.height - 140, 'gun');
@@ -95,7 +104,7 @@ var mgun;
         bullets.setAll('checkWorldBounds', true);
         bullets.setAll('outOfBoundsKill', true);*/
 
-        game.physics.p2.enable([badguy, mgun], robots.DEBUG_MODE);
+        game.physics.p2.enable([badguy, mgun, thruster1, thruster2], robots.DEBUG_MODE);
         game.physics.p2.enable([wheel1, wheel2], robots.DEBUG_MODE);
         game.camera.follow(badguy);
 
@@ -107,6 +116,11 @@ var mgun;
         wheel2.body.setCollisionGroup(wheelCollisionGroup);
         //wheel1.body.collides(playerCollisionGroup);
         //wheel2.body.collides(playerCollisionGroup);
+
+        thruster1.body.mass = 1;
+        thruster2.body.mass = 1;
+        thruster1.body.setCollisionGroup(thrusterCollisionGroup);
+        thruster2.body.setCollisionGroup(thrusterCollisionGroup);
 
         badguy.body.setCircle(25);
         badguy.body.fixedRotation = false;
@@ -125,6 +139,8 @@ var mgun;
         badguy.animations.add('right', [8, 7, 6, 5], 10, true);
 
         constraint1 = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, MAX_FORCE);
+        constraint2 = game.physics.p2.createLockConstraint(badguy, thruster1, [35, 10], 0, MAX_FORCE);
+        constraint3 = game.physics.p2.createLockConstraint(badguy, thruster2, [-35, 10], 0, MAX_FORCE);
         leftWheel = game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2),
             badguy.height/2], wheel1, [0, 0], MAX_FORCE);
         rightWheel = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
@@ -190,7 +206,8 @@ var mgun;
         this.scale.setTo(.15, .1);
         this.body.setCircle(15);
         this.body.data.gravityScale = 0;
-        this._acceleration = 800;
+        this._acceleration = 1000;
+        this.body.moveBackward(50);
     }
 
     Rocket.prototype = Object.create(Projectile.prototype);
@@ -214,12 +231,12 @@ var mgun;
 
     var MOVE_SPEED = 0,
         MOTOR_SPEED = 20,
-        THRUST_SPEED = 0,
+        THRUST_SPEED = 10000,
         BOOST_SPEED = 17000;
     var BOOST_COST = 30,
-        BOOST_MAX_ENERGY = 8000,
+        BOOST_MAX_ENERGY = 10000,
         boost_energy = BOOST_MAX_ENERGY,
-        boost_recharge_amount = 10,
+        boost_recharge_amount = 50,
         BOOST_DEPLETED_BONUS = 1500,
         BOOST_WAIT_TIME = 1000,
         boost_recharge_time = 0;
@@ -228,11 +245,12 @@ var mgun;
     robots.update = function update() {
 
         // badguy.body.setZeroVelocity();
-        var thrustSpeed = THRUST_SPEED;
+        var thrustSpeed = 0;
         leftWheel.setMotorSpeed(0);
         rightWheel.setMotorSpeed(0);
         leftWheel.disableMotor();
         rightWheel.disableMotor();
+        if  (boost_energy > BOOST_MAX_ENERGY) boost_energy = BOOST_MAX_ENERGY;
         if (cursors.space.isDown && boost_energy>0) {
             thrustSpeed = BOOST_SPEED;
             if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
@@ -256,31 +274,56 @@ var mgun;
             //badguy.body.angle = 270;
             //badguy.body.moveLeft(MOVE_SPEED);
             //badguy.body.thrust(thrustSpeed);
+            badguy.animations.play('left');
+
             leftWheel.enableMotor();
             leftWheel.setMotorSpeed(MOTOR_SPEED);
-            badguy.animations.play('left');
+
+            thruster1.body.angle = 270;
+            thruster2.body.angle = 270;
+            thruster1.body.thrust(thrustSpeed);
+            thruster2.body.thrust(thrustSpeed);
         } else if (cursors.right.isDown || wasd.right.isDown) {
             //badguy.body.rotateRight(180);
             //badguy.body.angle = 90;
             //badguy.body.moveRight(MOVE_SPEED);
             //badguy.body.thrust(thrustSpeed);
+            badguy.animations.play('right');
+
             rightWheel.enableMotor();
             rightWheel.setMotorSpeed(-MOTOR_SPEED);
-            badguy.animations.play('right');
+
+            thruster1.body.angle = 90;
+            thruster2.body.angle = 90;
+            thruster1.body.thrust(thrustSpeed);
+            thruster2.body.thrust(thrustSpeed);
         } else {
             badguy.body.setZeroRotation();
             badguy.animations.stop();
             badguy.frame = 4;
+
+            thruster1.body.setZeroRotation();
+            thruster2.body.setZeroRotation();
         }
 
         if (cursors.up.isDown || wasd.up.isDown) {
             // badguy.body.angle = 0;
             badguy.body.moveUp(MOVE_SPEED);
-            badguy.body.thrust(thrustSpeed);
+            // badguy.body.thrust(thrustSpeed);
+
+            thruster1.body.angle = 0;
+            thruster1.body.thrust(thrustSpeed || THRUST_SPEED);
+            thruster2.body.angle = 0;
+            thruster2.body.thrust(thrustSpeed || THRUST_SPEED);
         } else if (cursors.down.isDown || wasd.down.isDown) {
             // badguy.body.moveDown(MOVE_SPEED);
             //badguy.body.angle = 180;
-            badguy.body.reverse(thrustSpeed);
+            //badguy.body.reverse(thrustSpeed);
+
+            thruster1.body.angle = 180;
+            thruster1.body.thrust(thrustSpeed || THRUST_SPEED)
+            thruster2.body.angle = 180;
+            thruster2.body.thrust(thrustSpeed || THRUST_SPEED)
         }
 
         var ROCKET_FIRE_RATE = 400,
