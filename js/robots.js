@@ -11,7 +11,13 @@ var mgun;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
-            console.log(msg);
+            console.log('ROBOT DEBUG: ' + msg);
+        }
+    }
+
+    robots.init = function () {
+        if (robots.DEBUG_MODE) {
+            this.log('DEBUG MODE IS ON');
         }
     }
 
@@ -44,13 +50,17 @@ var mgun;
         selectedGun = ROCKET_LAUNCHER;
     var PLAYER_MASS = 2,
         PLAYER_DAMPING = .1;//.8;
+    var MAX_FORCE = 20000;
+    var ROCKET_FIRE_RATE = 400,
+        MACHINE_FIRE_RATE = 70;
     var BODY1_PART = 1,
         CHAINGUN_PART = 10,
         THRUSTER_PART = 20,
         WHEEL_PART = 30;
-    var STARTING_X = 200, STARTING_Y = 100;
 
-    var Part = function(type, position, options) {
+    var STARTING_X = 200, STARTING_Y = 100, PART_WIDTH = 64, PART_HEIGHT = 64;
+
+    /*var Part = function(type, position, options) {
         var spriteName, scale, enableP2, mass, circle, collisionGroup, damping, gScale, anims;
         if (type === BODY1_PART) {
             spriteName = 'body1', mass = 2, scale = [.08, .08], enableP2 = true, circle = 25,
@@ -66,11 +76,157 @@ var mgun;
         Phaser.Sprite.call(this, game, x, y, spriteName);
     }
     Part.prototype = Object.create(Phaser.Sprite.prototype);
+    Part.prototype.constructor = Part;*/
+
+    var Part = function(spriteName, size, position, scale) {
+        var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
+        var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
+        robots.log(spriteName + ': ' + x + ', ' + y);
+        Phaser.Sprite.call(this, game, x, y, spriteName);
+        this.scale.setTo(scale.x, scale.y);
+    };
+
+    Part.prototype = Object.create(Phaser.Sprite.prototype);
     Part.prototype.constructor = Part;
+
+    Part.prototype.update = function() {
+        if (this.updateCallback) {
+            this.updateCallback();
+        }
+    };
+
+    var Body1 = function(position) {
+        var size = { height: 2, width: 2 };
+        var scale = { x: .08, y: .08 };
+        Part.call(this, 'body2', size, position, scale);
+
+        game.physics.p2.enable(this, robots.DEBUG_MODE);
+
+        this.body.setCircle(25);
+        this.body.fixedRotation = false;
+        this.body.mass = .5;
+        this.body.damping = PLAYER_DAMPING;
+        this.body.data.gravityScale = 1;
+        this.body.setCollisionGroup(playerCollisionGroup);
+    };
+
+    Body1.prototype = Object.create(Part.prototype);
+    Body1.prototype.constructor = Body1;
+
+    var Thruster = function(position, body, bodyPos) {
+        var size = { height: 1, width: 2 };
+        var scale = { x: .3, y: .3 };
+
+        this.axe = 7000;
+
+        this.updateCallback = function () {
+            if (cursors.up.isDown || wasd.up.isDown) {
+                this.body.thrust(this.axe);
+            } else if (cursors.down.isDown || wasd.down.isDown) {
+                this.body.reverse(this.axe);
+            }
+        };
+
+        Part.call(this, 'thruster', size, position, scale);
+
+        game.physics.p2.enable(this, robots.DEBUG_MODE);
+
+        this.body.mass = .5;
+        this.body.data.gravityScale = 1;
+        this.body.setCollisionGroup(thrusterCollisionGroup);
+
+        var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
+        var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
+        game.physics.p2.createLockConstraint(body, this, [cx, cy], 0, MAX_FORCE);
+    };
+
+    Thruster.prototype = Object.create(Part.prototype);
+    Thruster.prototype.constructor = Thruster;
+
+    var Wheel = function(position, body, bodyPos, options) {
+        var size = { height: 1, width: 1 };
+        var scale = { x: .04, y: .04 };
+
+        this.options = options;
+        this.motor_speed = MOTOR_SPEED;
+
+        this.updateCallback = function () {
+            if (cursors.right.isDown || wasd.right.isDown) {
+                if (this.options.movesRight) {
+                    this.constraint.enableMotor();
+                    this.constraint.setMotorSpeed(-this.motor_speed);
+                }
+            } else if (cursors.left.isDown || wasd.left.isDown) {
+                if (this.options.movesLeft) {
+                    this.constraint.enableMotor();
+                    this.constraint.setMotorSpeed(this.motor_speed);
+                }
+            } else {
+                this.constraint.disableMotor();
+            }
+        };
+
+        Part.call(this, 'wheel', size, position, scale);
+
+        game.physics.p2.enable(this, robots.DEBUG_MODE);
+
+        this.body.mass = 1;
+        this.body.setCircle(18);
+        this.body.setCollisionGroup(wheelCollisionGroup);
+
+        var cx = (position.x - bodyPos.x) * PART_WIDTH/2;
+        var cy = (position.y - bodyPos.y) * PART_HEIGHT/2;
+        this.constraint = game.physics.p2.createRevoluteConstraint(
+            body, [cx, cy], this, [0, 0], MAX_FORCE);
+    };
+
+    Wheel.prototype = Object.create(Part.prototype);
+    Wheel.prototype.constructor = Wheel;
+
+    var Chaingun = function(position, body, bodyPos) {
+        var size = { height: 1, width: 2 };
+        var scale = { x: .2, y: .2 };
+
+        this.lastFire = 0;
+
+        this.updateCallback = function () {
+            var mouseX = game.input.activePointer.x;
+            var mouseY = game.input.activePointer.y;
+
+            this.body.rotation = game.math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
+
+            if (game.input.activePointer.isDown) {
+                if (selectedGun === ROCKET_LAUNCHER) {
+                    if (game.time.now > this.lastFire + ROCKET_FIRE_RATE) {
+                        this.lastFire = game.time.now;
+                        var newR = game.add.existing(new Rocket(this.body.x, this.body.y, this));
+                    }
+                } else if (selectedGun === MACHINEGUN) {
+                    if (game.time.now > this.lastFire + MACHINE_FIRE_RATE) {
+                        this.lastFire = game.time.now;
+                        var newB = game.add.existing(new Bullet(this.body.x, this.body.y, this));
+                    }
+                }
+            }
+        };
+
+        Part.call(this, 'gun', size, position, scale);
+
+        game.physics.p2.enable(this, robots.DEBUG_MODE);
+
+        this.body.mass = 1.5;
+        this.body.data.gravityScale = 0;
+        this.body.setCollisionGroup(gunCollisionGroup);
+
+        var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
+        var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
+        game.physics.p2.createLockConstraint(body, this, [cx, cy], 0, MAX_FORCE);
+    };
+
+    Chaingun.prototype = Object.create(Part.prototype);
+    Chaingun.prototype.constructor = Chaingun;
     
     robots.create = function create() {
-
-        var MAX_FORCE = 20000;
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -196,9 +352,20 @@ var mgun;
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
 
+        var bodyPos = { x: 1, y: 1 };
+        var b = game.add.existing(new Body1(bodyPos));
+        var g = game.add.existing(new Chaingun({ x: 2, y: 0 }, b, bodyPos));
+        var w1 = game.add.existing(new Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w2 = game.add.existing(new Wheel({ x: 3, y: 3 }, b, bodyPos, {}));
+        var w3 = game.add.existing(new Wheel({ x: 1, y: 3 }, b, bodyPos, {}));
+        var w4 = game.add.existing(new Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
+        //var w5 = game.add.existing(new Wheel({ x: 4, y: 3 }, b, bodyPos));
+        var t1 = game.add.existing(new Thruster({ x: 3, y: 1}, b, bodyPos));
+        var t2 = game.add.existing(new Thruster({ x: 0, y: 1}, b, bodyPos));
+
     };
 
-    var Projectile = function (x, y, sprite) {
+    var Projectile = function (x, y, sprite, gun) {
         this._acceleration = 0;
         this._speed = 0;
         this.collideCallback = this.collideCallback || function () {};
@@ -219,7 +386,7 @@ var mgun;
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
 
-        this.body.maintainAngle = mgun.body.angle - 90;
+        this.body.maintainAngle = gun.body.angle - 90;
         this.body.angle = this.body.maintainAngle;
         this.fixedRotate = true;
     };
@@ -237,9 +404,9 @@ var mgun;
         }
     }
 
-    var Rocket = function (x, y) {
+    var Rocket = function (x, y, gun) {
         this.collideCallback = missleHit;
-        Projectile.call(this, x, y, 'rocket');
+        Projectile.call(this, x, y, 'rocket', gun);
         this.scale.setTo(.15, .1);
         this.body.setCircle(15);
         this.body.data.gravityScale = 0;
@@ -250,8 +417,8 @@ var mgun;
     Rocket.prototype = Object.create(Projectile.prototype);
     Rocket.prototype.constructor = Rocket;
 
-    var Bullet = function (x, y) {
-        Projectile.call(this, x, y, 'bullet');
+    var Bullet = function (x, y, gun) {
+        Projectile.call(this, x, y, 'bullet', gun);
         this.scale.setTo(.34, .34);
         this._speed = 2000;
         //this._acceleration = 1200;
@@ -263,7 +430,7 @@ var mgun;
     function missleHit(missile, player) {
         //missile.destroy();
         missile.exists = false;
-        console.log('hit!');
+        robots.log('hit!');
     }
 
     var MOVE_SPEED = 0,
@@ -387,8 +554,6 @@ var mgun;
             fire2.animations.play('off');
         }
 
-        var ROCKET_FIRE_RATE = 400,
-            MACHINE_FIRE_RATE = 70;
         var mouseX = game.input.activePointer.x;
         var mouseY = game.input.activePointer.y;
 
@@ -398,12 +563,12 @@ var mgun;
             if (selectedGun === ROCKET_LAUNCHER) {
                 if (game.time.now > lastFire + ROCKET_FIRE_RATE) {
                     lastFire = game.time.now;
-                    var newR = game.add.existing(new Rocket(mgun.body.x, mgun.body.y));
+                    var newR = game.add.existing(new Rocket(mgun.body.x, mgun.body.y, mgun));
                 }
             } else if (selectedGun === MACHINEGUN) {
                 if (game.time.now > lastFire + MACHINE_FIRE_RATE) {
                     lastFire = game.time.now;
-                    var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y));
+                    var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y, mgun));
                 }
             }
         }
