@@ -25,7 +25,17 @@ workshop = {};
 
         for (var ctr=0; ctr<12; ctr++) {
             var $div = $('<div>');
-            var divClass = ctr%2 ? 'sniper' : 'turret';
+            var divClass;
+            var a = ctr%4
+            if (a == 0) {
+                divClass = 'body1';
+            } else if (a == 1) {
+                divClass = 'thruster';
+            } else if (a == 2) {
+                divClass = 'machine-gun';
+            } else {
+                divClass = 'wheel';
+            }
             $div.addClass(divClass);
             $div.addClass('part-thumb');
             $cont.append($div);

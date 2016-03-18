@@ -27,7 +27,7 @@ body {
 
 .grid-square {
     border: 1px solid lime;
-    background-color: #3d3644;
+    background-color: white;//#3d3644;
     width: 94px;
     height: 94px;
     padding: 0;
@@ -42,16 +42,25 @@ body {
     padding: 0;
     margin: 1px;
     display: inline-block;
-    background-color: white;
+    //background-color: white;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
 }
 
-.sniper {
-    background-image: url('../img/scifi-sniper.jpg');
+.wheel {
+    background-image: url('../img/kirby_wheel.png');
 }
 
-.turret {
-    background-image: url('../img/turret.png');
+.machine-gun {
+    background-image: url('../img/machinegun.png');
 }
+
+.body1 {
+    background-image: url('../img/body1.png');
+}
+
+.thruster {
+    background-image: url('../img/thruster.png');
+}
+
