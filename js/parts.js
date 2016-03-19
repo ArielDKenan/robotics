@@ -70,9 +70,9 @@ parts = {};
 
         this.updateCallback = function () {
             //cursors = cursors || game.input.keyboard.createCursorKeys();
-            if (robots.cursors.up.isDown || robots.wasd.up.isDown) {
+            if (robots.cursors.up.isDown) { //|| robots.wasd.up.isDown) {
                 this.body.thrust(this.axe);
-            } else if (robots.cursors.down.isDown || robots.wasd.down.isDown) {
+            } else if (robots.cursors.down.isDown) { //|| robots.wasd.down.isDown) {
                 this.body.reverse(this.axe);
             }
         };
@@ -85,6 +85,9 @@ parts = {};
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides([robots.tilesCollisionGroup]);
+
+        var fire = 'fire';
+        // todo: this.addChild(fire)
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
@@ -103,12 +106,12 @@ parts = {};
         this.motor_speed = 30;
 
         this.updateCallback = function () {
-            if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
+            if (robots.cursors.right.isDown) { //|| robots.wasd.right.isDown) {
                 if (this.options.movesRight) {
                     this.constraint.enableMotor();
                     this.constraint.setMotorSpeed(-this.motor_speed);
                 }
-            } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
+            } else if (robots.cursors.left.isDown) {// || robots.wasd.left.isDown) {
                 if (this.options.movesLeft) {
                     this.constraint.enableMotor();
                     this.constraint.setMotorSpeed(this.motor_speed);
@@ -146,8 +149,8 @@ parts = {};
         if (projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
 
         this.updateCallback = function () {
-            var mouseX = game.input.activePointer.x;
-            var mouseY = game.input.activePointer.y;
+            var mouseX = game.input.activePointer.x + game.camera.x;
+            var mouseY = game.input.activePointer.y + game.camera.y;
 
             this.body.rotation = game.math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
 

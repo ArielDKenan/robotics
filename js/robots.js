@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = false;
+    robots.DEBUG_MODE = true;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -48,7 +48,7 @@ var mgun;
     };
 
     var badguy, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
-        platforms, bullets,
+        platforms, bullets, hills,
         cursors, wasd, pointer;
     var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup,
         thrusterCollisionGroup, tilesCollisionGroup;
@@ -79,7 +79,9 @@ var mgun;
         sky.scale.set(14, 1);
 
         //var hills = game.add.sprite(0, 0, 'hills');
-        var hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
+        hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
+        hills.fixedToCamera = true;
+        //var hills2 = game.add.tileSprite(1956, 0, 1956, 640, 'hills');
 
         var map = game.add.tilemap('map', 16, 16);
 
@@ -329,6 +331,8 @@ var mgun;
 
     robots.update = function update() {
 
+        hills.tilePosition.set(game.camera.x * -0.4, game.camera.y * -0.4)
+
         // badguy.body.setZeroVelocity();
         var thrustSpeed = 0;
         var shouldAnimateFire = false;
@@ -356,7 +360,7 @@ var mgun;
             }
         }
 
-        if (cursors.left.isDown || wasd.left.isDown) {
+        if (wasd.left.isDown) {
             //badguy.body.rotateLeft(180);
             //badguy.body.angle = 270;
             //badguy.body.moveLeft(MOVE_SPEED);
@@ -370,7 +374,7 @@ var mgun;
             thruster2.body.angle = 270;
             thruster1.body.thrust(thrustSpeed);
             thruster2.body.thrust(thrustSpeed);
-        } else if (cursors.right.isDown || wasd.right.isDown) {
+        } else if (wasd.right.isDown) {
             //badguy.body.rotateRight(180);
             //badguy.body.angle = 90;
             //badguy.body.moveRight(MOVE_SPEED);
@@ -393,7 +397,7 @@ var mgun;
             thruster2.body.setZeroRotation();
         }
 
-        if (cursors.up.isDown || wasd.up.isDown) {
+        if (wasd.up.isDown) {
             shouldAnimateFire = true;
             // badguy.body.angle = 0;
             badguy.body.moveUp(MOVE_SPEED);
@@ -403,7 +407,7 @@ var mgun;
             thruster1.body.thrust(thrustSpeed || THRUST_SPEED);
             thruster2.body.angle = 0;
             thruster2.body.thrust(thrustSpeed || THRUST_SPEED);
-        } else if (cursors.down.isDown || wasd.down.isDown) {
+        } else if (wasd.down.isDown) {
             shouldAnimateFire = true;
             // badguy.body.moveDown(MOVE_SPEED);
             //badguy.body.angle = 180;
@@ -435,8 +439,8 @@ var mgun;
             fire2.animations.play('off');
         }
 
-        var mouseX = game.input.activePointer.x;
-        var mouseY = game.input.activePointer.y;
+        var mouseX = game.input.activePointer.x + game.camera.x;
+        var mouseY = game.input.activePointer.y + game.camera.y;
 
         mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
 
@@ -461,7 +465,7 @@ var mgun;
         var title = 'ROBOTS WILL INHERIT THE EARTH';
         if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
         game.debug.text(title, 32, 32);
-        game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
+        //game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
 
     }
 
