@@ -23,8 +23,9 @@ parts = {};
         Phaser.Sprite.call(this, game, x, y, spriteName);
         this.scale.setTo(scale.x, scale.y);
 
-        this.collisionGroup = parts.playerCollisionGroup || 
-            (parts.playerCollisionGroup = game.physics.p2.createCollisionGroup());
+        this.collisionGroup = robots.playerCollisionGroup;
+        //this.collisionGroup = parts.playerCollisionGroup || 
+        //    (parts.playerCollisionGroup = game.physics.p2.createCollisionGroup());
         this.max_force = 2000;
     };
     parts.Part = Part;
@@ -52,7 +53,7 @@ parts = {};
         this.body.damping = .2;
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides([]);
+        this.body.collides([robots.tilesCollisionGroup]);
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
     };
@@ -83,6 +84,7 @@ parts = {};
         this.body.mass = .5;
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
+        this.body.collides([robots.tilesCollisionGroup]);
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
@@ -123,6 +125,7 @@ parts = {};
         this.body.mass = 1;
         this.body.setCircle(18);
         this.body.setCollisionGroup(this.collisionGroup);
+        this.body.collides([robots.tilesCollisionGroup]);
 
         var cx = (position.x - bodyPos.x) * PART_WIDTH/2;
         var cy = (position.y - bodyPos.y) * PART_HEIGHT/2;
@@ -170,6 +173,7 @@ parts = {};
         this.body.mass = 1.5;
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(this.collisionGroup);
+        this.body.collides([robots.tilesCollisionGroup]);
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
@@ -181,7 +185,7 @@ parts = {};
     Chaingun.prototype.constructor = Chaingun;
 
     parts.init = function () {
-
+        
     }
 
 })(parts);

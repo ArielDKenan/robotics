@@ -50,7 +50,7 @@ var mgun;
         platforms, bullets,
         cursors, wasd, pointer;
     var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup,
-        thrusterCollisionGroup;
+        thrusterCollisionGroup, tilesCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
         MACHINEGUN = 2,
@@ -87,16 +87,20 @@ var mgun;
         layer.resizeWorld();
 
         //  This isn't totally accurate, but it'll do for now
-        map.setCollisionBetween(0, 4, true, layer, true);
+        map.setCollisionBetween(0, 4, true, layer);
 
-        game.physics.p2.convertTilemap(map, layer);
+        var tileObjects = game.physics.p2.convertTilemap(map, layer);
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
         gunCollisionGroup = game.physics.p2.createCollisionGroup();
         wheelCollisionGroup = game.physics.p2.createCollisionGroup();
         thrusterCollisionGroup = game.physics.p2.createCollisionGroup();
+        tilesCollisionGroup   = this.physics.p2.createCollisionGroup();
         game.physics.p2.updateBoundsCollisionGroup();
+
+        robots.playerCollisionGroup = playerCollisionGroup;
+        robots.tilesCollisionGroup = tilesCollisionGroup;
         // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
 
@@ -111,30 +115,36 @@ var mgun;
         var ground = platforms.create(0, game.world.height - 8, 'ground');
         ground.scale.setTo(3, .2);
         ground.body.immovable = false;*/
+        
+        for (var i = 0; i < tileObjects.length; i++) {
+            var tileBody = tileObjects[i];
+            tileBody.setCollisionGroup(tilesCollisionGroup);
+            tileBody.collides([playerCollisionGroup, projectileCollisionGroup]);
+        }
 
-        fire1 = game.add.sprite(270, game.world.height - 140, 'fire');
-        fire2 = game.add.sprite(330, game.world.height - 140, 'fire');
+        fire1 = game.add.sprite(270, game.world.height - 140 - 100, 'fire');
+        fire2 = game.add.sprite(330, game.world.height - 140 - 100, 'fire');
         fire1.scale.setTo(.7);
         fire2.scale.setTo(.7);
         fire1.alpha = .8;
         fire2.alpha = .8;
 
-        wheel1 = game.add.sprite(270, game.world.height - 10, 'wheel');
-        wheel2 = game.add.sprite(295, game.world.height - 10, 'wheel');
+        wheel1 = game.add.sprite(270, game.world.height - 10 - 100, 'wheel');
+        wheel2 = game.add.sprite(295, game.world.height - 10 - 100, 'wheel');
         wheel1.scale.set(.04);
         wheel2.scale.set(.04);
 
-        thruster1 = game.add.sprite(270, game.world.height - 150, 'thruster');
+        thruster1 = game.add.sprite(270, game.world.height - 150 - 100, 'thruster');
         thruster1.scale.setTo(.3, .3);
-        thruster2 = game.add.sprite(330, game.world.height - 150, 'thruster');
+        thruster2 = game.add.sprite(330, game.world.height - 150 - 100, 'thruster');
         thruster2.scale.setTo(.3, .3);
 
         //badguy = game.add.sprite(300, game.world.height - 150, 'dude');
         //badguy.scale.setTo(1.2);
-        badguy = game.add.sprite(300, game.world.height - 150, 'body2');
+        badguy = game.add.sprite(300, game.world.height - 150 - 100, 'body2');
         badguy.scale.set(.08);
 
-        mgun = game.add.sprite(300, game.world.height - 140, 'gun');
+        mgun = game.add.sprite(300, game.world.height - 140 - 100, 'gun');
         mgun.scale.setTo(.2, .2);
 
         bullets = game.add.group();
@@ -155,15 +165,17 @@ var mgun;
         wheel2.body.mass = 1;
         wheel1.body.setCircle(18);
         wheel2.body.setCircle(18);
-        wheel1.body.setCollisionGroup(wheelCollisionGroup);
-        wheel2.body.setCollisionGroup(wheelCollisionGroup);
-        //wheel1.body.collides(playerCollisionGroup);
-        //wheel2.body.collides(playerCollisionGroup);
+        wheel1.body.setCollisionGroup(playerCollisionGroup);
+        wheel2.body.setCollisionGroup(playerCollisionGroup);
+        wheel1.body.collides(tilesCollisionGroup);
+        wheel2.body.collides(tilesCollisionGroup);
 
         thruster1.body.mass = 1;
         thruster2.body.mass = 1;
-        thruster1.body.setCollisionGroup(thrusterCollisionGroup);
-        thruster2.body.setCollisionGroup(thrusterCollisionGroup);
+        thruster1.body.setCollisionGroup(playerCollisionGroup);
+        thruster2.body.setCollisionGroup(playerCollisionGroup);
+        thruster1.body.collides([tilesCollisionGroup]);
+        thruster2.body.collides([tilesCollisionGroup]);
 
         badguy.body.setCircle(25);
         badguy.body.fixedRotation = false;
@@ -171,10 +183,10 @@ var mgun;
         badguy.body.damping = PLAYER_DAMPING;
         badguy.body.data.gravityScale = 1;
         badguy.body.setCollisionGroup(playerCollisionGroup);
-        //badguy.body.collides([projectileCollisionGroup]);
+        badguy.body.collides([tilesCollisionGroup]);
 
-        mgun.body.setCollisionGroup(gunCollisionGroup);
-        mgun.body.collides([]);
+        mgun.body.setCollisionGroup(playerCollisionGroup);
+        mgun.body.collides([tilesCollisionGroup]);
         mgun.body.data.gravityScale = 0;
         mgun.body.damping = PLAYER_DAMPING;
 
