@@ -23,10 +23,11 @@ var mgun;
 
     robots.preload = function preload() {
 
-        game.load.tilemap('map', 'map/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map', 'map/tilemap2.json', null, Phaser.Tilemap.TILED_JSON);
 
         game.load.image('tileset', 'map/tileset.png');
 
+        game.load.image('hills', 'map/hills.png');
         game.load.image('star', 'assets/star.png');
         game.load.image('sky', 'assets/sky.png');
 
@@ -76,6 +77,9 @@ var mgun;
         game.stage.backgroundColor = '#2d2d2d';
         var sky = game.add.sprite(0, 0, 'sky');
         sky.scale.set(14, 1);
+
+        //var hills = game.add.sprite(0, 0, 'hills');
+        var hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
 
         var map = game.add.tilemap('map', 16, 16);
 
