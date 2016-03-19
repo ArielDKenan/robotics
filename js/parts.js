@@ -160,7 +160,7 @@ parts = {};
                 } else if (projectileType === parts.BULLET_TYPE) {
                     if (game.time.now > this.lastFire + this.fireRate) {
                         this.lastFire = game.time.now;
-                        //var newB = game.add.existing(new Bullet(this.body.x, this.body.y, this));
+                        var newB = game.add.existing(new robots.Bullet(this.body.x, this.body.y, this));
                     }
                 }
             }

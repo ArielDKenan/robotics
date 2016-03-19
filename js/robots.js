@@ -74,6 +74,8 @@ var mgun;
         game.physics.p2.friction = 100;
 
         game.stage.backgroundColor = '#2d2d2d';
+        var sky = game.add.sprite(0, 0, 'sky');
+        sky.scale.set(14, 1);
 
         var map = game.add.tilemap('map', 16, 16);
 
@@ -87,7 +89,7 @@ var mgun;
         layer.resizeWorld();
 
         //  This isn't totally accurate, but it'll do for now
-        map.setCollisionBetween(0, 4, true, layer);
+        map.setCollisionBetween(0, 5, true, layer);
 
         var tileObjects = game.physics.p2.convertTilemap(map, layer);
 
@@ -104,8 +106,7 @@ var mgun;
         // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
 
-        /*var sky = game.add.sprite(0, 0, 'sky');
-        sky.scale.set(1.5);
+        /*
 
         //  The platforms group contains the ground and the ledges
         platforms = game.add.group();
@@ -115,6 +116,11 @@ var mgun;
         var ground = platforms.create(0, game.world.height - 8, 'ground');
         ground.scale.setTo(3, .2);
         ground.body.immovable = false;*/
+
+        var stars = game.add.group();
+        stars.enableBody = true;
+        stars.physicsBodyType = Phaser.Physics.P2JS;
+        map.createFromObjects(layer, 4, 'star', 0, true, false, stars);
         
         for (var i = 0; i < tileObjects.length; i++) {
             var tileBody = tileObjects[i];
@@ -223,7 +229,7 @@ var mgun;
 
         var bodyPos = { x: 1, y: 1 };
         var b = game.add.existing(new parts.Body1(bodyPos));
-        var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.ROCKET_TYPE));
+        var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
         var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
         var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, {}));
         var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, {}));
