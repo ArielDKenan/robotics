@@ -6,7 +6,7 @@ parts = {};
 	
 	parts = parts || {};
 
-	var STARTING_X = 200, STARTING_Y = 100,
+	var STARTING_X = 300, STARTING_Y = 0,
 		PART_WIDTH = 64,  PART_HEIGHT = 64;
 
     var cursors;
@@ -24,6 +24,7 @@ parts = {};
         this.scale.setTo(scale.x, scale.y);
 
         this.collisionGroup = robots.playerCollisionGroup;
+        this.collidesWith = [robots.player2CollisionGroup, robots.tilesCollisionGroup, robots.projectileCollisionGroup2];
         //this.collisionGroup = parts.playerCollisionGroup || 
         //    (parts.playerCollisionGroup = game.physics.p2.createCollisionGroup());
         this.max_force = 2000;
@@ -53,7 +54,7 @@ parts = {};
         this.body.damping = .2;
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides([robots.tilesCollisionGroup]);
+        this.body.collides(this.collidesWith);
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
     };
@@ -70,11 +71,22 @@ parts = {};
 
         this.updateCallback = function () {
             //cursors = cursors || game.input.keyboard.createCursorKeys();
+            var shouldAnim = false;
+
             if (robots.cursors.up.isDown) { //|| robots.wasd.up.isDown) {
                 this.body.thrust(this.axe);
+                shouldAnim = true;
             } else if (robots.cursors.down.isDown) { //|| robots.wasd.down.isDown) {
                 this.body.reverse(this.axe);
+                shouldAnim = true;
             }
+
+            if (robots.cursors.right.isDown) {
+                this.body.rotateRight(90);
+                robots.log('stuff');
+            }
+            if (shouldAnim) this.fire.animations.play('on');
+            else this.fire.animations.play('off');
         };
 
         Part.call(this, 'thruster', size, position, scale);
@@ -84,10 +96,15 @@ parts = {};
         this.body.mass = .5;
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides([robots.tilesCollisionGroup]);
+        this.body.collides(this.collidesWith);
 
-        var fire = 'fire';
-        // todo: this.addChild(fire)
+        this.group = this.game.add.group(this);
+        this.fire = this.group.create(0, this.height/2, 'fire');
+        this.fire.scale.setTo(1);
+        this.fire.animations.add('on', [5, 4, 3, 2, 1, 0, 1, 2, 3, 4], 15, true);
+        this.fire.animations.add('off', [8, 9, 10, 11, 12, 13, 14, 15, 14, 13, 12, 11, 10, 9], 5, true);
+        //this.addChild(fire1);
+        //this.addChild(fire2);
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
@@ -128,7 +145,7 @@ parts = {};
         this.body.mass = 1;
         this.body.setCircle(18);
         this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides([robots.tilesCollisionGroup]);
+        this.body.collides(this.collidesWith);
 
         var cx = (position.x - bodyPos.x) * PART_WIDTH/2;
         var cy = (position.y - bodyPos.y) * PART_HEIGHT/2;
@@ -158,12 +175,12 @@ parts = {};
                 if (projectileType === parts.ROCKET_TYPE) {
                     if (game.time.now > this.lastFire + this.fireRate) {
                         this.lastFire = game.time.now;
-                        var newR = game.add.existing(new robots.Rocket(this.body.x, this.body.y, this));
+                        var newR = game.add.existing(new robots.Rocket(this.body.x, this.body.y, this, true));
                     }
                 } else if (projectileType === parts.BULLET_TYPE) {
                     if (game.time.now > this.lastFire + this.fireRate) {
                         this.lastFire = game.time.now;
-                        var newB = game.add.existing(new robots.Bullet(this.body.x, this.body.y, this));
+                        var newB = game.add.existing(new robots.Bullet(this.body.x, this.body.y, this, true));
                     }
                 }
             }
@@ -176,7 +193,7 @@ parts = {};
         this.body.mass = 1.5;
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides([robots.tilesCollisionGroup]);
+        this.body.collides(this.collidesWith);
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;

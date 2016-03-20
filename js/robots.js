@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = true;
+    robots.DEBUG_MODE = false;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -23,7 +23,7 @@ var mgun;
 
     robots.preload = function preload() {
 
-        game.load.tilemap('map', 'map/tilemap2.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map', 'map/tilemap3.json', null, Phaser.Tilemap.TILED_JSON);
 
         game.load.image('tileset', 'map/tileset.png');
 
@@ -41,6 +41,7 @@ var mgun;
         game.load.image('body1', 'img/body1.png');
         game.load.image('body2', 'img/body2.png');
 
+        game.load.spritesheet('explosion', 'img/explosion_h.png', 200, 150);
         game.load.spritesheet('fire', 'img/fire_anim.png', 64, 64);
         game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         game.load.spritesheet('baddie', 'assets/baddie.png', 32, 32);
@@ -50,7 +51,8 @@ var mgun;
     var badguy, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
         platforms, bullets, hills,
         cursors, wasd, pointer;
-    var playerCollisionGroup, gunCollisionGroup, projectileCollisionGroup, wheelCollisionGroup,
+    var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
+        projectileCollisionGroup, projectileCollisionGroup2,
         thrusterCollisionGroup, tilesCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
@@ -100,7 +102,9 @@ var mgun;
         var tileObjects = game.physics.p2.convertTilemap(map, layer);
 
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
+        player2CollisionGroup = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup = game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup2 = game.physics.p2.createCollisionGroup();
         gunCollisionGroup = game.physics.p2.createCollisionGroup();
         wheelCollisionGroup = game.physics.p2.createCollisionGroup();
         thrusterCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -108,7 +112,10 @@ var mgun;
         game.physics.p2.updateBoundsCollisionGroup();
 
         robots.playerCollisionGroup = playerCollisionGroup;
+        robots.player2CollisionGroup = player2CollisionGroup;
         robots.tilesCollisionGroup = tilesCollisionGroup;
+        robots.projectileCollisionGroup = projectileCollisionGroup;
+        robots.projectileCollisionGroup2 = projectileCollisionGroup2;
         // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
 
@@ -126,37 +133,37 @@ var mgun;
         var stars = game.add.group();
         stars.enableBody = true;
         stars.physicsBodyType = Phaser.Physics.P2JS;
-        map.createFromObjects(layer, 4, 'star', 0, true, false, stars);
+        map.createFromObjects('Object layer 1', 4, 'star', 0, true, false, stars);
         
         for (var i = 0; i < tileObjects.length; i++) {
             var tileBody = tileObjects[i];
             tileBody.setCollisionGroup(tilesCollisionGroup);
-            tileBody.collides([playerCollisionGroup, projectileCollisionGroup]);
+            tileBody.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         }
 
-        fire1 = game.add.sprite(270, game.world.height - 140 - 100, 'fire');
-        fire2 = game.add.sprite(330, game.world.height - 140 - 100, 'fire');
+        fire1 = game.add.sprite(270, game.world.height - 140 - 300, 'fire');
+        fire2 = game.add.sprite(330, game.world.height - 140 - 300, 'fire');
         fire1.scale.setTo(.7);
         fire2.scale.setTo(.7);
         fire1.alpha = .8;
         fire2.alpha = .8;
 
-        wheel1 = game.add.sprite(270, game.world.height - 10 - 100, 'wheel');
-        wheel2 = game.add.sprite(295, game.world.height - 10 - 100, 'wheel');
+        wheel1 = game.add.sprite(270, game.world.height - 10 - 300, 'wheel');
+        wheel2 = game.add.sprite(295, game.world.height - 10 - 300, 'wheel');
         wheel1.scale.set(.04);
         wheel2.scale.set(.04);
 
-        thruster1 = game.add.sprite(270, game.world.height - 150 - 100, 'thruster');
+        thruster1 = game.add.sprite(270, game.world.height - 150 - 300, 'thruster');
         thruster1.scale.setTo(.3, .3);
-        thruster2 = game.add.sprite(330, game.world.height - 150 - 100, 'thruster');
+        thruster2 = game.add.sprite(330, game.world.height - 150 - 300, 'thruster');
         thruster2.scale.setTo(.3, .3);
 
         //badguy = game.add.sprite(300, game.world.height - 150, 'dude');
         //badguy.scale.setTo(1.2);
-        badguy = game.add.sprite(300, game.world.height - 150 - 100, 'body2');
+        badguy = game.add.sprite(300, game.world.height - 150 - 300, 'body2');
         badguy.scale.set(.08);
 
-        mgun = game.add.sprite(300, game.world.height - 140 - 100, 'gun');
+        mgun = game.add.sprite(300, game.world.height - 140 - 300, 'gun');
         mgun.scale.setTo(.2, .2);
 
         bullets = game.add.group();
@@ -177,28 +184,28 @@ var mgun;
         wheel2.body.mass = 1;
         wheel1.body.setCircle(18);
         wheel2.body.setCircle(18);
-        wheel1.body.setCollisionGroup(playerCollisionGroup);
-        wheel2.body.setCollisionGroup(playerCollisionGroup);
-        wheel1.body.collides(tilesCollisionGroup);
-        wheel2.body.collides(tilesCollisionGroup);
+        wheel1.body.setCollisionGroup(player2CollisionGroup);
+        wheel2.body.setCollisionGroup(player2CollisionGroup);
+        wheel1.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+        wheel2.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
 
         thruster1.body.mass = 1;
         thruster2.body.mass = 1;
-        thruster1.body.setCollisionGroup(playerCollisionGroup);
-        thruster2.body.setCollisionGroup(playerCollisionGroup);
-        thruster1.body.collides([tilesCollisionGroup]);
-        thruster2.body.collides([tilesCollisionGroup]);
+        thruster1.body.setCollisionGroup(player2CollisionGroup);
+        thruster2.body.setCollisionGroup(player2CollisionGroup);
+        thruster1.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+        thruster2.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
 
         badguy.body.setCircle(25);
         badguy.body.fixedRotation = false;
         badguy.body.mass = PLAYER_MASS;
         badguy.body.damping = PLAYER_DAMPING;
         badguy.body.data.gravityScale = 1;
-        badguy.body.setCollisionGroup(playerCollisionGroup);
-        badguy.body.collides([tilesCollisionGroup]);
+        badguy.body.setCollisionGroup(player2CollisionGroup);
+        badguy.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
 
-        mgun.body.setCollisionGroup(playerCollisionGroup);
-        mgun.body.collides([tilesCollisionGroup]);
+        mgun.body.setCollisionGroup(player2CollisionGroup);
+        mgun.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
         mgun.body.data.gravityScale = 0;
         mgun.body.damping = PLAYER_DAMPING;
 
@@ -246,12 +253,13 @@ var mgun;
 
     };
 
-    var Projectile = function (x, y, sprite, gun) {
+    var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
         this._acceleration = 0;
         this._speed = 0;
-        this.collideCallback = this.collideCallback || function () {};
+        this.collideCallback = this.collideCallback || function (a, b) { a.destroy(); };
 
         Phaser.Sprite.call(this, game, x, y, sprite);
+        this.scale.setTo(scale[0], scale[1]);
         //Phaser.SpriteBatch.call(this, game, bullets, 'bullet', true)
         //this.bully = bullets.getFirstDead.call(this);
         //this.bully.reset(x, y);
@@ -262,8 +270,8 @@ var mgun;
         game.physics.p2.enable(this, robots.DEBUG_MODE);
         this.body.data.gravityScale = 0;
 
-        this.body.setCollisionGroup(projectileCollisionGroup);
-        this.body.collides([playerCollisionGroup], this.collideCallback, this);
+        this.body.setCollisionGroup(mainPlayer ? projectileCollisionGroup : projectileCollisionGroup2);
+        this.body.collides([tilesCollisionGroup, (!mainPlayer ? playerCollisionGroup : player2CollisionGroup)], this.collideCallback, this);
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
 
@@ -285,12 +293,11 @@ var mgun;
         }
     }
 
-    var Rocket = function (x, y, gun) {
+    var Rocket = function (x, y, gun, mainPlayer) {
         this.collideCallback = missleHit;
-        Projectile.call(this, x, y, 'rocket', gun);
-        this.scale.setTo(.15, .1);
-        this.body.setCircle(15);
-        this.body.data.gravityScale = 0;
+        Projectile.call(this, x, y, 'rocket', gun, [.15, .1], mainPlayer);
+        //this.scale.setTo(.15, .1);
+        //this.body.setCircle(15);
         this._acceleration = 1000;
         this.body.moveBackward(50);
     }
@@ -299,9 +306,9 @@ var mgun;
     Rocket.prototype = Object.create(Projectile.prototype);
     Rocket.prototype.constructor = Rocket;
 
-    var Bullet = function (x, y, gun) {
-        Projectile.call(this, x, y, 'bullet', gun);
-        this.scale.setTo(.34, .34);
+    var Bullet = function (x, y, gun, mainPlayer) {
+        Projectile.call(this, x, y, 'bullet', gun, [.34, .34], mainPlayer);
+        //this.scale.setTo(.34, .34);
         this._speed = 2000;
         //this._acceleration = 1200;
     }
@@ -310,10 +317,13 @@ var mgun;
     Bullet.prototype = Object.create(Projectile.prototype);
     Bullet.prototype.constructor = Bullet;
 
-    function missleHit(missile, player) {
-        //missile.destroy();
-        missile.exists = false;
+    function missleHit(missile) {
+        var exp = game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
+        exp.scale.setTo(.6);
+        exp.animations.add('boom', [0,1,2,3,4,5,6,7], 10, false);
+        exp.animations.play('boom', null, false, true);
         robots.log('hit!');
+        missile.destroy();
     }
 
     var MOVE_SPEED = 0,
@@ -365,7 +375,7 @@ var mgun;
             //badguy.body.angle = 270;
             //badguy.body.moveLeft(MOVE_SPEED);
             //badguy.body.thrust(thrustSpeed);
-            badguy.animations.play('left');
+            //badguy.animations.play('left');
 
             leftWheel.enableMotor();
             leftWheel.setMotorSpeed(MOTOR_SPEED);
