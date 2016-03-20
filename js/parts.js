@@ -99,10 +99,10 @@ parts = {};
         this.body.collides(this.collidesWith);
 
         this.group = this.game.add.group(this);
-        this.fire = this.group.create(0, this.height/2, 'fire');
-        this.fire.scale.setTo(1);
+        this.fire = this.group.create(-this.width, this.height/2, 'fire');
+        this.fire.scale.setTo(1.5);
         this.fire.animations.add('on', [5, 4, 3, 2, 1, 0, 1, 2, 3, 4], 15, true);
-        this.fire.animations.add('off', [8, 9, 10, 11, 12, 13, 14, 15, 14, 13, 12, 11, 10, 9], 5, true);
+        this.fire.animations.add('off', [10, 9, 8, 7, 6, 7, 8, 9], 5, true);
         //this.addChild(fire1);
         //this.addChild(fire2);
 

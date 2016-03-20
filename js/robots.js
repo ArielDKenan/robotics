@@ -28,6 +28,7 @@ var mgun;
         game.load.image('tileset', 'map/tileset.png');
 
         game.load.image('hills', 'map/hills.png');
+        game.load.image('stars', 'map/stars.png');
         game.load.image('star', 'assets/star.png');
         game.load.image('sky', 'assets/sky.png');
 
@@ -77,8 +78,13 @@ var mgun;
         game.physics.p2.friction = 100;
 
         game.stage.backgroundColor = '#2d2d2d';
+
         var sky = game.add.sprite(0, 0, 'sky');
         sky.scale.set(14, 1);
+
+        var stars = game.add.tileSprite(0, 0, 640, 800, 'stars');
+        stars.scale.setTo(1.25, 1.57);
+        stars.fixedToCamera = true;
 
         //var hills = game.add.sprite(0, 0, 'hills');
         hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
@@ -133,10 +139,11 @@ var mgun;
         var stars = game.add.group();
         stars.enableBody = true;
         stars.physicsBodyType = Phaser.Physics.P2JS;
-        map.createFromObjects('Object layer 1', 4, 'star', 0, true, false, stars);
+        map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);
         
         for (var i = 0; i < tileObjects.length; i++) {
             var tileBody = tileObjects[i];
+            robots.log(tileBody);
             tileBody.setCollisionGroup(tilesCollisionGroup);
             tileBody.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         }
@@ -244,12 +251,13 @@ var mgun;
         var b = game.add.existing(new parts.Body1(bodyPos));
         var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
         var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
-        var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, {}));
-        var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, {}));
+        var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
         var w4 = game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
         //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
         var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos));
         var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos));
+        //game.camera.follow(b);
 
     };
 
@@ -319,8 +327,8 @@ var mgun;
 
     function missleHit(missile) {
         var exp = game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
-        exp.scale.setTo(.6);
-        exp.animations.add('boom', [0,1,2,3,4,5,6,7], 10, false);
+        exp.scale.setTo(.5);
+        exp.animations.add('boom', [0,1,2,3,4,5], 20, false);
         exp.animations.play('boom', null, false, true);
         robots.log('hit!');
         missile.destroy();
@@ -472,7 +480,7 @@ var mgun;
 
     robots.render = function render() {
 
-        var title = 'ROBOTS WILL INHERIT THE EARTH';
+        var title = 'use WASD or arrow keys to move - use mouse to aim and shoot';
         if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
         game.debug.text(title, 32, 32);
         //game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
