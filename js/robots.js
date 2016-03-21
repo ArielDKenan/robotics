@@ -32,6 +32,7 @@ var mgun;
         game.load.image('hills', 'map/hills.png');
         game.load.image('stars', 'map/stars.png');
         game.load.image('sky', 'assets/sky.png');
+        game.load.image('skyline', 'map/skyline.png');
 
         game.load.image('rocket', 'img/grenada.png');
         game.load.image('bullet', 'img/bullet.png');
@@ -54,7 +55,7 @@ var mgun;
     };
 
     var badguy, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
-        platforms, bullets, hills,
+        platforms, bullets, hills, skyline,
         cursors, wasd, pointer;
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
         projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
@@ -153,9 +154,14 @@ var mgun;
         stars.fixedToCamera = true;
 
         //var hills = game.add.sprite(0, 0, 'hills');
-        hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
-        hills.fixedToCamera = true;
+        //hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
+        // hills.fixedToCamera = true;
         //var hills2 = game.add.tileSprite(1956, 0, 1956, 640, 'hills');
+
+        skyline = game.add.tileSprite(0, 0, 1988, 640, 'skyline');
+        skyline.scale.setTo(1.5, 1);
+        skyline.fixedToCamera = true;
+
 
         var map = game.add.tilemap('map', 16, 16);
         map.addTilesetImage('tileset');
@@ -463,7 +469,6 @@ var mgun;
         //Phaser.SpriteBatch.call(this, game, bullets, 'bullet', true)
         //this.bully = bullets.getFirstDead.call(this);
         //this.bully.reset(x, y);
-        //game.physics.p2.
 
         this.anchor.setTo(.5, .5);
 
@@ -550,7 +555,7 @@ var mgun;
 
     robots.update = function update() {
 
-        hills.tilePosition.set(game.camera.x * -0.4, game.camera.y * -0.4)
+        skyline.tilePosition.set(game.camera.x * -0.25, game.camera.y * -0.25);
 
     }
 
