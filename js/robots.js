@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = true;
+    robots.DEBUG_MODE = false;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -78,7 +78,7 @@ var mgun;
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
         game.physics.p2.gravity.y = 1500;
         game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
-        game.physics.p2.friction = 100;
+        game.physics.p2.friction = 200;
 
         setAllCollisionGroups();
         buildMap();
@@ -109,17 +109,25 @@ var mgun;
         };
         robots.wasd = wasd;
 
+        if (localStorage.getItem('useDefault') === 'true' || !localStorage.getItem('partList')) {
+            buildOldBot();
+        } else {
+            var partList = JSON.parse(localStorage.getItem('partList'));
+            var player = parts.buildABot(partList);
+            game.camera.follow(player);
+        }
+
         var playBot = [
             { type: parts.GUN_TYPE, position: { x: 2, y: 0 }, options: { projectileType: parts.ROCKET_TYPE } },
-            { type: parts.WHEEL_TYPE, position: { x: 0, y: 4 }, options: { movesRight: true } },
-            { type: parts.WHEEL_TYPE, position: { x: 3, y: 4 }, options: { movesLeft: true } },
-            { type: parts.WHEEL_TYPE, position: { x: 1, y: 4 }, options: { movesLeft: true } },
-            { type: parts.WHEEL_TYPE, position: { x: 2, y: 4 }, options: { movesLeft: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 0, y: 3 }, options: { movesRight: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 1, y: 3 }, options: { movesRight: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 2, y: 3 }, options: { movesLeft: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 3, y: 3 }, options: { movesLeft: true } },
             { type: parts.THRUSTER_TYPE, position: { x: 0, y: 1 }, options: { fixed: true } },
             { type: parts.THRUSTER_TYPE, position: { x: 3, y: 1 }, options: { fixed: true } }
         ];
 
-        var player = parts.buildABot(playBot);
+        //var player = parts.buildABot(playBot);
 
         /*var bodyPos = { x: 1, y: 1 };
         var b = game.add.existing(new parts.Body1(bodyPos));
@@ -131,8 +139,6 @@ var mgun;
         //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
         var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
         var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
-
-        game.camera.follow(player);
 
     };
 
@@ -160,6 +166,7 @@ var mgun;
         //  Create our layer
         var layer = map.createLayer('Tile Layer 1');
         var collectLayer = map.createLayer('Collect Layer');
+        var otherLayer = map.createLayer('Other Layer');
 
         //  Resize the world
         layer.resizeWorld();
@@ -208,6 +215,7 @@ var mgun;
     }
 
     function setAllCollisionGroups() {
+
         playerCollisionGroup        = game.physics.p2.createCollisionGroup();
         player2CollisionGroup       = game.physics.p2.createCollisionGroup();
         projectileCollisionGroup    = game.physics.p2.createCollisionGroup();
@@ -226,9 +234,11 @@ var mgun;
         robots.projectileCollisionGroup     = projectileCollisionGroup;
         robots.projectileCollisionGroup2    = projectileCollisionGroup2;
         robots.collectCollisionGroup        = collectCollisionGroup;
+
     }
 
-    function buildOldBot () {
+    function buildOldBot() {
+
         fire1 = game.add.sprite(270, game.world.height - 140 - 300, 'fire');
         fire2 = game.add.sprite(330, game.world.height - 140 - 300, 'fire');
         fire1.scale.setTo(.7);
@@ -312,9 +322,138 @@ var mgun;
             badguy.height/2], wheel1, [0, 0], MAX_FORCE);
         rightWheel = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
             badguy.height/2], wheel2, [0, 0], MAX_FORCE);
+
+        badguy.update = function update() {
+            // badguy.body.setZeroVelocity();
+            var thrustSpeed = 0;
+            var shouldAnimateFire = false;
+            leftWheel.setMotorSpeed(0);
+            rightWheel.setMotorSpeed(0);
+            leftWheel.disableMotor();
+            rightWheel.disableMotor();
+            if  (boost_energy > BOOST_MAX_ENERGY) boost_energy = BOOST_MAX_ENERGY;
+            if (cursors.space.isDown && boost_energy>0) {
+                shouldAnimateFire = true;
+                thrustSpeed = BOOST_SPEED;
+                if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
+            } else if (boost_energy < BOOST_MAX_ENERGY) {
+                if (!boost_energy) {
+                    if (cursors.space.isDown) {
+                        boost_recharge_time = 0;
+                    } else if (!boost_recharge_time) {
+                        boost_recharge_time = game.time.now + BOOST_WAIT_TIME;
+                    } else if (game.time.now > boost_recharge_time) {
+                        boost_recharge_time = 0;
+                        boost_energy = BOOST_DEPLETED_BONUS;
+                    }
+                } else {
+                    boost_energy += boost_recharge_amount;
+                }
+            }
+
+            if (wasd.left.isDown) {
+                //badguy.body.rotateLeft(180);
+                //badguy.body.angle = 270;
+                //badguy.body.moveLeft(MOVE_SPEED);
+                //badguy.body.thrust(thrustSpeed);
+                //badguy.animations.play('left');
+
+                leftWheel.enableMotor();
+                leftWheel.setMotorSpeed(MOTOR_SPEED);
+
+                thruster1.body.angle = 270;
+                thruster2.body.angle = 270;
+                thruster1.body.thrust(thrustSpeed);
+                thruster2.body.thrust(thrustSpeed);
+            } else if (wasd.right.isDown) {
+                //badguy.body.rotateRight(180);
+                //badguy.body.angle = 90;
+                //badguy.body.moveRight(MOVE_SPEED);
+                //badguy.body.thrust(thrustSpeed);
+                badguy.animations.play('right');
+
+                rightWheel.enableMotor();
+                rightWheel.setMotorSpeed(-MOTOR_SPEED);
+
+                thruster1.body.angle = 90;
+                thruster2.body.angle = 90;
+                thruster1.body.thrust(thrustSpeed);
+                thruster2.body.thrust(thrustSpeed);
+            } else {
+                badguy.body.setZeroRotation();
+                badguy.animations.stop();
+                badguy.frame = 4;
+
+                thruster1.body.setZeroRotation();
+                thruster2.body.setZeroRotation();
+            }
+
+            if (wasd.up.isDown) {
+                shouldAnimateFire = true;
+                // badguy.body.angle = 0;
+                badguy.body.moveUp(MOVE_SPEED);
+                // badguy.body.thrust(thrustSpeed);
+
+                thruster1.body.angle = 0;
+                thruster1.body.thrust(thrustSpeed || THRUST_SPEED);
+                thruster2.body.angle = 0;
+                thruster2.body.thrust(thrustSpeed || THRUST_SPEED);
+            } else if (wasd.down.isDown) {
+                shouldAnimateFire = true;
+                // badguy.body.moveDown(MOVE_SPEED);
+                //badguy.body.angle = 180;
+                //badguy.body.reverse(thrustSpeed);
+
+                thruster1.body.angle = 180;
+                thruster1.body.thrust(thrustSpeed || THRUST_SPEED)
+                thruster2.body.angle = 180;
+                thruster2.body.thrust(thrustSpeed || THRUST_SPEED)
+            }
+
+            
+            fire1.angle = thruster1.angle;
+            fire2.angle = thruster2.angle;
+
+            var t1 = thruster1.getBounds(),
+                t2 = thruster2.getBounds();
+
+            fire1.x = t1.x;
+            fire1.y = t1.y + t1.height/2;
+            fire2.x = t2.x;
+            fire2.y = t2.y + t2.height/2;
+
+            if (shouldAnimateFire) {
+                fire1.animations.play('on');
+                fire2.animations.play('on');
+            } else {
+                fire1.animations.play('off');
+                fire2.animations.play('off');
+            }
+
+            var mouseX = game.input.activePointer.x + game.camera.x;
+            var mouseY = game.input.activePointer.y + game.camera.y;
+
+            mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
+
+            if (game.input.activePointer.isDown) {
+                if (selectedGun === ROCKET_LAUNCHER) {
+                    if (game.time.now > lastFire + ROCKET_FIRE_RATE) {
+                        lastFire = game.time.now;
+                        var newR = game.add.existing(new Rocket(mgun.body.x, mgun.body.y, mgun));
+                    }
+                } else if (selectedGun === MACHINEGUN) {
+                    if (game.time.now > lastFire + MACHINE_FIRE_RATE) {
+                        lastFire = game.time.now;
+                        var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y, mgun));
+                    }
+                }
+            }
+        }
+
     }
 
     var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
+
         this._acceleration = 0;
         this._speed = 0;
         this.collideCallback = this.collideCallback || function (a, b) { a.destroy(); };
@@ -339,12 +478,14 @@ var mgun;
         this.body.maintainAngle = gun.body.angle - 90;
         this.body.angle = this.body.maintainAngle;
         this.fixedRotate = true;
+
     };
 
     Projectile.prototype = Object.create(Phaser.Sprite.prototype);
     Projectile.prototype.constructor = Projectile;
 
     Projectile.prototype.update = function() {
+
         if (this.body) {
             if (this.fixedRotate) this.body.angle = this.body.maintainAngle;
             if (this._speed) this.body.moveBackward(this._speed);
@@ -352,15 +493,18 @@ var mgun;
         } else if (this.destroy) {
             this.destroy();
         }
+
     }
 
     var Rocket = function (x, y, gun, mainPlayer) {
+
         this.collideCallback = missleHit;
         Projectile.call(this, x, y, 'rocket', gun, [.15, .1], mainPlayer);
         //this.scale.setTo(.15, .1);
         //this.body.setCircle(15);
         this._acceleration = 1000;
         this.body.moveBackward(50);
+
     }
     robots.Rocket = Rocket;
 
@@ -368,10 +512,12 @@ var mgun;
     Rocket.prototype.constructor = Rocket;
 
     var Bullet = function (x, y, gun, mainPlayer) {
+
         Projectile.call(this, x, y, 'bullet', gun, [.34, .34], mainPlayer);
         //this.scale.setTo(.34, .34);
         this._speed = 2000;
         //this._acceleration = 1200;
+
     }
     robots.Bullet = Bullet;
 
@@ -379,12 +525,14 @@ var mgun;
     Bullet.prototype.constructor = Bullet;
 
     function missleHit(missile) {
+
         var exp = game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
         exp.scale.setTo(.5);
         exp.animations.add('boom', [0,1,2,3,4,5], 20, false);
         exp.animations.play('boom', null, false, true);
         robots.log('hit!');
         missile.destroy();
+
     }
 
     var MOVE_SPEED = 0,
@@ -403,131 +551,6 @@ var mgun;
     robots.update = function update() {
 
         hills.tilePosition.set(game.camera.x * -0.4, game.camera.y * -0.4)
-
-        // badguy.body.setZeroVelocity();
-        /*var thrustSpeed = 0;
-        var shouldAnimateFire = false;
-        leftWheel.setMotorSpeed(0);
-        rightWheel.setMotorSpeed(0);
-        leftWheel.disableMotor();
-        rightWheel.disableMotor();
-        if  (boost_energy > BOOST_MAX_ENERGY) boost_energy = BOOST_MAX_ENERGY;
-        if (cursors.space.isDown && boost_energy>0) {
-            shouldAnimateFire = true;
-            thrustSpeed = BOOST_SPEED;
-            if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
-        } else if (boost_energy < BOOST_MAX_ENERGY) {
-            if (!boost_energy) {
-                if (cursors.space.isDown) {
-                    boost_recharge_time = 0;
-                } else if (!boost_recharge_time) {
-                    boost_recharge_time = game.time.now + BOOST_WAIT_TIME;
-                } else if (game.time.now > boost_recharge_time) {
-                    boost_recharge_time = 0;
-                    boost_energy = BOOST_DEPLETED_BONUS;
-                }
-            } else {
-                boost_energy += boost_recharge_amount;
-            }
-        }
-
-        if (wasd.left.isDown) {
-            //badguy.body.rotateLeft(180);
-            //badguy.body.angle = 270;
-            //badguy.body.moveLeft(MOVE_SPEED);
-            //badguy.body.thrust(thrustSpeed);
-            //badguy.animations.play('left');
-
-            leftWheel.enableMotor();
-            leftWheel.setMotorSpeed(MOTOR_SPEED);
-
-            thruster1.body.angle = 270;
-            thruster2.body.angle = 270;
-            thruster1.body.thrust(thrustSpeed);
-            thruster2.body.thrust(thrustSpeed);
-        } else if (wasd.right.isDown) {
-            //badguy.body.rotateRight(180);
-            //badguy.body.angle = 90;
-            //badguy.body.moveRight(MOVE_SPEED);
-            //badguy.body.thrust(thrustSpeed);
-            badguy.animations.play('right');
-
-            rightWheel.enableMotor();
-            rightWheel.setMotorSpeed(-MOTOR_SPEED);
-
-            thruster1.body.angle = 90;
-            thruster2.body.angle = 90;
-            thruster1.body.thrust(thrustSpeed);
-            thruster2.body.thrust(thrustSpeed);
-        } else {
-            badguy.body.setZeroRotation();
-            badguy.animations.stop();
-            badguy.frame = 4;
-
-            thruster1.body.setZeroRotation();
-            thruster2.body.setZeroRotation();
-        }
-
-        if (wasd.up.isDown) {
-            shouldAnimateFire = true;
-            // badguy.body.angle = 0;
-            badguy.body.moveUp(MOVE_SPEED);
-            // badguy.body.thrust(thrustSpeed);
-
-            thruster1.body.angle = 0;
-            thruster1.body.thrust(thrustSpeed || THRUST_SPEED);
-            thruster2.body.angle = 0;
-            thruster2.body.thrust(thrustSpeed || THRUST_SPEED);
-        } else if (wasd.down.isDown) {
-            shouldAnimateFire = true;
-            // badguy.body.moveDown(MOVE_SPEED);
-            //badguy.body.angle = 180;
-            //badguy.body.reverse(thrustSpeed);
-
-            thruster1.body.angle = 180;
-            thruster1.body.thrust(thrustSpeed || THRUST_SPEED)
-            thruster2.body.angle = 180;
-            thruster2.body.thrust(thrustSpeed || THRUST_SPEED)
-        }
-
-        
-        fire1.angle = thruster1.angle;
-        fire2.angle = thruster2.angle;
-
-        var t1 = thruster1.getBounds(),
-            t2 = thruster2.getBounds();
-
-        fire1.x = t1.x;
-        fire1.y = t1.y + t1.height/2;
-        fire2.x = t2.x;
-        fire2.y = t2.y + t2.height/2;
-
-        if (shouldAnimateFire) {
-            fire1.animations.play('on');
-            fire2.animations.play('on');
-        } else {
-            fire1.animations.play('off');
-            fire2.animations.play('off');
-        }
-
-        var mouseX = game.input.activePointer.x + game.camera.x;
-        var mouseY = game.input.activePointer.y + game.camera.y;
-
-        mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
-
-        if (game.input.activePointer.isDown) {
-            if (selectedGun === ROCKET_LAUNCHER) {
-                if (game.time.now > lastFire + ROCKET_FIRE_RATE) {
-                    lastFire = game.time.now;
-                    var newR = game.add.existing(new Rocket(mgun.body.x, mgun.body.y, mgun));
-                }
-            } else if (selectedGun === MACHINEGUN) {
-                if (game.time.now > lastFire + MACHINE_FIRE_RATE) {
-                    lastFire = game.time.now;
-                    var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y, mgun));
-                }
-            }
-        }*/
 
     }
 
