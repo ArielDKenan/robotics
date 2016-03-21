@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = false;
+    robots.DEBUG_MODE = true;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -23,10 +23,11 @@ var mgun;
 
     robots.preload = function preload() {
 
-        game.load.tilemap('map', 'map/tilemap3.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map', 'map/tilemap4.json', null, Phaser.Tilemap.TILED_JSON);
 
         game.load.image('tileset', 'map/tileset.png');
         game.load.image('slanted', 'map/tileset-slanted.png');
+        game.load.image('slantless', 'map/slopes_shallow.png');
 
         game.load.image('hills', 'map/hills.png');
         game.load.image('stars', 'map/stars.png');
@@ -43,6 +44,7 @@ var mgun;
         game.load.image('body2', 'img/body2.png');
 
         game.load.image('star', 'assets/star.png');
+        game.load.image('mario_star', 'img/mario_star.png');
 
         game.load.spritesheet('explosion', 'img/explosion_h.png', 200, 150);
         game.load.spritesheet('fire', 'img/fire_anim.png', 64, 64);
@@ -55,8 +57,8 @@ var mgun;
         platforms, bullets, hills,
         cursors, wasd, pointer;
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
-        projectileCollisionGroup, projectileCollisionGroup2,
-        thrusterCollisionGroup, tilesCollisionGroup;
+        projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
+        tilesCollisionGroup, collectCollisionGroup;
     var constraint1, constraint2, constraint3;
     var ROCKET_LAUNCHER = 1,
         MACHINEGUN = 2,
@@ -69,7 +71,7 @@ var mgun;
     
     // todo: get rid of vars below
     var MAX_FORCE = 20000;
-    
+    var collectLayer;
     robots.create = function create() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -95,36 +97,41 @@ var mgun;
 
         var map = game.add.tilemap('map', 16, 16);
         map.addTilesetImage('tileset');
+        map.addTilesetImage('mario_star');
         map.addTilesetImage('slanted');
+        map.addTilesetImage('slantless');
         
         //  Create our layer
-        var layer = map.createLayer('Tile Layer 1'); // createLayer(0);
-        var layer2 = map.createLayer('Tile Layer 2');
+        var layer = map.createLayer('Tile Layer 1');
+        collectLayer = map.createLayer('Collect Layer');
 
         //  Resize the world
         layer.resizeWorld();
 
-        //  This isn't totally accurate, but it'll do for now
-        map.setCollisionBetween(0, 5, true, layer);
-        map.setCollisionByExclusion([0], true, 'Tile Layer 2');
-
         var tileObjects = game.physics.p2.convertTilemap(map, layer);
 
-        playerCollisionGroup = game.physics.p2.createCollisionGroup();
-        player2CollisionGroup = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup2 = game.physics.p2.createCollisionGroup();
-        gunCollisionGroup = game.physics.p2.createCollisionGroup();
-        wheelCollisionGroup = game.physics.p2.createCollisionGroup();
-        thrusterCollisionGroup = game.physics.p2.createCollisionGroup();
-        tilesCollisionGroup   = this.physics.p2.createCollisionGroup();
+        //  This isn't totally accurate, but it'll do for now
+        map.setCollisionBetween(0, 5, true, layer);
+        map.setCollision([45,46,47], true, collectLayer);
+
+        playerCollisionGroup        = game.physics.p2.createCollisionGroup();
+        player2CollisionGroup       = game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup    = game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup2   = game.physics.p2.createCollisionGroup();
+        gunCollisionGroup           = game.physics.p2.createCollisionGroup();
+        wheelCollisionGroup         = game.physics.p2.createCollisionGroup();
+        thrusterCollisionGroup      = game.physics.p2.createCollisionGroup();
+        tilesCollisionGroup         = this.physics.p2.createCollisionGroup();
+        collectCollisionGroup       = this.physics.p2.createCollisionGroup();
+
         game.physics.p2.updateBoundsCollisionGroup();
 
-        robots.playerCollisionGroup = playerCollisionGroup;
-        robots.player2CollisionGroup = player2CollisionGroup;
-        robots.tilesCollisionGroup = tilesCollisionGroup;
-        robots.projectileCollisionGroup = projectileCollisionGroup;
-        robots.projectileCollisionGroup2 = projectileCollisionGroup2;
+        robots.playerCollisionGroup         = playerCollisionGroup;
+        robots.player2CollisionGroup        = player2CollisionGroup;
+        robots.tilesCollisionGroup          = tilesCollisionGroup;
+        robots.projectileCollisionGroup     = projectileCollisionGroup;
+        robots.projectileCollisionGroup2    = projectileCollisionGroup2;
+        robots.collectCollisionGroup        = collectCollisionGroup;
         // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
         //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
 
@@ -146,14 +153,32 @@ var mgun;
             kyle.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         });
 
-        var stars = game.add.group();
+        /*var stars = game.add.group();
         stars.enableBody = true;
         stars.physicsBodyType = Phaser.Physics.P2JS;
-        // map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);
+        map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);*/
+
+        var starObjects = game.physics.p2.convertTilemap(map, collectLayer);
+        console.log(starObjects[0]);
+        starObjects.forEach(function (s) {
+            s.setCollisionGroup(collectCollisionGroup);
+            s.collides([playerCollisionGroup, player2CollisionGroup], function(a,b){
+                //console.log(a);
+                //game.physics.p2.removeBody(a);
+            }, s);
+            // s.animations.add('die', [0], 10, false);
+            // s.animations.play('die', null, false, true);
+        });
         
+        
+        /*tileObjects.forEach(function (t) {
+            t.setCollisionGroup(tilesCollisionGroup);
+            t.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
+        });*/
+        tileObjects = game.physics.p2.convertTilemap(map, layer);
+        robots.log(tileObjects.length);
         for (var i = 0; i < tileObjects.length; i++) {
             var tileBody = tileObjects[i];
-            robots.log(tileBody);
             tileBody.setCollisionGroup(tilesCollisionGroup);
             tileBody.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         }

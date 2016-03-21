@@ -18,13 +18,17 @@ parts = {};
         var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
         var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
 
-        robots.log(spriteName + ': ' + x + ', ' + y);
+        //robots.log(spriteName + ': ' + x + ', ' + y);
         
         Phaser.Sprite.call(this, game, x, y, spriteName);
         this.scale.setTo(scale.x, scale.y);
 
         this.collisionGroup = robots.playerCollisionGroup;
         this.collidesWith = [robots.player2CollisionGroup, robots.tilesCollisionGroup, robots.projectileCollisionGroup2];
+        this.collectCallback = function (player, star) {
+            //star.destroy();
+            robots.log('got one');
+        };
         //this.collisionGroup = parts.playerCollisionGroup || 
         //    (parts.playerCollisionGroup = game.physics.p2.createCollisionGroup());
         this.max_force = 2000;
@@ -53,8 +57,11 @@ parts = {};
         this.body.mass = .5;
         this.body.damping = .2;
         this.body.data.gravityScale = 1;
+
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
+        this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
+
         this.body.collideWorldBounds = false;
         this.body.outOfBoundsKill = true;
     };
@@ -82,8 +89,7 @@ parts = {};
             }
 
             if (robots.cursors.right.isDown) {
-                this.body.rotateRight(90);
-                robots.log('stuff');
+                //this.body.rotateRight(90);
             }
             if (shouldAnim) this.fire.animations.play('on');
             else this.fire.animations.play('off');
@@ -97,6 +103,7 @@ parts = {};
         this.body.data.gravityScale = 1;
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
+        this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
 
         this.group = this.game.add.group(this);
         this.fire = this.group.create(-this.width, this.height/2, 'fire');
@@ -146,6 +153,7 @@ parts = {};
         this.body.setCircle(18);
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
+        this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
 
         var cx = (position.x - bodyPos.x) * PART_WIDTH/2;
         var cy = (position.y - bodyPos.y) * PART_HEIGHT/2;
@@ -194,6 +202,7 @@ parts = {};
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
+        this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
 
         var cx = (bodyPos.x - position.x) * PART_WIDTH/2;
         var cy = (bodyPos.y - position.y) * PART_HEIGHT/2;
