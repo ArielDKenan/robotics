@@ -8,6 +8,7 @@ parts = {};
 
 	var STARTING_X = 300, STARTING_Y = 0,
 		PART_WIDTH = 45,  PART_HEIGHT = 45;
+    var DAMPING_FACTOR = .5;
 
     var cursors;
 
@@ -85,7 +86,7 @@ parts = {};
         this.body.setCircle(25);
         this.body.fixedRotation = false;
         this.body.mass = .5;
-        this.body.damping = .2;
+        this.body.damping = DAMPING_FACTOR;
         this.body.data.gravityScale = 1;
 
         this.body.setCollisionGroup(this.collisionGroup);
@@ -102,7 +103,7 @@ parts = {};
 
     var Thruster = function(position, body, bodyPos, options) {
         this.playerBody = body;
-        this.fixed = options.fixed || false;
+        this.fixed = options ? options.fixed : false;
 
         var size = { height: 1, width: 1 };
         var scale = { x: .25, y: .25 };
@@ -114,11 +115,11 @@ parts = {};
             //cursors = cursors || game.input.keyboard.createCursorKeys();
             var shouldAnim = false;
             
-            if (robots.cursors.up.isDown) { //|| robots.wasd.up.isDown) {
+            if (robots.cursors.up.isDown|| robots.wasd.up.isDown) {
                 this.body.angle = this.fixed ? this.playerBody.angle : 0;
                 this.body.thrust(this.axe);
                 shouldAnim = true;
-            } else if (robots.cursors.down.isDown) { //|| robots.wasd.down.isDown) {
+            } else if (robots.cursors.down.isDown|| robots.wasd.down.isDown) {
                 this.body.angle = this.fixed ? this.playerBody.angle + 180 : 180;
                 this.body.thrust(this.axe);
                 shouldAnim = true;
@@ -146,6 +147,7 @@ parts = {};
 
         this.body.mass = .5;
         this.body.data.gravityScale = 1;
+        this.body.damping = DAMPING_FACTOR;
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
         this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
@@ -170,16 +172,16 @@ parts = {};
         var size = { height: 1, width: 1 };
         var scale = { x: .04, y: .04 };
 
-        this.options = options;
-        this.motor_speed = 30;
+        this.options = options ? options : { movesRight: true, movesLeft: true };
+        this.motor_speed = 20;
 
         this.updateCallback = function () {
-            if (robots.cursors.right.isDown) { //|| robots.wasd.right.isDown) {
+            if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
                 if (this.options.movesRight) {
                     this.constraint.enableMotor();
                     this.constraint.setMotorSpeed(-this.motor_speed);
                 }
-            } else if (robots.cursors.left.isDown) {// || robots.wasd.left.isDown) {
+            } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
                 if (this.options.movesLeft) {
                     this.constraint.enableMotor();
                     this.constraint.setMotorSpeed(this.motor_speed);
@@ -194,6 +196,7 @@ parts = {};
         game.physics.p2.enable(this, robots.DEBUG_MODE);
 
         this.body.mass = 1;
+        this.body.damping = DAMPING_FACTOR;
         this.body.setCircle(18);
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);
@@ -214,7 +217,7 @@ parts = {};
         var scale = { x: .2, y: .2 };
 
         this.lastFire = 0;
-        this.projectileType = options.projectileType;
+        this.projectileType = options ? options.projectileType : parts.ROCKET_TYPE;
         if (this.projectileType === parts.BULLET_TYPE) this.fireRate = 80;
         if (this.projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
 
@@ -244,6 +247,7 @@ parts = {};
         game.physics.p2.enable(this, robots.DEBUG_MODE);
 
         this.body.mass = 1.5;
+        this.body.damping = DAMPING_FACTOR;
         this.body.data.gravityScale = 0;
         this.body.setCollisionGroup(this.collisionGroup);
         this.body.collides(this.collidesWith);

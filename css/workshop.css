@@ -11,34 +11,32 @@ body {
 
 .left-container {
     border: 1px solid darkorange;
-    height: 620px;
-    width: 300px;
+    height: 346px;
+    width: 330px;
     display: inline-block;
     background-color: peachpuff;
 }
 
 .right-container {
     border: 1px solid darkorange;
-    height: 620px;
-    width: 300px;
+    height: 346px;
+    width: 330px;
     display: inline-block;
     background-color: peachpuff;
 }
 
 .grid-square {
-    border: 1px solid lime;
     background-color: white;//#3d3644;
-    width: 94px;
-    height: 94px;
+    width: 64px;
+    height: 64px;
     padding: 0;
     margin: 1px;
     display: inline-block;
 }
 
 .part-thumb {
-    border: 1px solid black;
-    width: 94px;
-    height: 94px;
+    width: 64px;
+    height: 64px;
     padding: 0;
     margin: 1px;
     display: inline-block;
@@ -52,12 +50,23 @@ body {
     background-image: url('../img/kirby_wheel.png');
 }
 
+.rpg {
+    background-image: url('../img/rpg.png');
+}
+
 .machine-gun {
     background-image: url('../img/machinegun.png');
 }
 
 .body1 {
     background-image: url('../img/body1.png');
+}
+
+.body2 {
+    background-image: url('../img/body2.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .thruster {
