@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = true;
+    robots.DEBUG_MODE = false;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -282,7 +282,17 @@ var mgun;
         };
         robots.wasd = wasd;
 
-        var bodyPos = { x: 1, y: 1 };
+        var playBot = [
+            { type: parts.GUN_TYPE, position: { x: 0, y: -1 }, options: { projectileType: parts.ROCKET_TYPE } },
+            //{ type: parts.WHEEL_TYPE, position: { x: 0, y: 2 }, options: { movesRight: true } }
+            //{ type: parts.WHEEL_TYPE, position: { x: 1, y: 2 }, options: { movesLeft: true } },
+            { type: parts.THRUSTER_TYPE, position: { x: -1, y: 0 }, options: { fixed: true } },
+            //{ type: parts.THRUSTER_TYPE, position: { x: 2, y: 0 }, options: { fixed: true } }
+        ];
+
+        //var player = parts.buildABot(playBot);
+
+        /*var bodyPos = { x: 1, y: 1 };
         var b = game.add.existing(new parts.Body1(bodyPos));
         var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
         var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
@@ -290,9 +300,10 @@ var mgun;
         var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
         var w4 = game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
         //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
-        var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos));
-        var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos));
-        //game.camera.follow(b);
+        var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
+        var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
+
+        game.camera.follow(badguy);
 
     };
 
