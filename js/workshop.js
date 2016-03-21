@@ -102,6 +102,10 @@ workshop = {};
             localStorage.setItem('useDefault', 'true');
             document.location.href = '/robots';
         });
+
+        $('.reset-btn').on('click', function (){
+            location.reload();
+        })
     }
 })(workshop);
 

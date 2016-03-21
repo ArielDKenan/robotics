@@ -1,32 +1,85 @@
 body {
-    background: skyblue;
+    background-image: url(../img/background.jpg);
     font-family: 'Roboto Mono', sans-serif;
     text-transform: uppercase;
+}
+h2{
+    color: white;
 }
 
 .main-container {
     text-align: center;
     margin-top: 30px;
+
+}
+.btn-box{
+    border: 2px solid black;
+    width: 485px;
+    height: 45px;
+    margin-left: 1147px;
+    background-color: lightblue;
+    text-align: center;
+    position: absolute;
+    border-radius: 6px;
 }
 
-.left-container {
-    border: 1px solid darkorange;
-    height: 346px;
-    width: 330px;
+.btn{
+    width: 140px;
+    height: 35px;
+    background-color: coral;
+    border: 2px solid darkslategrey;
     display: inline-block;
-    background-color: peachpuff;
+    margin-top: 3px;
+    border-radius: 3px;
+
+}
+
+
+.left-container {
+    border: 11px solid darkgray;
+    height: 381px;
+    width: 366px;
+    padding-top: 3px;
+    display: inline-block;
+    background-color: transparent;
+    float: left;
+    margin-top: 80px;
+    margin-left: 60px;
+}
+.title{
+margin-top: -20px;
+font-weight: 100;
+    color: white;
 }
 
 .right-container {
-    border: 1px solid darkorange;
-    height: 346px;
-    width: 330px;
+    border: 5px solid dimgrey;
+    height: 620px;
+    width: 922px;
     display: inline-block;
-    background-color: peachpuff;
+    background-color: lightcyan;
+    float: right;
+    margin-right: 50px;
+    margin-top: 80px;
+}
+
+.item-container{
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    margin: 11px;
+    -webkit-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
+    -moz-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
+    box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
+    border-radius: 30px 30px 30px 30px;
+border-radius: 10px 10px 10px 10px;
+-moz-border-radius: 10px 10px 10px 10px;
+-webkit-border-radius: 10px 10px 10px 10px;
+border: 0px solid #000000;
 }
 
 .grid-square {
-    background-color: white;//#3d3644;
+    background-color: darkgrey;//#3d3644;
     width: 64px;
     height: 64px;
     padding: 0;
@@ -35,12 +88,20 @@ body {
 }
 
 .part-thumb {
-    width: 64px;
-    height: 64px;
-    padding: 0;
-    margin: 1px;
+    width: 90px;
+    height: 90px;
+    margin: 0px;
     display: inline-block;
-    //background-color: white;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.empty-thumb{
+    width: 90px;
+    height: 90px;
+    margin: 0px;
+    display: inline-block;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
