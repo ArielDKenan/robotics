@@ -23,7 +23,7 @@ var mgun;
 
     robots.preload = function preload() {
 
-        game.load.tilemap('map', 'map/tilemap4.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map', 'map/tilemap5.json', null, Phaser.Tilemap.TILED_JSON);
 
         game.load.image('tileset', 'map/tileset.png');
         game.load.image('slanted', 'map/tileset-slanted.png');
