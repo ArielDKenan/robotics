@@ -7,7 +7,7 @@ var mgun;
 
     robots = robots || {};
 
-    robots.DEBUG_MODE = false;
+    robots.DEBUG_MODE = true;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
@@ -71,16 +71,72 @@ var mgun;
     
     // todo: get rid of vars below
     var MAX_FORCE = 20000;
-    var collectLayer;
+    
     robots.create = function create() {
 
-        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
         game.physics.p2.gravity.y = 1500;
         game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
         game.physics.p2.friction = 100;
 
+        setAllCollisionGroups();
+        buildMap();
+
+        //game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+        //game.physics.p2.setBounds(0, 0, 800, 640, true, true, true, false);
+
+        /*  The platforms group contains the ground and the ledges
+        platforms = game.add.group();
+        platforms.enableBody = true;
+
+        // Here we create the ground.
+        var ground = platforms.create(0, game.world.height - 8, 'ground');
+        ground.scale.setTo(3, .2);
+        ground.body.immovable = false;*/
+
+        //buildOldBot();
+
+        cursors = game.input.keyboard.createCursorKeys();
+        cursors.space = game.input.keyboard.addKey(32);
+        robots.cursors = cursors;
+
+        wasd = {
+            up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+            down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+            left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
+        robots.wasd = wasd;
+
+        var playBot = [
+            { type: parts.GUN_TYPE, position: { x: 2, y: 0 }, options: { projectileType: parts.ROCKET_TYPE } },
+            { type: parts.WHEEL_TYPE, position: { x: 0, y: 4 }, options: { movesRight: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 3, y: 4 }, options: { movesLeft: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 1, y: 4 }, options: { movesLeft: true } },
+            { type: parts.WHEEL_TYPE, position: { x: 2, y: 4 }, options: { movesLeft: true } },
+            { type: parts.THRUSTER_TYPE, position: { x: 0, y: 1 }, options: { fixed: true } },
+            { type: parts.THRUSTER_TYPE, position: { x: 3, y: 1 }, options: { fixed: true } }
+        ];
+
+        var player = parts.buildABot(playBot);
+
+        /*var bodyPos = { x: 1, y: 1 };
+        var b = game.add.existing(new parts.Body1(bodyPos));
+        var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
+        var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
+        var w4 = game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
+        //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
+        var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
+        var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
+
+        game.camera.follow(player);
+
+    };
+
+    function buildMap() {
         game.stage.backgroundColor = '#2d2d2d';
 
         var sky = game.add.sprite(0, 0, 'sky');
@@ -103,48 +159,15 @@ var mgun;
         
         //  Create our layer
         var layer = map.createLayer('Tile Layer 1');
-        collectLayer = map.createLayer('Collect Layer');
+        var collectLayer = map.createLayer('Collect Layer');
 
         //  Resize the world
         layer.resizeWorld();
 
         var tileObjects = game.physics.p2.convertTilemap(map, layer);
 
-        //  This isn't totally accurate, but it'll do for now
         map.setCollisionBetween(0, 5, true, layer);
         map.setCollision([45,46,47], true, collectLayer);
-
-        playerCollisionGroup        = game.physics.p2.createCollisionGroup();
-        player2CollisionGroup       = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup    = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup2   = game.physics.p2.createCollisionGroup();
-        gunCollisionGroup           = game.physics.p2.createCollisionGroup();
-        wheelCollisionGroup         = game.physics.p2.createCollisionGroup();
-        thrusterCollisionGroup      = game.physics.p2.createCollisionGroup();
-        tilesCollisionGroup         = this.physics.p2.createCollisionGroup();
-        collectCollisionGroup       = this.physics.p2.createCollisionGroup();
-
-        game.physics.p2.updateBoundsCollisionGroup();
-
-        robots.playerCollisionGroup         = playerCollisionGroup;
-        robots.player2CollisionGroup        = player2CollisionGroup;
-        robots.tilesCollisionGroup          = tilesCollisionGroup;
-        robots.projectileCollisionGroup     = projectileCollisionGroup;
-        robots.projectileCollisionGroup2    = projectileCollisionGroup2;
-        robots.collectCollisionGroup        = collectCollisionGroup;
-        // game.physics.p2.setBoundsToWorld(true, true, true, true, true);
-        //game.physics.p2.setBounds(0, 0, 800, 600, true, true, true, true);
-
-        /*
-
-        //  The platforms group contains the ground and the ledges
-        platforms = game.add.group();
-        platforms.enableBody = true;
-
-        // Here we create the ground.
-        var ground = platforms.create(0, game.world.height - 8, 'ground');
-        ground.scale.setTo(3, .2);
-        ground.body.immovable = false;*/
 
         var slantedTiles = game.physics.p2.convertCollisionObjects(map, "Object Layer 1");
 
@@ -182,7 +205,30 @@ var mgun;
             tileBody.setCollisionGroup(tilesCollisionGroup);
             tileBody.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         }
+    }
 
+    function setAllCollisionGroups() {
+        playerCollisionGroup        = game.physics.p2.createCollisionGroup();
+        player2CollisionGroup       = game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup    = game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup2   = game.physics.p2.createCollisionGroup();
+        gunCollisionGroup           = game.physics.p2.createCollisionGroup();
+        wheelCollisionGroup         = game.physics.p2.createCollisionGroup();
+        thrusterCollisionGroup      = game.physics.p2.createCollisionGroup();
+        tilesCollisionGroup         = game.physics.p2.createCollisionGroup();
+        collectCollisionGroup       = game.physics.p2.createCollisionGroup();
+
+        game.physics.p2.updateBoundsCollisionGroup();
+
+        robots.playerCollisionGroup         = playerCollisionGroup;
+        robots.player2CollisionGroup        = player2CollisionGroup;
+        robots.tilesCollisionGroup          = tilesCollisionGroup;
+        robots.projectileCollisionGroup     = projectileCollisionGroup;
+        robots.projectileCollisionGroup2    = projectileCollisionGroup2;
+        robots.collectCollisionGroup        = collectCollisionGroup;
+    }
+
+    function buildOldBot () {
         fire1 = game.add.sprite(270, game.world.height - 140 - 300, 'fire');
         fire2 = game.add.sprite(330, game.world.height - 140 - 300, 'fire');
         fire1.scale.setTo(.7);
@@ -266,46 +312,7 @@ var mgun;
             badguy.height/2], wheel1, [0, 0], MAX_FORCE);
         rightWheel = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
             badguy.height/2], wheel2, [0, 0], MAX_FORCE);
-        // Phaser.Physics.P2.addConstraint(constraint)
-        //constraint2.enableMotor();
-        //constraint3.enableMotor();
-
-        cursors = game.input.keyboard.createCursorKeys();
-        cursors.space = game.input.keyboard.addKey(32);
-        robots.cursors = cursors;
-
-        wasd = {
-            up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-            down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-            left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-        };
-        robots.wasd = wasd;
-
-        var playBot = [
-            { type: parts.GUN_TYPE, position: { x: 0, y: -1 }, options: { projectileType: parts.ROCKET_TYPE } },
-            //{ type: parts.WHEEL_TYPE, position: { x: 0, y: 2 }, options: { movesRight: true } }
-            //{ type: parts.WHEEL_TYPE, position: { x: 1, y: 2 }, options: { movesLeft: true } },
-            { type: parts.THRUSTER_TYPE, position: { x: -1, y: 0 }, options: { fixed: true } },
-            //{ type: parts.THRUSTER_TYPE, position: { x: 2, y: 0 }, options: { fixed: true } }
-        ];
-
-        //var player = parts.buildABot(playBot);
-
-        /*var bodyPos = { x: 1, y: 1 };
-        var b = game.add.existing(new parts.Body1(bodyPos));
-        var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
-        var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
-        var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
-        var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
-        var w4 = game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
-        //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
-        var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
-        var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
-
-        game.camera.follow(badguy);
-
-    };
+    }
 
     var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
         this._acceleration = 0;
@@ -398,7 +405,7 @@ var mgun;
         hills.tilePosition.set(game.camera.x * -0.4, game.camera.y * -0.4)
 
         // badguy.body.setZeroVelocity();
-        var thrustSpeed = 0;
+        /*var thrustSpeed = 0;
         var shouldAnimateFire = false;
         leftWheel.setMotorSpeed(0);
         rightWheel.setMotorSpeed(0);
@@ -520,7 +527,7 @@ var mgun;
                     var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y, mgun));
                 }
             }
-        }
+        }*/
 
     }
 

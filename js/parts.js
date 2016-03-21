@@ -22,11 +22,14 @@ parts = {};
     function calcCXY(body1, body2) {
         var cx = (body2.x - body1.x) * PART_WIDTH/2;
         var cy = (body2.y - body1.y) * PART_HEIGHT/2;
+        if (cx !== cx || cy !== cy) {
+            throw new Error("failed to calculate something that would have prevented you wasting a lot of time");
+        }
         return { cx: cx, cy: cy };
     }
 
     parts.buildABot = function (partList) {
-        var b = game.add.existing(new parts.Body1({x:0, y:0}));
+        var b = game.add.existing(new parts.Body1({x:1, y:1}));
 
         partList.forEach(function (p) {
             var construct;
@@ -35,7 +38,7 @@ parts = {};
             else if (p.type === parts.WHEEL_TYPE) construct = Wheel;
             else if (p.type === parts.THRUSTER_TYPE) construct = Thruster;
 
-            game.add.existing(new construct(p.position, b, [0,0], p.options));
+            game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options));
         });
 
         return b;
