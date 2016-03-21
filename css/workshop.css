@@ -1,5 +1,6 @@
 body {
     background-image: url(../img/background.jpg);
+    //background-color: #3399BB;
     font-family: 'Roboto Mono', sans-serif;
     text-transform: uppercase;
 }
@@ -7,20 +8,27 @@ h1{
     color: white;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .main-container {
     text-align: center;
     margin-top: 30px;
-
 }
+
 .btn-box{
     border: 2px solid black;
     width: 485px;
     height: 45px;
-    margin-left: 800px;
     background-color: lightblue;
     text-align: center;
-    position: absolute;
+    position: relative;
     border-radius: 6px;
+    z-index: 10;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: block;
 }
 
 .btn{
@@ -36,43 +44,45 @@ h1{
 
 
 .left-container {
-    border: 15px solid darkgray;
-    height: 381px;
+    border: 8px solid black;
+    border-radius: 14px;
+    height: 356px;
     width: 366px;
-    padding-top: 3px;
+    padding-top: 13px;
     display: inline-block;
     background-color: transparent;
-    float: left;
-    margin-top: 80px;
-    margin-left: 60px;
+    background-color: rgba(0,0,0,.6);
+    //margin-top: 80px;
+    //margin-left: 60px;
 }
-.title{
-margin-top: -20px;
-font-weight: 100;
+
+.title {
+    //margin-top: -20px;
+    font-weight: 100;
     color: white;
+    display: inline-block;
 }
 
 .right-container {
     border: 5px solid dimgrey;
-    height: 492px;
-    width: 790px;
+    height: 400px;
+    width: 460px;
     display: inline-block;
     background-color: lightcyan;
-    float: right;
-    margin-right: 50px;
-    margin-top: 80px;
+    //margin-right: 50px;
+    padding-top: 20px;
 
 }
 
-.item-container{
+.item-container {
     display: inline-block;
-    height: 100px;
-    width: 100px;
-    margin: 11px;
-    padding: 2px;
-    -webkit-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
-    -moz-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
-    box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,1);
+    height: 90px;
+    width: 90px;
+    //margin: 11px;
+    margin-top: 4px;
+    -webkit-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
+    -moz-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
+    box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
     border-radius: 30px 30px 30px 30px;
 border-radius: 10px 10px 10px 10px;
 -moz-border-radius: 10px 10px 10px 10px;
@@ -90,13 +100,14 @@ border: 0px solid #000000;
 }
 
 .part-thumb {
-    width: 75px;
-    height: 75px;
+    width: 62px;
+    height: 62px;
     margin: 0px;
     display: inline-block;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 .empty-thumb{

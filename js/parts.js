@@ -75,6 +75,19 @@ parts = {};
         }
     };
 
+    Part.prototype.touchingDown = function touchingDown(someone) {
+        var yAxis = game.physics.p2.vec2.fromValues(0, 1);
+        var result = false;
+        for (var i = 0; i < game.physics.p2.world.narrowphase.contactEquations.length; i++) {
+            var c = game.physics.p2.world.narrowphase.contactEquations[i];  // cycles through all the contactEquations until it finds our "someone"
+            if (c.bodyA === someone.body.data || c.bodyB === someone.body.data)        {
+                var d = p2.vec2.dot(c.normalA, yAxis); // Normal dot Y-axis
+                if (c.bodyA === someone.body.data) d *= -1;
+                if (d > 0.5) result = true;
+            }
+        } return result;
+    }
+
     var Body1 = function(position) {
         var size = { height: 2, width: 2 };
         var scale = { x: .1, y: .1 };
