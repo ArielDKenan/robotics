@@ -540,6 +540,7 @@ var mgun;
 
     }
 
+    // most of these no longer needed:
     var MOVE_SPEED = 0,
         MOTOR_SPEED = 20,
         THRUST_SPEED = 10000,
