@@ -25,11 +25,14 @@ workshop = {};
     workshop.partList = partList;
 
     workshop.init = function () {
+
         var $cont = $('.parts-holder');
         for (var ctr=0; ctr<25; ctr++) {
             $div = $('<div>');
             $div.addClass('grid-square');
             $div.attr('id', ctr);
+            $cont.append($div);
+
             if (ctr===12)  {
                 $div.addClass('body2');
             } else {
@@ -40,6 +43,7 @@ workshop = {};
                         $(this).droppable('disable');
                         $d = $(ui.draggable);
                         $d.draggable('disable');
+
                         var partType;
                         if ($d.hasClass('machine-gun') || $d.hasClass('rpg')) {
                             partType = GUN_TYPE;
@@ -48,6 +52,7 @@ workshop = {};
                         } else if ($d.hasClass('thruster')) {
                             partType = THRUSTER_TYPE;
                         }
+
                         var id = $(this).attr('id');
                         var x = id % 5;
                         var y = parseInt(id/5);
@@ -56,7 +61,7 @@ workshop = {};
                     }
                 });
             }
-            $cont.append($div);         
+        
         }
 
         $cont = $('.right-container');
@@ -73,12 +78,12 @@ workshop = {};
             localStorage.setItem('useDefault', 'false');
             jsonList = JSON.stringify(partList);
             localStorage.setItem('partList', jsonList);
-            document.location.href = '/robotics';
+            document.location.href = './arena.html';
         });
 
         $('.default-btn').on('click', function () {
             localStorage.setItem('useDefault', 'true');
-            document.location.href = '/robotics';
+            document.location.href = './arena.html';
         });
 
         $('.reset-btn').on('click', function (){

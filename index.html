@@ -1,33 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
 
-<!doctype html> 
-<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <title>Robotics - Workshop</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+    <link href="css/workshop.css" rel="stylesheet" type="text/css">
+    <link href="css/jquery-ui.min.css" rel="stylesheet" type="text/css">
 
-<head> 
-
-    <meta charset="UTF-8" />
-
-    <title>ROBOTS SHALL INHERIT THE EARTH</title>
-
-    <script src="http://cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
-    <!--<script src="js/phaser.min.js"></script>-->
-
-    <style type="text/css">
-        body { margin: 0; }
-    </style>
-
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="js/workshop.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
 </head>
 
 <body>
 
-<script src="js/parts.js"></script>
-<script src="js/robots.js"></script>
+<div class="main-container">
 
-<script type="text/javascript">
-	parts.init();
-	//robots.init();
-	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'Robotics', robots);
-</script>
+    <h1>WORKSHOP</h1>
+
+    
+
+    <div class="left-container">
+        <div class="parts-holder"></div>
+    </div>
+
+    <div class="right-container">
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="true">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">RPG</div>
+            <div class="part-thumb rpg">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">RPG</div>
+            <div class="part-thumb rpg">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">CHAINGUN</div>
+            <div class="part-thumb machine-gun">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">CHAINGUN</div>
+            <div class="part-thumb machine-gun">
+                
+            </div>
+        </div>
+        <!--<div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+       <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+        <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+        <div class="part-thumb rpg" style="opacity: 0;">ROCKETS</div>
+        <div class="part-thumb machine-gun" style="opacity: 0;">BULLETS</div>-->
+    </div>
+    <div style="width: 100%; text-align: center; position: relative;">
+        <div style="width: 100%; display: inline-block;"></div>
+        <div class="btn-box" style="position: relative; display: inline-block;">
+            <div class="btn save-btn clickable">DEPLOY BOT</div>
+            <div class="btn default-btn clickable">USE DEFAULT</div>
+            <div class="btn reset-btn clickable">START OVER</div>
+        </div>
+        <div style="width: 100%; display: inline-block;"></div>
+    </div>
+</div>
+<footer>
+
+
+
+</footer>
 
 </body>
-
 </html>

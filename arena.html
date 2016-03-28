@@ -1,0 +1,32 @@
+
+<!doctype html> 
+<html lang="en"> 
+
+<head> 
+
+    <meta charset="UTF-8" />
+
+    <title>ROBOTS SHALL INHERIT THE EARTH</title>
+
+    <script src="http://cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
+    <!--<script src="js/phaser.min.js"></script>-->
+
+    <style type="text/css">
+        body { margin: 0; }
+    </style>
+
+</head>
+
+<body>
+
+<script src="js/parts.js"></script>
+<script src="js/robots.js"></script>
+
+<script type="text/javascript">
+	parts.init();
+	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'Robotics', robots);
+</script>
+
+</body>
+
+</html>
