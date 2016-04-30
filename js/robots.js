@@ -1,6 +1,6 @@
 
-robots = {};
-var mgun;
+var robots = robots || {};
+
 (function (robots) {
 
     'use strict';
@@ -11,7 +11,7 @@ var mgun;
 
     robots.log = function (msg) {
         if (robots.DEBUG_MODE) {
-            console.log('ROBOT DEBUG: ' + msg);
+            console.debug('ROBOT DEBUG: ' + msg);
         }
     }
 
@@ -23,7 +23,7 @@ var mgun;
 
     robots.preload = function preload() {
 
-        game.load.tilemap('map', 'map/tilemap5.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map', 'map/tilemap6.json', null, Phaser.Tilemap.TILED_JSON);
 
         game.load.image('tileset', 'map/tileset.png');
         game.load.image('slanted', 'map/tileset-slanted.png');
@@ -53,7 +53,7 @@ var mgun;
 
     };
 
-    var badguy, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
+    var badguy, mgun, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
         platforms, bullets, hills,
         cursors, wasd, pointer;
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
@@ -366,12 +366,6 @@ var mgun;
                 thruster1.body.thrust(thrustSpeed);
                 thruster2.body.thrust(thrustSpeed);
             } else if (wasd.right.isDown) {
-                //badguy.body.rotateRight(180);
-                //badguy.body.angle = 90;
-                //badguy.body.moveRight(MOVE_SPEED);
-                //badguy.body.thrust(thrustSpeed);
-                badguy.animations.play('right');
-
                 rightWheel.enableMotor();
                 rightWheel.setMotorSpeed(-MOTOR_SPEED);
 
@@ -449,89 +443,6 @@ var mgun;
                 }
             }
         }
-
-    }
-
-    var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
-
-        this._acceleration = 0;
-        this._speed = 0;
-        this.collideCallback = this.collideCallback || function (a, b) { a.destroy(); };
-
-        Phaser.Sprite.call(this, game, x, y, sprite);
-        this.scale.setTo(scale[0], scale[1]);
-        //Phaser.SpriteBatch.call(this, game, bullets, 'bullet', true)
-        //this.bully = bullets.getFirstDead.call(this);
-        //this.bully.reset(x, y);
-        //game.physics.p2.
-
-        this.anchor.setTo(.5, .5);
-
-        game.physics.p2.enable(this, robots.DEBUG_MODE);
-        this.body.data.gravityScale = 0;
-
-        this.body.setCollisionGroup(mainPlayer ? projectileCollisionGroup : projectileCollisionGroup2);
-        this.body.collides([tilesCollisionGroup, (!mainPlayer ? playerCollisionGroup : player2CollisionGroup)], this.collideCallback, this);
-        this.body.collideWorldBounds = false;
-        this.body.outOfBoundsKill = true;
-
-        this.body.maintainAngle = gun.body.angle - 90;
-        this.body.angle = this.body.maintainAngle;
-        this.fixedRotate = true;
-
-    };
-
-    Projectile.prototype = Object.create(Phaser.Sprite.prototype);
-    Projectile.prototype.constructor = Projectile;
-
-    Projectile.prototype.update = function() {
-
-        if (this.body) {
-            if (this.fixedRotate) this.body.angle = this.body.maintainAngle;
-            if (this._speed) this.body.moveBackward(this._speed);
-            this.body.reverse(this._acceleration);
-        } else if (this.destroy) {
-            this.destroy();
-        }
-
-    }
-
-    var Rocket = function (x, y, gun, mainPlayer) {
-
-        this.collideCallback = missleHit;
-        Projectile.call(this, x, y, 'rocket', gun, [.15, .1], mainPlayer);
-        //this.scale.setTo(.15, .1);
-        //this.body.setCircle(15);
-        this._acceleration = 1000;
-        this.body.moveBackward(50);
-
-    }
-    robots.Rocket = Rocket;
-
-    Rocket.prototype = Object.create(Projectile.prototype);
-    Rocket.prototype.constructor = Rocket;
-
-    var Bullet = function (x, y, gun, mainPlayer) {
-
-        Projectile.call(this, x, y, 'bullet', gun, [.34, .34], mainPlayer);
-        //this.scale.setTo(.34, .34);
-        this._speed = 2000;
-        //this._acceleration = 1200;
-
-    }
-    robots.Bullet = Bullet;
-
-    Bullet.prototype = Object.create(Projectile.prototype);
-    Bullet.prototype.constructor = Bullet;
-
-    function missleHit(missile) {
-
-        var exp = game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
-        exp.scale.setTo(.5);
-        exp.animations.add('boom', [0,1,2,3,4,5], 20, false);
-        exp.animations.play('boom', null, false, true);
-        robots.log('hit!');
-        missile.destroy();
 
     }
 

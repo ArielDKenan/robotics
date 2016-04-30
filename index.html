@@ -1,33 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
 
-<!doctype html> 
-<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <title>Robotics - Workshop</title>
 
-<head> 
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+    <link href="css/workshop.css" rel="stylesheet" type="text/css">
+    <link href="css/jquery-ui.min.css" rel="stylesheet" type="text/css">
 
-    <meta charset="UTF-8" />
-
-    <title>ROBOTS SHALL INHERIT THE EARTH</title>
-
-    <script src="http://cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
-    <!--<script src="js/phaser.min.js"></script>-->
-
-    <style type="text/css">
-        body { margin: 0; }
-    </style>
-
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="js/workshop.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
 </head>
 
 <body>
 
-<script src="js/parts.js"></script>
-<script src="js/robots.js"></script>
-
-<script type="text/javascript">
-	parts.init();
-	//robots.init();
-	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'Robotics', robots);
-</script>
+    <div class="main-container">
+        <h2>penis</h2>
+        <div class="left-container"></div>
+        <div class="right-container">
+            <div class="part-thumb wheel">left</div>
+            <div class="part-thumb wheel">left</div>
+            <div class="part-thumb wheel">neutral</div>
+            <div class="part-thumb wheel">neutral</div>
+            <br><br>
+            <div class="part-thumb wheel">right</div>
+            <div class="part-thumb wheel">right</div>
+            <div class="part-thumb thruster" data-fixed="true">FIXED</div>
+            <div class="part-thumb thruster" data-fixed="true">FIXED</div>
+            <br><br>
+            <div class="part-thumb thruster" data-fixed="false">PIVOTS</div>
+            <div class="part-thumb thruster" data-fixed="false">PIVOTS</div>
+            <div class="part-thumb rpg">ROCKETS</div>
+            <div class="part-thumb machine-gun">BULLETS</div>
+            <br><br>
+            <div class="part-thumb rpg">ROCKETS</div>
+            <div class="part-thumb machine-gun">BULLETS</div>
+            <br>
+            <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+            <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+            <div class="part-thumb rpg" style="opacity: 0;">ROCKETS</div>
+            <div class="part-thumb machine-gun" style="opacity: 0;">BULLETS</div>
+        </div>
+    </div>
+    <div class="main-container">
+        <button class="save-btn">DEPLOY BOT</button>
+        <button class="default-btn">USE DEFAULT</button>
+    </div>
 
 </body>
-
 </html>
