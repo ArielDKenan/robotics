@@ -32,6 +32,7 @@ var robots = robots || {};
         game.load.image('hills', 'map/hills.png');
         game.load.image('stars', 'map/stars.png');
         game.load.image('sky', 'assets/sky.png');
+        game.load.image('skyline', 'map/skyline.png');
 
         game.load.image('rocket', 'img/grenada.png');
         game.load.image('bullet', 'img/bullet.png');
@@ -54,7 +55,7 @@ var robots = robots || {};
     };
 
     var badguy, mgun, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
-        platforms, bullets, hills,
+        platforms, bullets, hills, skyline,
         cursors, wasd, pointer;
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
         projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
@@ -153,9 +154,14 @@ var robots = robots || {};
         stars.fixedToCamera = true;
 
         //var hills = game.add.sprite(0, 0, 'hills');
-        hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
-        hills.fixedToCamera = true;
+        //hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
+        // hills.fixedToCamera = true;
         //var hills2 = game.add.tileSprite(1956, 0, 1956, 640, 'hills');
+
+        skyline = game.add.tileSprite(0, 0, 1988, 640, 'skyline');
+        skyline.scale.setTo(1.5, 1);
+        skyline.fixedToCamera = true;
+
 
         var map = game.add.tilemap('map', 16, 16);
         map.addTilesetImage('tileset');
@@ -163,12 +169,10 @@ var robots = robots || {};
         map.addTilesetImage('slanted');
         map.addTilesetImage('slantless');
         
-        //  Create our layer
         var layer = map.createLayer('Tile Layer 1');
         var collectLayer = map.createLayer('Collect Layer');
         var otherLayer = map.createLayer('Other Layer');
 
-        //  Resize the world
         layer.resizeWorld();
 
         var tileObjects = game.physics.p2.convertTilemap(map, layer);
@@ -189,7 +193,7 @@ var robots = robots || {};
         map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);*/
 
         var starObjects = game.physics.p2.convertTilemap(map, collectLayer);
-        console.log(starObjects[0]);
+        
         starObjects.forEach(function (s) {
             s.setCollisionGroup(collectCollisionGroup);
             s.collides([playerCollisionGroup, player2CollisionGroup], function(a,b){
@@ -433,12 +437,12 @@ var robots = robots || {};
                 if (selectedGun === ROCKET_LAUNCHER) {
                     if (game.time.now > lastFire + ROCKET_FIRE_RATE) {
                         lastFire = game.time.now;
-                        var newR = game.add.existing(new Rocket(mgun.body.x, mgun.body.y, mgun));
+                        var newR = game.add.existing(new parts.Rocket(mgun.body.x, mgun.body.y, mgun));
                     }
                 } else if (selectedGun === MACHINEGUN) {
                     if (game.time.now > lastFire + MACHINE_FIRE_RATE) {
                         lastFire = game.time.now;
-                        var newB = game.add.existing(new Bullet(mgun.body.x, mgun.body.y, mgun));
+                        var newB = game.add.existing(new parts.Bullet(mgun.body.x, mgun.body.y, mgun));
                     }
                 }
             }
@@ -446,6 +450,8 @@ var robots = robots || {};
 
     }
 
+
+    // most of these no longer needed:
     var MOVE_SPEED = 0,
         MOTOR_SPEED = 20,
         THRUST_SPEED = 10000,
@@ -461,7 +467,7 @@ var robots = robots || {};
 
     robots.update = function update() {
 
-        hills.tilePosition.set(game.camera.x * -0.4, game.camera.y * -0.4)
+        skyline.tilePosition.set(game.camera.x * -0.25, game.camera.y * -0.25);
 
     }
 

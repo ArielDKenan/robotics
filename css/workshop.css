@@ -1,7 +1,16 @@
 body {
-    background: skyblue;
+    background-image: url(../img/background.jpg);
+    //background-color: #3399BB;
     font-family: 'Roboto Mono', sans-serif;
     text-transform: uppercase;
+}
+
+h1{
+    color: white;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .main-container {
@@ -10,25 +19,82 @@ body {
     transition: all 1s ease;
 }
 
+.btn-box{
+    border: 2px solid black;
+    width: 485px;
+    height: 45px;
+    background-color: lightblue;
+    text-align: center;
+    position: relative;
+    border-radius: 6px;
+    z-index: 10;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: block;
+}
+
+.btn{
+    width: 140px;
+    height: 35px;
+    background-color: coral;
+    border: 2px solid darkslategrey;
+    display: inline-block;
+    margin-top: 3px;
+    border-radius: 3px;
+
+}
+
+
 .left-container {
-    border: 1px solid darkorange;
-    height: 346px;
-    width: 330px;
+    border: 5px solid black;
+    border-radius: 14px;
+    height: 356px;
+    width: 366px;
+    padding-top: 13px;
+    display: inline-block;
+    background-color: transparent;
+    background-color: rgba(0,0,0,.6);
+    //margin-top: 80px;
+    //margin-left: 60px;
+}
+
+.title {
+    //margin-top: -20px;
+    font-weight: 100;
+    color: white;
     display: inline-block;
     background-color: peachpuff;
-
 }
 
 .right-container {
-    border: 1px solid darkorange;
-    height: 346px;
-    width: 330px;
+    border: 5px solid dimgrey;
+    height: 400px;
+    width: 460px;
     display: inline-block;
-    background-color: peachpuff;
+    background-color: lightcyan;
+    //margin-right: 50px;
+    padding-top: 20px;
+}
+
+.item-container {
+    display: inline-block;
+    height: 90px;
+    width: 90px;
+    //margin: 11px;
+    margin-top: 4px;
+
+    box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
+     -webkit-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
+      -moz-box-shadow: inset 0px 0px 29px 10px rgba(15,2,15,.7);
+
+    border: 0px solid #000000;
+    border-radius: 10px 10px 10px 10px;
+     -moz-border-radius: 10px 10px 10px 10px;
+      -webkit-border-radius: 10px 10px 10px 10px;
 }
 
 .grid-square {
-    background-color: white;//#3d3644;
+    background-color: darkgrey;//#3d3644;
     width: 64px;
     height: 64px;
     padding: 0;
@@ -37,12 +103,21 @@ body {
 }
 
 .part-thumb {
-    width: 64px;
-    height: 64px;
-    padding: 0;
-    margin: 1px;
+    width: 62px;
+    height: 62px;
+    margin: 0px;
     display: inline-block;
-    //background-color: white;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.empty-thumb{
+    width: 75px;
+    height: 75px;
+    margin: 0px;
+    display: inline-block;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
