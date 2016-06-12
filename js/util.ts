@@ -2,126 +2,13 @@
  * Created by Jon Stewart on 1/10/2016.
  */
 
+declare interface String {
+    reverse: Function;
+}
 
-// stringReverse():
+String.prototype.reverse = function () { return this.valueOf().split('').reverse().join(''); };
 
-
-
-// // Adds function to jQuery that returns an array of the classes of $
-// ;!(function ($) {
-//  $.fn.classes = function (callback) {
-//      var classes = [];
-//      $.each(this, function (i, v) {
-//          var splitClassName = v.className.split(/\s+/);
-//          for (var j in splitClassName) {
-//              if (splitClassName.hasOwnProperty(j)) {
-//                  var className = splitClassName[j];
-//                  if (classes.indexOf(className) === -1) {
-//                      classes.push(className);
-//                  }
-//              }
-//          }
-//      });
-//      if ('function' === typeof callback) {
-//          for (var i in classes) {
-//              if (classes.hasOwnProperty(i)) {
-//                  callback(classes[i]);
-//              }
-//          }
-//      }
-//      return classes;
-//  };
-// })(jQuery);
-
-/*
-
-// Creates a deep copy of an Object by recursively iterating through each property. Handles non-objects, Arrays, Dates,
-// Objects, and returns shallow copies of non-objects. Handles recursive properties using __getDeepCircularCopy__
-Object.prototype.clone = function (obj) {
-
-    // Variables
-    obj = obj || this; // Get pointer to object we're working with
-    var gdcc = "__getDeepCircularCopy__", // For dealing with recursive elements
-        goodType = false, // Flags true if we find a supported object
-        copy; // Holds our clone of the object
-
-    // Handle the 3 simple types, and null or undefined (last is redundant, different way of checking if object)
-    if (null == obj || 'object' != typeof obj || obj !== Object(obj)) {
-        return obj;
-    }
-
-    // gdcc and cache stuff...
-    var set = gdcc in obj,
-        cache = obj[gdcc];
-
-    // If we find a gdcc function, use it
-    if (set && typeof cache == 'function') {
-        return cache();
-    }
-    // Else overwrite gdcc
-    obj[gdcc] = function() {
-        return result;
-    };
-
-    // Handle Date
-    if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        goodType = true;
-    }
-    console.log(obj);
-    // Handle Array
-    if (obj instanceof Array) {
-        console.log('array: ' + obj);
-        copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy.push(Object.prototype.clone(this[i]));
-        }
-        goodType = true;
-    }
-
-    // Handle Object
-    if (obj instanceof Object) {
-        copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)){
-                if (attr != gdcc)
-                    copy[attr] = Object.prototype.clone(obj[attr]);
-                else if (set)
-                    copy[attr] = Object.prototype.clone(cache);
-            }
-        }
-        goodType = true;
-    }
-
-    // Reset and unset gdcc
-    if (set) {
-        obj[gdcc] = cache; // Reset
-    } else {
-        delete obj[gdcc]; // Unset
-    }
-
-    // If we found a supported type, return it. Else, throw an error
-    if (goodType) {
-        return copy;
-    } else {
-        throw new Error("Couldn't clone object! Type may not be supported");
-    }
-
-};*/
-
-;String.prototype.reverse = function () { return this.valueOf().split('').reverse().join(''); };
-
-;util = {
-
-    __inherit: function (d, b) {
-
-        if (window.__inherit) return window.__inherit.apply(this, arguments);
-        function __() { this.constructor = d; }
-        __.prototype = b.prototype;
-        d.prototype = new __();
-
-    },
+var util = {
 
     isPlainObject: function (obj) {
 
@@ -199,7 +86,7 @@ Object.prototype.clone = function (obj) {
 
                     if (target === copy) continue;
 
-                    if ( deep && (copy && (this.isPlainObject(copy) || (copyIsArray = copy.constructor === Array))) ) {
+                    if (deep && (copy && (this.isPlainObject(copy) || (copyIsArray = copy.constructor === Array)))) {
 
                         if (copyIsArray) {
                             copyIsArray = false;
@@ -272,12 +159,12 @@ Object.prototype.clone = function (obj) {
 
     getExecutedLine: function () {
 
-        function getErrorObject() { try { throw Error('') } catch(err) { return err; } }
+        function getErrorObject() { try { throw Error('') } catch (err) { return err; } }
         var err = getErrorObject();
         var caller_line = err.stack.split("\n")[6];
         // var caller_line = (new Error).stack.split("\n")[4]
         var index = caller_line.indexOf("at ");
-        var clean = caller_line.slice(index+2, caller_line.length);
+        var clean = caller_line.slice(index + 2, caller_line.length);
         var final = clean.slice(0, clean.indexOf('('));
         final += clean.slice(clean.lastIndexOf('/'), -1);
         return final;
@@ -294,47 +181,6 @@ Object.prototype.clone = function (obj) {
             console.debug(text, 'color: #0F0; background: #000');
             console.debug('%cExecuted at line:' + this.getExecutedLine(), 'color: #0CF; background: #000');
         }
-
-    },
-
-
-    stringTemp: '',
-
-    stringClone: function (obj) {
-
-        if (obj == null) return stringTemp;
-        if (obj !== Object(obj)) stringTemp += obj.toString();
-        if (obj instanceof Array) {
-            stringTemp += '[';
-            obj.forEach(function (value) {
-                stringClone(value);
-                stringTemp += ',';
-            });
-            stringTemp += ']';
-        } else if (obj instanceof Object) {
-            stringTemp += '{';
-            for (key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    stringClone(obj[key]);
-                    stringTemp += ',';
-                }
-            }
-            stringTemp += '}';
-        }
-        var temp = stringTemp;
-        stringTemp = '';
-        return temp;
-
-    },
-
-    privateProperty: 'this is a secret',
-
-    privateMethod: function (code) {
-
-        var codeStr, pi = '3.14159';
-        codeStr = code.toString().slice(0, pi.length);
-        if (codeStr === pi) return privateProperty;
-        throw new Error('');
 
     },
 
@@ -359,14 +205,14 @@ Object.prototype.clone = function (obj) {
 
         if (typeof arr == 'undefined' || arr == null || arr.constructor !== Array) throw new Error('I NEED ARRAY!');
         if (arr.length === 0) throw new Error('EMPTY ARRAY!');
-        return arr[randNumber(arr.length - 1)];
+        return arr[this.randNumber(arr.length - 1)];
 
     },
 
     randProperty: function (obj) {
 
         if (typeof obj == 'undefined' || obj == null || !(obj instanceof Object)) throw new Error('randProperty() requires an object');
-        var ctr = 0, oSize = objectSize(obj), randNum = randNumber(oSize - 1);
+        var ctr = 0, oSize = this.objectSize(obj), randNum = this.randNumber(oSize - 1);
         if (!oSize) throw new Error('Cannot use randProperty() on empty object.');
         for (var key in obj) if (obj.hasOwnProperty(key)) if (ctr++ === randNum) return key;
 
@@ -382,5 +228,3 @@ Object.prototype.clone = function (obj) {
     }
 
 };
-
-window.util = util;
