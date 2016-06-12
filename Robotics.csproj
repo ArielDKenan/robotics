@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="app.css" />
     <Content Include="arena.html" />
     <Content Include="assets\img\background.jpg" />
     <Content Include="assets\img\baddie.png" />
@@ -76,12 +75,12 @@
     <Content Include="js\phaser.min.js" />
     <Content Include="js\robots.js" />
     <Content Include="js\state.js" />
-    <Content Include="js\util.js" />
     <Content Include="js\workshop.js" />
     <Content Include="web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="js\util.ts" />
+    <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\img\laser.pdn" />
@@ -100,10 +99,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="scripts\typings\jqueryui\" />
-    <Folder Include="scripts\typings\jquery\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
