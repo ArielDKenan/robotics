@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{2F5DE4E4-6D5F-4E05-BD3B-877A8A0FF620}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="app.css" />
+    <Content Include="arena.html" />
+    <Content Include="assets\img\background.jpg" />
+    <Content Include="assets\img\baddie.png" />
+    <Content Include="assets\img\body1.png" />
+    <Content Include="assets\img\body2.png" />
+    <Content Include="assets\img\body3.png" />
+    <Content Include="assets\img\body4.png" />
+    <Content Include="assets\img\bullet.png" />
+    <Content Include="assets\img\diamond.png" />
+    <Content Include="assets\img\dude.png" />
+    <Content Include="assets\img\explosion.png" />
+    <Content Include="assets\img\explosion_h.png" />
+    <Content Include="assets\img\explosion_sprite_sheet.jpg" />
+    <Content Include="assets\img\fire_anim.png" />
+    <Content Include="assets\img\firstaid.png" />
+    <Content Include="assets\img\grenada.png" />
+    <Content Include="assets\img\ice_blast.gif" />
+    <Content Include="assets\img\kirby_wheel.png" />
+    <Content Include="assets\img\machinegun.png" />
+    <Content Include="assets\img\mario_star.png" />
+    <Content Include="assets\img\platform.png" />
+    <Content Include="assets\img\rpg.png" />
+    <Content Include="assets\img\scifi-sniper.jpg" />
+    <Content Include="assets\img\shotgun.JPG" />
+    <Content Include="assets\img\sky.png" />
+    <Content Include="assets\img\star.png" />
+    <Content Include="assets\img\temp.jpg" />
+    <Content Include="assets\img\temp2.jpg" />
+    <Content Include="assets\img\thruster.png" />
+    <Content Include="assets\img\thruster_old.png" />
+    <Content Include="assets\img\turret.png" />
+    <Content Include="assets\tiles\dirt.png" />
+    <Content Include="assets\tiles\grass.png" />
+    <Content Include="assets\tiles\ground.png" />
+    <Content Include="assets\tiles\grounds-gamedev-market.png" />
+    <Content Include="assets\tiles\hills.png" />
+    <Content Include="assets\tiles\sky.png" />
+    <Content Include="assets\tiles\skyline.png" />
+    <Content Include="assets\tiles\slopes_shallow.png" />
+    <Content Include="assets\tiles\stars.png" />
+    <Content Include="assets\tiles\stone.png" />
+    <Content Include="assets\tiles\tileset-slanted.png" />
+    <Content Include="assets\tiles\tileset.png" />
+    <Content Include="css\jquery-ui.min.css" />
+    <Content Include="css\workshop.css" />
+    <Content Include="index.html" />
+    <Content Include="js\jquery-2.2.1.min.js" />
+    <Content Include="js\jquery-ui.min.js" />
+    <Content Include="js\parts.js" />
+    <Content Include="js\phaser.min.js" />
+    <Content Include="js\robots.js" />
+    <Content Include="js\state.js" />
+    <Content Include="js\util.js" />
+    <Content Include="js\workshop.js" />
+    <Content Include="web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="app.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\img\laser.pdn" />
+    <Content Include="assets\map\tilemap.json" />
+    <Content Include="assets\map\tilemap2.json" />
+    <Content Include="assets\map\tilemap3.json" />
+    <Content Include="assets\map\tilemap4.json" />
+    <Content Include="assets\map\tilemap5.json" />
+    <Content Include="assets\map\tilemap6.json" />
+    <Content Include="assets\map\tileset.pdn" />
+    <Content Include="README.md" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scripts\typings\jqueryui\" />
+    <Folder Include="scripts\typings\jquery\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Robotics</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>21876</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:21876/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>
