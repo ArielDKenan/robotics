@@ -1,10 +1,17 @@
-var parts = parts || {};
 
-(function (parts) {
+;var robots = window.robots = window.robots || {};
+
+!function (robots) {
 
     'use strict';
-    
-    parts = parts || {};
+
+    var parts = {};
+    robots.parts = parts;
+    parts.game = window.game;
+
+    /*********************************
+     *            GLOBALS            *
+     *********************************/
 
     var STARTING_X = 300, STARTING_Y = 0,
         PART_WIDTH = 45,  PART_HEIGHT = 45;
@@ -20,25 +27,31 @@ var parts = parts || {};
     parts.WHEEL_TYPE = Math.pow(2, 2);
     parts.THRUSTER_TYPE = Math.pow(2, 3);
 
+    /*********************************
+     *         CALCULATIONS          *
+     *********************************/
+
     /* Calculate constraint positioning */
-    function calcCXY(body1, body2) {
+    var calcCXY = function (body1, body2) {
 
         var cx = (body2.x - body1.x) * PART_WIDTH/2,
             cy = (body2.y - body1.y) * PART_HEIGHT/2;
 
         if (cx !== cx || cy !== cy) {
-            throw new Error("failed to calculate something that would have prevented you wasting a lot of time");
+            throw new Error("calcCXY(): failed to calculate something that would have prevented you wasting a lot of time");
         }
         
         return { cx: cx, cy: cy };
 
-    }
+    };
 
     parts.buildABot = function (partList) {
 
+        var _this = this;
         var b = game.add.existing(new parts.Body1({x:1, y:1}));
 
         partList.forEach(function (p) {
+
             var construct;
 
             if (p.type === parts.GUN_TYPE) construct = Chaingun;
@@ -46,18 +59,20 @@ var parts = parts || {};
             else if (p.type === parts.THRUSTER_TYPE) construct = Thruster;
 
             game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options));
+
         });
 
         return b;
 
     }
 
-    function touchingDown(someone) {
+    var touchingDown = function (someone) {
 
         var yAxis = game.physics.p2.vec2.fromValues(0, 1);
         var result = false;
 
         for (var i = 0; i < game.physics.p2.world.narrowphase.contactEquations.length; i++) {
+
             var c = game.physics.p2.world.narrowphase.contactEquations[i];  // cycles through all the contactEquations until it finds our "someone"
 
             if (c.bodyA === someone.body.data || c.bodyB === someone.body.data) {
@@ -66,13 +81,20 @@ var parts = parts || {};
                 if (c.bodyA === someone.body.data) d *= -1;
                 if (d > 0.5) result = true;
             }
+
         }
 
         return result;
         
-    }
+    };
 
-    var Part = function(spriteName, size, position, scale) {
+    /*********************************
+     *        PART CONSTRUCTOR       *
+     *********************************/
+
+    var Part = function (spriteName, size, position, scale) {
+
+        this.game = window.game;
 
         var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
         var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
@@ -80,6 +102,7 @@ var parts = parts || {};
         robots.log(spriteName + ': ' + x + ', ' + y);
         
         Phaser.Sprite.call(this, game, x, y, spriteName);
+
         this.scale.setTo(scale.x, scale.y);
 
         this.collisionGroup = robots.playerCollisionGroup;
@@ -151,35 +174,6 @@ var parts = parts || {};
         this.axe = 7000;
         this.haxe = 5000;
 
-        this.updateCallback = function () {
-            var shouldAnim = false;
-            
-            if (robots.cursors.up.isDown|| robots.wasd.up.isDown) {
-                this.body.angle = this.fixed ? this.playerBody.angle : 0;
-                this.body.thrust(this.axe);
-                shouldAnim = true;
-            } else if (robots.cursors.down.isDown|| robots.wasd.down.isDown) {
-                this.body.angle = this.fixed ? this.playerBody.angle + 180 : 180;
-                this.body.thrust(this.axe);
-                shouldAnim = true;
-            }
-
-            if (robots.cursors.space.isDown) {
-                if (robots.cursors.right.isDown) {
-                    this.body.angle = this.fixed ? this.playerBody.angle + 90 : 90;
-                    this.body.thrust(this.haxe);
-                    shouldAnim = true;
-                } else if (robots.cursors.left.isDown) {
-                    this.body.angle = this.fixed ? this.playerBody.angle - 90 : 270;
-                    this.body.thrust(this.haxe);
-                    shouldAnim = true; 
-                }
-            }
-
-            if (shouldAnim) this.fire.animations.play('on');
-            else this.fire.animations.play('off');
-        };
-
         Part.call(this, 'thruster', size, position, scale);
 
         game.physics.p2.enable(this, robots.DEBUG_MODE);
@@ -208,29 +202,54 @@ var parts = parts || {};
     Thruster.prototype = Object.create(Part.prototype);
     Thruster.prototype.constructor = Thruster;
 
+    Thruster.prototype.updateCallback = function () {
+
+        var shouldAnim = false;
+        
+        if (robots.cursors.up.isDown || robots.wasd.up.isDown) {
+
+            this.body.angle = this.fixed ? this.playerBody.angle : 0;
+            this.body.thrust(this.axe);
+            shouldAnim = true;
+
+        } else if (robots.cursors.down.isDown || robots.wasd.down.isDown) {
+
+            this.body.angle = this.fixed ? this.playerBody.angle + 180 : 180;
+            this.body.thrust(this.axe);
+            shouldAnim = true;
+
+        }
+
+        if (robots.cursors.space.isDown) {
+
+            if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
+
+                this.body.angle = this.fixed ? this.playerBody.angle + 90 : 90;
+                this.body.thrust(this.haxe);
+                shouldAnim = true;
+
+            } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
+
+                this.body.angle = this.fixed ? this.playerBody.angle - 90 : 270;
+                this.body.thrust(this.haxe);
+                shouldAnim = true; 
+
+            }
+
+        }
+
+        if (shouldAnim) this.fire.animations.play('on');
+        else this.fire.animations.play('off');
+
+    };
+
     var Wheel = function(position, body, bodyPos, options) {
 
         var size = { height: 1, width: 1 };
         var scale = { x: .04, y: .04 };
 
-        this.options = options ? options : { movesRight: true, movesLeft: true };
-        this.motor_speed = 20;
-
-        this.updateCallback = function () {
-            if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
-                if (this.options.movesRight) {
-                    this.constraint.enableMotor();
-                    this.constraint.setMotorSpeed(-this.motor_speed);
-                }
-            } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
-                if (this.options.movesLeft) {
-                    this.constraint.enableMotor();
-                    this.constraint.setMotorSpeed(this.motor_speed);
-                }
-            } else {
-                this.constraint.disableMotor();
-            }
-        };
+        this.options = options || { movesRight: true, movesLeft: true };
+        this.motor_speed = 30;
 
         Part.call(this, 'wheel', size, position, scale);
 
@@ -254,6 +273,30 @@ var parts = parts || {};
     Wheel.prototype = Object.create(Part.prototype);
     Wheel.prototype.constructor = Wheel;
 
+    Wheel.prototype.updateCallback = function () {
+
+        if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
+
+            if (this.options.movesRight) {
+                this.constraint.enableMotor();
+                this.constraint.setMotorSpeed(-this.motor_speed);
+            }
+
+        } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
+
+            if (this.options.movesLeft) {
+                this.constraint.enableMotor();
+                this.constraint.setMotorSpeed(this.motor_speed);
+            }
+
+        } else {
+
+            this.constraint.disableMotor();
+
+        }
+
+    };
+
     var Chaingun = function(position, body, bodyPos, options) {
 
         var size = { height: 1, width: 2 };
@@ -262,28 +305,7 @@ var parts = parts || {};
         this.lastFire = 0;
         this.projectileType = options ? options.projectileType : parts.ROCKET_TYPE;
         if (this.projectileType === parts.BULLET_TYPE) this.fireRate = 80;
-        if (this.projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
-
-        this.updateCallback = function () {
-            var mouseX = game.input.activePointer.x + game.camera.x;
-            var mouseY = game.input.activePointer.y + game.camera.y;
-
-            this.body.rotation = game.math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
-
-            if (game.input.activePointer.isDown) {
-                if (this.projectileType === parts.ROCKET_TYPE) {
-                    if (game.time.now > this.lastFire + this.fireRate) {
-                        this.lastFire = game.time.now;
-                        var newR = game.add.existing(new parts.Rocket(this.body.x, this.body.y, this, true));
-                    }
-                } else if (this.projectileType === parts.BULLET_TYPE) {
-                    if (game.time.now > this.lastFire + this.fireRate) {
-                        this.lastFire = game.time.now;
-                        var newB = game.add.existing(new parts.Bullet(this.body.x, this.body.y, this, true));
-                    }
-                }
-            }
-        };
+        else if (this.projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
 
         Part.call(this, 'gun', size, position, scale);
 
@@ -305,6 +327,33 @@ var parts = parts || {};
 
     Chaingun.prototype = Object.create(Part.prototype);
     Chaingun.prototype.constructor = Chaingun;
+
+    Chaingun.prototype.updateCallback = function () {
+
+        var mouseX = game.input.activePointer.x + game.camera.x;
+        var mouseY = game.input.activePointer.y + game.camera.y;
+
+        this.body.rotation = game.math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
+
+        if (game.input.activePointer.isDown) {
+
+            if (this.projectileType === parts.ROCKET_TYPE) {
+                if (game.time.now > this.lastFire + this.fireRate) {
+                    this.lastFire = game.time.now;
+                    var newR = game.add.existing(new parts.Rocket(this.body.x, this.body.y, this, true));
+                }
+
+            } else if (this.projectileType === parts.BULLET_TYPE) {
+
+                if (game.time.now > this.lastFire + this.fireRate) {
+                    this.lastFire = game.time.now;
+                    var newB = game.add.existing(new parts.Bullet(this.body.x, this.body.y, this, true));
+                }
+                
+            }
+        }
+
+    };
 
     /***********************************
      *          PROJECTILES            *
@@ -395,4 +444,4 @@ var parts = parts || {};
 
     }
 
-})(parts);
+}(window.robots = window.robots || {});

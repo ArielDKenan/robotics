@@ -19,11 +19,21 @@
 
 <body>
 
+<script src="js/util.js"></script>
 <script src="js/parts.js"></script>
 <script src="js/robots.js"></script>
+<script src="js/state.js"></script>
 
 <script type="text/javascript">
-	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'Robotics', robots);
+
+	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'game');
+
+	game.state.add('Boot', robots.Boot);
+	game.state.add('Preload', robots.Preload);
+	game.state.add('Arena', robots.Robotics);
+	
+	game.state.start('Boot', true, true);
+
 </script>
 
 </body>

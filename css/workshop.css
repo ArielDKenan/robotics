@@ -1,5 +1,5 @@
 body {
-    background-image: url(../img/background.jpg);
+    background-image: url(../assets/img/background.jpg);
     //background-color: #3399BB;
     font-family: 'Roboto Mono', sans-serif;
     text-transform: uppercase;
@@ -68,6 +68,7 @@ h1{
 
 .right-container {
     border: 5px solid dimgrey;
+    border-radius: 14px;
     height: 400px;
     width: 460px;
     display: inline-block;
@@ -124,29 +125,29 @@ h1{
 }
 
 .wheel {
-    background-image: url('../img/kirby_wheel.png');
+    background-image: url('../assets/img/kirby_wheel.png');
 }
 
 .rpg {
-    background-image: url('../img/rpg.png');
+    background-image: url('../assets/img/rpg.png');
 }
 
 .machine-gun {
-    background-image: url('../img/machinegun.png');
+    background-image: url('../assets/img/machinegun.png');
 }
 
 .body1 {
-    background-image: url('../img/body1.png');
+    background-image: url('../assets/img/body1.png');
 }
 
 .body2 {
-    background-image: url('../img/body2.png');
+    background-image: url('../assets/img/body2.png');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
 }
 
 .thruster {
-    background-image: url('../img/thruster.png');
+    background-image: url('../assets/img/thruster.png');
 }
 

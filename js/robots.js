@@ -1,121 +1,114 @@
 
-var robots = robots || {};
+;var robots = window.robots = window.robots || {};
 
-(function (robots) {
+~function (robots) {
 
     'use strict';
 
-    robots = robots || {};
-
-    robots.DEBUG_MODE = false;
+    var parts = robots.parts;
 
     robots.log = function (msg) {
+
         if (robots.DEBUG_MODE) {
-            console.debug('ROBOT DEBUG: ' + msg);
+            // console.debug('%cROBOT DEBUG: ' + msg, 'color: #0F0; background: #000');
+            util.debugMsg(msg);
         }
+
     }
+    robots.DEBUG_MODE = true;
 
-    robots.init = function () {
-        if (robots.DEBUG_MODE) {
-            this.log('DEBUG MODE IS ON');
-        }
-    }
+    var Robotics = function () {
 
-    robots.preload = function preload() {
+        robots.log('Arena state.');
+        robots.log('[[ DEBUG MODE IS ON ]]');
 
-        game.load.tilemap('map', 'map/tilemap6.json', null, Phaser.Tilemap.TILED_JSON);
+    };
+    robots.Robotics = Robotics;
 
-        game.load.image('tileset', 'map/tileset.png');
-        game.load.image('slanted', 'map/tileset-slanted.png');
-        game.load.image('slantless', 'map/slopes_shallow.png');
+    Robotics.prototype = Object.create(Phaser.State.prototype);
+    Robotics.prototype.constructor = Robotics;
 
-        game.load.image('hills', 'map/hills.png');
-        game.load.image('stars', 'map/stars.png');
-        game.load.image('sky', 'assets/sky.png');
-        game.load.image('skyline', 'map/skyline.png');
+    Robotics.prototype.preload = function preload() {
 
-        game.load.image('rocket', 'img/grenada.png');
-        game.load.image('bullet', 'img/bullet.png');
+        // this.game.load.tilemap('map', 'map/tilemap6.json', null, Phaser.Tilemap.TILED_JSON);
 
-        game.load.image('wheel', 'img/kirby_wheel.png');
-        game.load.image('ground', 'assets/platform.png');
-        game.load.image('gun', 'assets/machinegun.png');
-        game.load.image('thruster', 'img/thruster.png');
-        game.load.image('body1', 'img/body1.png');
-        game.load.image('body2', 'img/body2.png');
+        // this.game.load.image('tileset', 'map/tileset.png');
+        // this.game.load.image('slanted', 'map/tileset-slanted.png');
+        // this.game.load.image('slantless', 'map/slopes_shallow.png');
 
-        game.load.image('star', 'assets/star.png');
-        game.load.image('mario_star', 'img/mario_star.png');
+        // this.game.load.image('hills', 'map/hills.png');
+        // this.game.load.image('stars', 'map/stars.png');
+        // this.game.load.image('sky', 'assets/sky.png');
+        // this.game.load.image('skyline', 'map/skyline.png');
 
-        game.load.spritesheet('explosion', 'img/explosion_h.png', 200, 150);
-        game.load.spritesheet('fire', 'img/fire_anim.png', 64, 64);
-        game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-        game.load.spritesheet('baddie', 'assets/baddie.png', 32, 32);
+        // this.game.load.image('rocket', 'img/grenada.png');
+        // this.game.load.image('bullet', 'img/bullet.png');
+
+        // this.game.load.image('wheel', 'img/kirby_wheel.png');
+        // this.game.load.image('gun', 'assets/machinegun.png');
+        // this.game.load.image('thruster', 'img/thruster.png');
+        // this.game.load.image('body1', 'img/body1.png');
+        // this.game.load.image('body2', 'img/body2.png');
+
+        // this.game.load.image('star', 'assets/star.png');
+        // this.game.load.image('mario_star', 'img/mario_star.png');
+
+        // this.game.load.spritesheet('explosion', 'img/explosion_h.png', 200, 150);
+        // this.game.load.spritesheet('fire', 'img/fire_anim.png', 64, 64);
+        // this.game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+        // this.game.load.spritesheet('baddie', 'assets/baddie.png', 32, 32);
 
     };
 
-    var badguy, mgun, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2,
-        platforms, bullets, hills, skyline,
-        cursors, wasd, pointer;
+    var platforms, bullets, hills, skyline;
+    var cursors, wasd, pointer;
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
         projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
         tilesCollisionGroup, collectCollisionGroup;
-    var constraint1, constraint2, constraint3;
-    var ROCKET_LAUNCHER = 1,
-        MACHINEGUN = 2,
-        selectedGun = ROCKET_LAUNCHER;
-    var PLAYER_MASS = 2,
-        PLAYER_DAMPING = .1;//.8;
     
-    var ROCKET_FIRE_RATE = 400,
-        MACHINE_FIRE_RATE = 70;
-    
-    // todo: get rid of vars below
-    var MAX_FORCE = 20000;
-    
-    robots.create = function create() {
+    Robotics.prototype.create = function create() {
 
-        game.physics.startSystem(Phaser.Physics.P2JS);
-        game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world, without this we get no collision callbacks
-        game.physics.p2.gravity.y = 1500;
-        game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
-        game.physics.p2.friction = 200;
+        this.game.physics.startSystem(Phaser.Physics.P2JS);
+        this.game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world; without this we get no collision callbacks
+        this.game.physics.p2.gravity.y = 1500; // Picked arbirary number
+        this.game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
+        this.game.physics.p2.friction = 200;
 
-        setAllCollisionGroups();
-        buildMap();
+        this.setAllCollisionGroups();
+        this.buildMap();
 
-        //game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-        //game.physics.p2.setBounds(0, 0, 800, 640, true, true, true, false);
+        //this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+        //this.game.physics.p2.setBounds(0, 0, 800, 640, true, true, true, false);
 
         /*  The platforms group contains the ground and the ledges
-        platforms = game.add.group();
+        platforms = this.game.add.group();
         platforms.enableBody = true;
 
         // Here we create the ground.
-        var ground = platforms.create(0, game.world.height - 8, 'ground');
+        var ground = platforms.create(0, this.game.world.height - 8, 'ground');
         ground.scale.setTo(3, .2);
         ground.body.immovable = false;*/
 
         //buildOldBot();
 
-        cursors = game.input.keyboard.createCursorKeys();
-        cursors.space = game.input.keyboard.addKey(32);
+        cursors = this.game.input.keyboard.createCursorKeys();
+        cursors.space = this.game.input.keyboard.addKey(32);
         robots.cursors = cursors;
 
         wasd = {
-            up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-            down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-            left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+            up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+            down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+            left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
         robots.wasd = wasd;
 
         if (localStorage.getItem('useDefault') === 'true' || !localStorage.getItem('partList')) {
-            buildOldBot();
+            this.buildOldBot();
         } else {
             var partList = JSON.parse(localStorage.getItem('partList'));
             var player = parts.buildABot(partList);
-            game.camera.follow(player);
+            this.game.camera.follow(player);
         }
 
         var playBot = [
@@ -131,39 +124,55 @@ var robots = robots || {};
         //var player = parts.buildABot(playBot);
 
         /*var bodyPos = { x: 1, y: 1 };
-        var b = game.add.existing(new parts.Body1(bodyPos));
-        var g = game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
-        var w1 = game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
-        var w2 = game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
-        var w3 = game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
-        var w4 = game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
-        //var w5 = game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
-        var t1 = game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
-        var t2 = game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
+        var b = this.game.add.existing(new parts.Body1(bodyPos));
+        var g = this.game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
+        var w1 = this.game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w2 = this.game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
+        var w3 = this.game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
+        var w4 = this.game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
+        //var w5 = this.game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
+        var t1 = this.game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
+        var t2 = this.game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
 
     };
 
-    function buildMap() {
-        game.stage.backgroundColor = '#2d2d2d';
+    Robotics.prototype.update = function update() {
 
-        var sky = game.add.sprite(0, 0, 'sky');
+        skyline.tilePosition.set(this.game.camera.x * -0.5, this.game.camera.y * -0.5);
+
+    }
+
+    Robotics.prototype.render = function render() {
+
+        var title = 'use WASD or arrow keys to move - use mouse to aim and shoot';
+        if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
+        this.game.debug.text(title, 32, 32, '#EE00CC');
+        //this.game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
+
+    }
+
+    Robotics.prototype.buildMap = function buildMap() {
+
+        this.game.stage.backgroundColor = '#2d2d2d';
+
+        var sky = this.game.add.sprite(0, 0, 'sky');
         sky.scale.set(14, 1);
 
-        var stars = game.add.tileSprite(0, 0, 640, 800, 'stars');
+        var stars = this.game.add.tileSprite(0, 0, 640, 800, 'stars');
         stars.scale.setTo(1.25, 1.57);
         stars.fixedToCamera = true;
 
-        //var hills = game.add.sprite(0, 0, 'hills');
-        //hills = game.add.tileSprite(0, 0, 1956, 640, 'hills');
+        //var hills = this.game.add.sprite(0, 0, 'hills');
+        //hills = this.game.add.tileSprite(0, 0, 1956, 640, 'hills');
         // hills.fixedToCamera = true;
-        //var hills2 = game.add.tileSprite(1956, 0, 1956, 640, 'hills');
+        //var hills2 = this.game.add.tileSprite(1956, 0, 1956, 640, 'hills');
 
-        skyline = game.add.tileSprite(0, 0, 1988, 640, 'skyline');
+        skyline = this.game.add.tileSprite(0, 0, 1988, 640, 'skyline');
         skyline.scale.setTo(1.5, 1);
         skyline.fixedToCamera = true;
 
 
-        var map = game.add.tilemap('map', 16, 16);
+        var map = this.game.add.tilemap('map', 16, 16);
         map.addTilesetImage('tileset');
         map.addTilesetImage('mario_star');
         map.addTilesetImage('slanted');
@@ -175,30 +184,30 @@ var robots = robots || {};
 
         layer.resizeWorld();
 
-        var tileObjects = game.physics.p2.convertTilemap(map, layer);
+        var tileObjects = this.game.physics.p2.convertTilemap(map, layer);
 
         map.setCollisionBetween(0, 5, true, layer);
         map.setCollision([45,46,47], true, collectLayer);
 
-        var slantedTiles = game.physics.p2.convertCollisionObjects(map, "Object Layer 1");
+        var slantedTiles = this.game.physics.p2.convertCollisionObjects(map, "Object Layer 1");
 
         slantedTiles.forEach(function (kyle) {
             kyle.setCollisionGroup(tilesCollisionGroup);
             kyle.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         });
 
-        /*var stars = game.add.group();
+        /*var stars = this.game.add.group();
         stars.enableBody = true;
         stars.physicsBodyType = Phaser.Physics.P2JS;
         map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);*/
 
-        var starObjects = game.physics.p2.convertTilemap(map, collectLayer);
+        var starObjects = this.game.physics.p2.convertTilemap(map, collectLayer);
         
         starObjects.forEach(function (s) {
             s.setCollisionGroup(collectCollisionGroup);
-            s.collides([playerCollisionGroup, player2CollisionGroup], function(a,b){
+            s.collides([playerCollisionGroup, player2CollisionGroup], function(a, b){
                 //console.log(a);
-                //game.physics.p2.removeBody(a);
+                //this.game.physics.p2.removeBody(a);
             }, s);
             // s.animations.add('die', [0], 10, false);
             // s.animations.play('die', null, false, true);
@@ -209,28 +218,31 @@ var robots = robots || {};
             t.setCollisionGroup(tilesCollisionGroup);
             t.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         });*/
-        tileObjects = game.physics.p2.convertTilemap(map, layer);
+
+        tileObjects = this.game.physics.p2.convertTilemap(map, layer);
         robots.log(tileObjects.length);
+
         for (var i = 0; i < tileObjects.length; i++) {
             var tileBody = tileObjects[i];
             tileBody.setCollisionGroup(tilesCollisionGroup);
             tileBody.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
         }
+
     }
 
-    function setAllCollisionGroups() {
+    Robotics.prototype.setAllCollisionGroups = function setAllCollisionGroups() {
 
-        playerCollisionGroup        = game.physics.p2.createCollisionGroup();
-        player2CollisionGroup       = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup    = game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup2   = game.physics.p2.createCollisionGroup();
-        gunCollisionGroup           = game.physics.p2.createCollisionGroup();
-        wheelCollisionGroup         = game.physics.p2.createCollisionGroup();
-        thrusterCollisionGroup      = game.physics.p2.createCollisionGroup();
-        tilesCollisionGroup         = game.physics.p2.createCollisionGroup();
-        collectCollisionGroup       = game.physics.p2.createCollisionGroup();
+        playerCollisionGroup        = this.game.physics.p2.createCollisionGroup();
+        player2CollisionGroup       = this.game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup    = this.game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup2   = this.game.physics.p2.createCollisionGroup();
+        gunCollisionGroup           = this.game.physics.p2.createCollisionGroup();
+        wheelCollisionGroup         = this.game.physics.p2.createCollisionGroup();
+        thrusterCollisionGroup      = this.game.physics.p2.createCollisionGroup();
+        tilesCollisionGroup         = this.game.physics.p2.createCollisionGroup();
+        collectCollisionGroup       = this.game.physics.p2.createCollisionGroup();
 
-        game.physics.p2.updateBoundsCollisionGroup();
+        this.game.physics.p2.updateBoundsCollisionGroup();
 
         robots.playerCollisionGroup         = playerCollisionGroup;
         robots.player2CollisionGroup        = player2CollisionGroup;
@@ -241,34 +253,57 @@ var robots = robots || {};
 
     }
 
-    function buildOldBot() {
+    Robotics.prototype.buildOldBot = function buildOldBot() {
 
-        fire1 = game.add.sprite(270, game.world.height - 140 - 300, 'fire');
-        fire2 = game.add.sprite(330, game.world.height - 140 - 300, 'fire');
+        var badguy, mgun, wheel1, wheel2, thruster1, thruster2, leftWheel, rightWheel, fire1, fire2;
+        var constraint1, constraint2, constraint3;
+        var ROCKET_LAUNCHER = 1,
+            MACHINEGUN = 2,
+            selectedGun = ROCKET_LAUNCHER;
+        var PLAYER_MASS = 2,
+            PLAYER_DAMPING = .1;//.8;
+        var ROCKET_FIRE_RATE = 400,
+            MACHINE_FIRE_RATE = 70;
+        var MAX_FORCE = 20000;
+        var MOVE_SPEED = 0,
+            MOTOR_SPEED = 20,
+            THRUST_SPEED = 10000,
+            BOOST_SPEED = 17000;
+        var BOOST_COST = 0,
+            BOOST_MAX_ENERGY = 10000,
+            boost_energy = BOOST_MAX_ENERGY,
+            boost_recharge_amount = 50,
+            BOOST_DEPLETED_BONUS = 1500,
+            BOOST_WAIT_TIME = 1000,
+            boost_recharge_time = 0;
+        var lastFire = 0;
+
+        fire1 = this.game.add.sprite(270, this.game.world.height - 140 - 300, 'fire');
+        fire2 = this.game.add.sprite(330, this.game.world.height - 140 - 300, 'fire');
         fire1.scale.setTo(.7);
         fire2.scale.setTo(.7);
         fire1.alpha = .8;
         fire2.alpha = .8;
 
-        wheel1 = game.add.sprite(270, game.world.height - 10 - 300, 'wheel');
-        wheel2 = game.add.sprite(295, game.world.height - 10 - 300, 'wheel');
+        wheel1 = this.game.add.sprite(270, this.game.world.height - 10 - 300, 'wheel');
+        wheel2 = this.game.add.sprite(295, this.game.world.height - 10 - 300, 'wheel');
         wheel1.scale.set(.04);
         wheel2.scale.set(.04);
 
-        thruster1 = game.add.sprite(270, game.world.height - 150 - 300, 'thruster');
+        thruster1 = this.game.add.sprite(270, this.game.world.height - 150 - 300, 'thruster');
         thruster1.scale.setTo(.3, .3);
-        thruster2 = game.add.sprite(330, game.world.height - 150 - 300, 'thruster');
+        thruster2 = this.game.add.sprite(330, this.game.world.height - 150 - 300, 'thruster');
         thruster2.scale.setTo(.3, .3);
 
-        //badguy = game.add.sprite(300, game.world.height - 150, 'dude');
+        //badguy = this.game.add.sprite(300, this.game.world.height - 150, 'dude');
         //badguy.scale.setTo(1.2);
-        badguy = game.add.sprite(300, game.world.height - 150 - 300, 'body2');
+        badguy = this.game.add.sprite(300, this.game.world.height - 150 - 300, 'body2');
         badguy.scale.set(.08);
 
-        mgun = game.add.sprite(300, game.world.height - 140 - 300, 'gun');
+        mgun = this.game.add.sprite(300, this.game.world.height - 140 - 300, 'gun');
         mgun.scale.setTo(.2, .2);
 
-        bullets = game.add.group();
+        bullets = this.game.add.group();
         bullets.enableBody = true;
         bullets.physicsBodyType = Phaser.Physics.P2JS;
         bullets.createMultiple(50, 'bullet');
@@ -278,9 +313,9 @@ var robots = robots || {};
         bullets.setAll('checkWorldBounds', true);
         bullets.setAll('outOfBoundsKill', true);*/
 
-        game.physics.p2.enable([badguy, mgun, thruster1, thruster2], robots.DEBUG_MODE);
-        game.physics.p2.enable([wheel1, wheel2], robots.DEBUG_MODE);
-        game.camera.follow(badguy);
+        this.game.physics.p2.enable([badguy, mgun, thruster1, thruster2], robots.DEBUG_MODE);
+        this.game.physics.p2.enable([wheel1, wheel2], robots.DEBUG_MODE);
+        this.game.camera.follow(badguy);
 
         wheel1.body.mass = 1;
         wheel2.body.mass = 1;
@@ -319,15 +354,16 @@ var robots = robots || {};
         fire1.animations.add('off', [8, 9, 10, 11, 12, 13, 14, 15, 14, 13, 12, 11, 10, 9], 5, true);
         fire2.animations.add('off', [8, 9, 10, 11, 12, 13, 14, 15, 14, 13, 12, 11, 10, 9], 5, true);
 
-        constraint1 = game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, MAX_FORCE);
-        constraint2 = game.physics.p2.createLockConstraint(badguy, thruster1, [35, 10], 0, MAX_FORCE);
-        constraint3 = game.physics.p2.createLockConstraint(badguy, thruster2, [-35, 10], 0, MAX_FORCE);
-        leftWheel = game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2),
+        constraint1 = this.game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, MAX_FORCE);
+        constraint2 = this.game.physics.p2.createLockConstraint(badguy, thruster1, [35, 10], 0, MAX_FORCE);
+        constraint3 = this.game.physics.p2.createLockConstraint(badguy, thruster2, [-35, 10], 0, MAX_FORCE);
+        leftWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2),
             badguy.height/2], wheel1, [0, 0], MAX_FORCE);
-        rightWheel = game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
+        rightWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
             badguy.height/2], wheel2, [0, 0], MAX_FORCE);
 
         badguy.update = function update() {
+
             // badguy.body.setZeroVelocity();
             var thrustSpeed = 0;
             var shouldAnimateFire = false;
@@ -345,8 +381,8 @@ var robots = robots || {};
                     if (cursors.space.isDown) {
                         boost_recharge_time = 0;
                     } else if (!boost_recharge_time) {
-                        boost_recharge_time = game.time.now + BOOST_WAIT_TIME;
-                    } else if (game.time.now > boost_recharge_time) {
+                        boost_recharge_time = this.game.time.now + BOOST_WAIT_TIME;
+                    } else if (this.game.time.now > boost_recharge_time) {
                         boost_recharge_time = 0;
                         boost_energy = BOOST_DEPLETED_BONUS;
                     }
@@ -428,56 +464,28 @@ var robots = robots || {};
                 fire2.animations.play('off');
             }
 
-            var mouseX = game.input.activePointer.x + game.camera.x;
-            var mouseY = game.input.activePointer.y + game.camera.y;
+            var mouseX = this.game.input.activePointer.x + this.game.camera.x;
+            var mouseY = this.game.input.activePointer.y + this.game.camera.y;
 
-            mgun.body.rotation = game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
+            mgun.body.rotation = this.game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
 
-            if (game.input.activePointer.isDown) {
+            if (this.game.input.activePointer.isDown) {
                 if (selectedGun === ROCKET_LAUNCHER) {
-                    if (game.time.now > lastFire + ROCKET_FIRE_RATE) {
-                        lastFire = game.time.now;
-                        var newR = game.add.existing(new parts.Rocket(mgun.body.x, mgun.body.y, mgun));
+                    if (this.game.time.now > lastFire + ROCKET_FIRE_RATE) {
+                        lastFire = this.game.time.now;
+                        var newR = this.game.add.existing(new parts.Rocket(mgun.body.x, mgun.body.y, mgun));
                     }
                 } else if (selectedGun === MACHINEGUN) {
-                    if (game.time.now > lastFire + MACHINE_FIRE_RATE) {
-                        lastFire = game.time.now;
-                        var newB = game.add.existing(new parts.Bullet(mgun.body.x, mgun.body.y, mgun));
+                    if (this.game.time.now > lastFire + MACHINE_FIRE_RATE) {
+                        lastFire = this.game.time.now;
+                        var newB = this.game.add.existing(new parts.Bullet(mgun.body.x, mgun.body.y, mgun));
                     }
                 }
             }
+
         }
 
     }
 
+}(window.robots = window.robots || {});
 
-    // most of these no longer needed:
-    var MOVE_SPEED = 0,
-        MOTOR_SPEED = 20,
-        THRUST_SPEED = 10000,
-        BOOST_SPEED = 17000;
-    var BOOST_COST = 0,
-        BOOST_MAX_ENERGY = 10000,
-        boost_energy = BOOST_MAX_ENERGY,
-        boost_recharge_amount = 50,
-        BOOST_DEPLETED_BONUS = 1500,
-        BOOST_WAIT_TIME = 1000,
-        boost_recharge_time = 0;
-    var lastFire = 0;
-
-    robots.update = function update() {
-
-        skyline.tilePosition.set(game.camera.x * -0.25, game.camera.y * -0.25);
-
-    }
-
-    robots.render = function render() {
-
-        var title = 'use WASD or arrow keys to move - use mouse to aim and shoot';
-        if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
-        game.debug.text(title, 32, 32);
-        //game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
-
-    }
-
-})(robots);
