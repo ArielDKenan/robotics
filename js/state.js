@@ -1,5 +1,5 @@
 
-;var robots = window.robots = window.robots || {};
+var robots = window.robots = window.robots || {};
 
 ~function (robots) {
 

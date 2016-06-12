@@ -16,7 +16,7 @@ var util = {
             return false;
         }
 
-        for (p in obj) {
+        for (var p in obj) {
             if (obj.hasOwnProperty(p)) return false;
         }
 
@@ -77,7 +77,7 @@ var util = {
 
         for (; i < l; i++) { // edge case?: no arguments
 
-            if ((options = options === this ? options : arguments[i]) != null) { // nonono no no no.///......
+            if ((options = options === this ? options : arguments[i]) != null) {
 
                 for (name in options) {
 
@@ -117,7 +117,7 @@ var util = {
     cloneObject: function (obj) {
 
         var copy;
-        // if ('undefined' === typeof obj || null === obj || 'object' !== typeof obj) return obj;
+        
         if ('object' !== typeof obj) return obj;
         if (obj instanceof Date) {
             copy = new Date();

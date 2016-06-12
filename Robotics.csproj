@@ -69,10 +69,10 @@
     <Content Include="css\jquery-ui.min.css" />
     <Content Include="css\workshop.css" />
     <Content Include="index.html" />
-    <Content Include="js\jquery-2.2.1.min.js" />
-    <Content Include="js\jquery-ui.min.js" />
+    <Content Include="js\libraries\jquery-2.2.1.min.js" />
+    <Content Include="js\libraries\jquery-ui.min.js" />
     <Content Include="js\parts.js" />
-    <Content Include="js\phaser.min.js" />
+    <Content Include="js\libraries\phaser.min.js" />
     <Content Include="js\robots.js" />
     <Content Include="js\state.js" />
     <Content Include="js\workshop.js" />
@@ -80,7 +80,6 @@
     <TypeScriptCompile Include="js\util.ts" />
     <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
     <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
-    <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\img\laser.pdn" />
@@ -112,7 +111,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>21876</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
