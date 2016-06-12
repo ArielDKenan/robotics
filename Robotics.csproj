@@ -80,6 +80,7 @@
     <TypeScriptCompile Include="js\util.ts" />
     <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
     <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\img\laser.pdn" />
