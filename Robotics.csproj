@@ -71,10 +71,10 @@
     <Content Include="index.html" />
     <Content Include="js\libraries\jquery-2.2.1.min.js" />
     <Content Include="js\libraries\jquery-ui.min.js" />
-    <Content Include="js\parts.js" />
+    <TypeScriptCompile Include="js\parts.ts" />
     <Content Include="js\libraries\phaser.min.js" />
-    <Content Include="js\robots.js" />
-    <Content Include="js\state.js" />
+    <TypeScriptCompile Include="js\robots.ts" />
+    <TypeScriptCompile Include="js\state.ts" />
     <Content Include="js\workshop.js" />
     <Content Include="web.config" />
     <TypeScriptCompile Include="js\util.ts" />
@@ -129,6 +129,17 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>False</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>

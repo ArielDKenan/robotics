@@ -3,5 +3,6 @@
 .idea/*
 obj/*
 bin/*
+.vs/*
 scripts/*.js
 !scripts/libraries/*.js
