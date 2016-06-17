@@ -66,18 +66,18 @@
     <Content Include="assets\tiles\stone.png" />
     <Content Include="assets\tiles\tileset-slanted.png" />
     <Content Include="assets\tiles\tileset.png" />
-    <Content Include="css\jquery-ui.min.css" />
-    <Content Include="css\workshop.css" />
+    <Content Include="style\jquery-ui.min.css" />
+    <Content Include="style\workshop.css" />
     <Content Include="index.html" />
-    <Content Include="js\libraries\jquery-2.2.1.min.js" />
-    <Content Include="js\libraries\jquery-ui.min.js" />
-    <TypeScriptCompile Include="js\parts.ts" />
-    <Content Include="js\libraries\phaser.min.js" />
-    <TypeScriptCompile Include="js\robots.ts" />
-    <TypeScriptCompile Include="js\state.ts" />
-    <TypeScriptCompile Include="js\workshop.ts" />
+    <Content Include="scripts\libraries\jquery-2.2.1.min.js" />
+    <Content Include="scripts\libraries\jquery-ui.min.js" />
+    <TypeScriptCompile Include="scripts\parts.ts" />
+    <Content Include="scripts\libraries\phaser.min.js" />
+    <TypeScriptCompile Include="scripts\robots.ts" />
+    <TypeScriptCompile Include="scripts\state.ts" />
+    <TypeScriptCompile Include="scripts\workshop.ts" />
     <Content Include="web.config" />
-    <TypeScriptCompile Include="js\util.ts" />
+    <TypeScriptCompile Include="scripts\util.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery.d.ts" />
     <TypeScriptCompile Include="scripts\typings\jqueryui.d.ts" />
     <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
@@ -101,7 +101,9 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="js\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
