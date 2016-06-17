@@ -5,4 +5,5 @@ obj/*
 bin/*
 .vs/*
 scripts/*.js
+scripts/*.js.map
 !scripts/libraries/*.js
