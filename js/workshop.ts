@@ -1,23 +1,32 @@
+
+
+declare var workshop: any;
 workshop = {};
+
 (function (workshop) {
+
     var GUN_TYPE = Math.pow(2, 1);
     var WHEEL_TYPE = Math.pow(2, 2);
     var THRUSTER_TYPE = Math.pow(2, 3);
+
     var BULLET_TYPE = Math.pow(2, 0);
     var ROCKET_TYPE = Math.pow(2, 1);
+
     var partList = [];
     workshop.partList = partList;
+
     workshop.init = function () {
+
         var $cont = $('.parts-holder');
-        for (var ctr = 0; ctr < 25; ctr++) {
+        for (var ctr=0; ctr<25; ctr++) {
             var $div = $('<div>');
             $div.addClass('grid-square');
             $div.attr('id', ctr);
             $cont.append($div);
-            if (ctr === 12) {
+
+            if (ctr===12)  {
                 $div.addClass('body2');
-            }
-            else {
+            } else {
                 $div.droppable({
                     accept: '.part-thumb',
                     tolerance: 'intersect',
@@ -25,33 +34,37 @@ workshop = {};
                         $(this).droppable('disable');
                         var $d = $(ui.draggable);
                         $d.draggable('disable');
+
                         var partType;
                         if ($d.hasClass('machine-gun') || $d.hasClass('rpg')) {
                             partType = GUN_TYPE;
-                        }
-                        else if ($d.hasClass('wheel')) {
+                        } else if ($d.hasClass('wheel')) {
                             partType = WHEEL_TYPE;
-                        }
-                        else if ($d.hasClass('thruster')) {
+                        } else if ($d.hasClass('thruster')) {
                             partType = THRUSTER_TYPE;
                         }
+
                         var id = parseInt($(this).attr('id'));
                         var x = id % 5;
                         var y = id / 5;
+
                         partList.push({ type: partType, position: { x: x, y: y } });
                     }
                 });
             }
             $cont.append($div);
         }
+
         $cont = $('.right-container');
         $cont.droppable({
             accept: '.part-thumb',
         });
+
         $('.part-thumb').draggable({
             snap: '.grid-square',
             revert: 'invalid'
         });
+
         $('.save-btn').on('click', function () {
             localStorage.setItem('useDefault', 'false');
             var jsonList = JSON.stringify(partList);
@@ -59,15 +72,18 @@ workshop = {};
             document.location.href = '/robots/arena.html';
             document.location.href = './arena.html';
         });
+
         $('.default-btn').on('click', function () {
             localStorage.setItem('useDefault', 'true');
             document.location.href = '/robots/arena.html';
             document.location.href = './arena.html';
         });
-        $('.reset-btn').on('click', function () {
+
+        $('.reset-btn').on('click', function (){
             location.reload();
         });
-    };
+    }
+
 })(workshop);
+
 $(workshop.init);
-//# sourceMappingURL=workshop.js.map

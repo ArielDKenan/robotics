@@ -75,9 +75,11 @@
     <Content Include="js\libraries\phaser.min.js" />
     <TypeScriptCompile Include="js\robots.ts" />
     <TypeScriptCompile Include="js\state.ts" />
-    <Content Include="js\workshop.js" />
+    <TypeScriptCompile Include="js\workshop.ts" />
     <Content Include="web.config" />
     <TypeScriptCompile Include="js\util.ts" />
+    <TypeScriptCompile Include="scripts\typings\jquery.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\jqueryui.d.ts" />
     <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
     <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
     <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
