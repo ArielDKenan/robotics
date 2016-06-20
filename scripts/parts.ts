@@ -1,6 +1,4 @@
 
-declare var game: any;
-
 module parts {
 
     'use strict';
@@ -8,11 +6,9 @@ module parts {
     /*********************************
      *            GLOBALS            *
      *********************************/
-    var x = 10;
-    var STARTING_X = 300;
-    var STARTING_Y = 0;
-    var PART_WIDTH = 45,  PART_HEIGHT = 45;
-    var DAMPING_FACTOR = .5;
+    var STARTING_X = 300, STARTING_Y = 0,
+        PART_WIDTH = 45,  PART_HEIGHT = 45,
+        DAMPING_FACTOR = .5;
 
     export var BULLET_TYPE = Math.pow(2, 0);
     export var ROCKET_TYPE = Math.pow(2, 1);
@@ -41,8 +37,7 @@ module parts {
     };
 
     export var buildABot = function (partList) {
-
-        var _this = this;
+        
         var b = game.add.existing(new parts.Body1({x:1, y:1}));
 
         partList.forEach(function (p) {
@@ -63,7 +58,7 @@ module parts {
 
     var touchingDown = function (someone) {
 
-        var yAxis = game.physics.p2.vec2.fromValues(0, 1);
+        var yAxis = p2.vec2.fromValues(0, 1);
         var result = false;
 
         for (var i = 0; i < game.physics.p2.world.narrowphase.contactEquations.length; i++) {
@@ -87,72 +82,79 @@ module parts {
      *        PART CONSTRUCTOR       *
      *********************************/
 
-    export var Part = function (spriteName, size, position, scale) {
+    export class Part extends Phaser.Sprite {
 
-        var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
-        var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
+        collisionGroup: Phaser.Physics.P2.CollisionGroup;
+        collidesWith: any;
+        collectCallback: Function;
+        max_force: number;
+        updateCallback: Function;
 
-        robots.log(spriteName + ': ' + x + ', ' + y);
-        
-        Phaser.Sprite.call(this, game, x, y, spriteName);
+        constructor(spriteName: string, size, position, scale) {
 
-        this.scale.setTo(scale.x, scale.y);
+            var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
+            var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
 
-        this.collisionGroup = robots.playerCollisionGroup;
-        this.collidesWith = [robots.player2CollisionGroup, robots.tilesCollisionGroup, robots.projectileCollisionGroup2];
+            robots.log(spriteName + ': ' + x + ', ' + y);
 
-        this.collectCallback = function (player, star) {
+            super(game, x, y, spriteName);
 
-            //star.destroy();
-            robots.log('got one');
+            this.scale.setTo(scale.x, scale.y);
 
-        };
+            this.collisionGroup = robots.playerCollisionGroup;
+            this.collidesWith = [robots.player2CollisionGroup, robots.tilesCollisionGroup, robots.projectileCollisionGroup2];
 
-        this.max_force = 2000;
+            this.collectCallback = function (player, star) {
 
-    };
+                //star.destroy();
+                robots.log('got one');
 
-    Part.prototype = Object.create(Phaser.Sprite.prototype);
-    Part.prototype.constructor = Part;
+            };
 
-    Part.prototype.update = function() {
-
-        if (this.updateCallback) {
-            this.updateCallback();
+            this.max_force = 2000;
         }
 
-    };
+        update() {
+
+            if (this.updateCallback) {
+                this.updateCallback();
+            }
+
+        }
+
+    }
 
     /***********************************
      *             PARTS               *
      ***********************************/
 
-    export var Body1 = function(position) {
+    export class Body1 extends Part {
 
-        var size = { height: 2, width: 2 };
-        var scale = { x: .1, y: .1 };
+        constructor(position) {
 
-        Part.call(this, 'body2', size, position, scale);
+            var size = { height: 2, width: 2 };
+            var scale = { x: .1, y: .1 };
 
-        game.physics.p2.enable(this, robots.DEBUG_MODE);
+            super('body2', size, position, scale);
 
-        this.body.setCircle(25);
-        this.body.fixedRotation = false;
-        this.body.mass = .5;
-        this.body.damping = DAMPING_FACTOR;
-        this.body.data.gravityScale = 1;
+            game.physics.p2.enable(this, robots.DEBUG_MODE);
 
-        this.body.setCollisionGroup(this.collisionGroup);
-        this.body.collides(this.collidesWith);
-        this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
+            this.body.setCircle(25);
+            this.body.fixedRotation = false;
+            this.body.mass = .5;
+            this.body.damping = DAMPING_FACTOR;
+            this.body.data.gravityScale = 1;
 
-        this.body.collideWorldBounds = false;
-        this.body.outOfBoundsKill = true;
+            this.body.setCollisionGroup(this.collisionGroup);
+            this.body.collides(this.collidesWith);
+            this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
 
-    };
+            this.body.collideWorldBounds = false;
+            this.body.outOfBoundsKill = true;
 
-    Body1.prototype = Object.create(Part.prototype);
-    Body1.prototype.constructor = Body1;
+        }
+
+    }
 
     export var Thruster = function(position, body, bodyPos, options) {
 
@@ -214,14 +216,26 @@ module parts {
 
             if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
 
-                this.body.angle = this.fixed ? this.playerBody.angle + 90 : 90;
-                this.body.thrust(this.haxe);
+                if (this.fixed) {
+                    this.body.angle = this.playerBody.angle;
+                    this.body.thrustRight(this.haxe);
+                } else {
+                    this.body.angle = 90;
+                    this.body.thrust(this.haxe);
+                }
+                
                 shouldAnim = true;
 
             } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
 
-                this.body.angle = this.fixed ? this.playerBody.angle - 90 : 270;
-                this.body.thrust(this.haxe);
+                if (this.fixed) {
+                    this.body.angle = this.playerBody.angle;
+                    this.body.thrustLeft(this.haxe);
+                } else {
+                    this.body.angle = 270;
+                    this.body.thrust(this.haxe);
+                }
+
                 shouldAnim = true; 
 
             }
@@ -322,8 +336,8 @@ module parts {
 
         var mouseX = game.input.activePointer.x + game.camera.x;
         var mouseY = game.input.activePointer.y + game.camera.y;
-
-        this.body.rotation = game.math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
+        
+        this.body.rotation = Phaser.Math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
 
         if (game.input.activePointer.isDown) {
 

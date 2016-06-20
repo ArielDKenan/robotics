@@ -25472,6 +25472,11 @@ declare module Phaser {
         stage: Phaser.Stage;
 
         /**
+        * ROBOTICS: added missing declaration of StateManager
+        */
+        state: Phaser.StateManager;
+
+        /**
         * A reference to the game clock and timed events system.
         */
         time: Phaser.Time;
