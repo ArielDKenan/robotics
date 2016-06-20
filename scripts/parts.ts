@@ -3,6 +3,8 @@ declare var game: any;
 
 module parts {
 
+    'use strict';
+
     /*********************************
      *            GLOBALS            *
      *********************************/

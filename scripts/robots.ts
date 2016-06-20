@@ -1,11 +1,11 @@
 ﻿
-var robots = <any>{};
-
-!function (robots) {
+module robots {
 
     'use strict';
 
-    robots.log = function (msg) {
+    export var DEBUG_MODE = false;
+
+    export var log = function (msg) {
 
         if (robots.DEBUG_MODE) {
             // console.debug('%cROBOT DEBUG: ' + msg, 'color: #0F0; background: #000');
@@ -13,56 +13,24 @@ var robots = <any>{};
         }
 
     }
-    robots.DEBUG_MODE = false;
 
-    var Robotics = function () {
+    export var Robotics = function () {
 
         robots.log('Arena state.');
         robots.log('[[ DEBUG MODE IS ON ]]');
 
     };
-    robots.Robotics = Robotics;
 
     Robotics.prototype = Object.create(Phaser.State.prototype);
     Robotics.prototype.constructor = Robotics;
 
-    Robotics.prototype.preload = function preload() {
+    export var cursors, wasd;
 
-        // this.game.load.tilemap('map', 'map/tilemap6.json', null, Phaser.Tilemap.TILED_JSON);
-
-        // this.game.load.image('tileset', 'map/tileset.png');
-        // this.game.load.image('slanted', 'map/tileset-slanted.png');
-        // this.game.load.image('slantless', 'map/slopes_shallow.png');
-
-        // this.game.load.image('hills', 'map/hills.png');
-        // this.game.load.image('stars', 'map/stars.png');
-        // this.game.load.image('sky', 'assets/sky.png');
-        // this.game.load.image('skyline', 'map/skyline.png');
-
-        // this.game.load.image('rocket', 'img/grenada.png');
-        // this.game.load.image('bullet', 'img/bullet.png');
-
-        // this.game.load.image('wheel', 'img/kirby_wheel.png');
-        // this.game.load.image('gun', 'assets/machinegun.png');
-        // this.game.load.image('thruster', 'img/thruster.png');
-        // this.game.load.image('body1', 'img/body1.png');
-        // this.game.load.image('body2', 'img/body2.png');
-
-        // this.game.load.image('star', 'assets/star.png');
-        // this.game.load.image('mario_star', 'img/mario_star.png');
-
-        // this.game.load.spritesheet('explosion', 'img/explosion_h.png', 200, 150);
-        // this.game.load.spritesheet('fire', 'img/fire_anim.png', 64, 64);
-        // this.game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-        // this.game.load.spritesheet('baddie', 'assets/baddie.png', 32, 32);
-
-    };
-
-    var platforms, bullets, hills, skyline;
-    var cursors, wasd, pointer;
-    var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
+    export var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
         projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
         tilesCollisionGroup, collectCollisionGroup;
+
+    var platforms, bullets, hills, skyline;
 
     Robotics.prototype.create = function create() {
 
@@ -91,7 +59,6 @@ var robots = <any>{};
 
         cursors = this.game.input.keyboard.createCursorKeys();
         cursors.space = this.game.input.keyboard.addKey(32);
-        robots.cursors = cursors;
 
         wasd = {
             up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -99,7 +66,6 @@ var robots = <any>{};
             left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
             right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
-        robots.wasd = wasd;
 
         if (localStorage.getItem('useDefault') === 'true' || !localStorage.getItem('partList')) {
             this.buildOldBot();
@@ -241,13 +207,6 @@ var robots = <any>{};
         collectCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
         this.game.physics.p2.updateBoundsCollisionGroup();
-
-        robots.playerCollisionGroup = playerCollisionGroup;
-        robots.player2CollisionGroup = player2CollisionGroup;
-        robots.tilesCollisionGroup = tilesCollisionGroup;
-        robots.projectileCollisionGroup = projectileCollisionGroup;
-        robots.projectileCollisionGroup2 = projectileCollisionGroup2;
-        robots.collectCollisionGroup = collectCollisionGroup;
 
     }
 
@@ -485,5 +444,5 @@ var robots = <any>{};
 
     }
 
-} (robots || {});
+}
 

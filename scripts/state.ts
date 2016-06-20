@@ -1,6 +1,4 @@
 
-var robots = robots || {};
-
 ~function (robots) {
 
     'use strict';
@@ -85,4 +83,4 @@ var robots = robots || {};
 
     }
 
- }(robots = robots || {});
+ }(robots);
