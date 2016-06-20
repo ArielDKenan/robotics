@@ -1,29 +1,24 @@
 
 declare var game: any;
-declare var parts: any;
-parts = <any>{};
 
-!function (parts) {
-
-    'use strict';
+module parts {
 
     /*********************************
      *            GLOBALS            *
      *********************************/
-
-    var STARTING_X = 300, STARTING_Y = 0,
-        PART_WIDTH = 45,  PART_HEIGHT = 45;
+    var x = 10;
+    var STARTING_X = 300;
+    var STARTING_Y = 0;
+    var PART_WIDTH = 45,  PART_HEIGHT = 45;
     var DAMPING_FACTOR = .5;
 
-    var cursors;
+    export var BULLET_TYPE = Math.pow(2, 0);
+    export var ROCKET_TYPE = Math.pow(2, 1);
 
-    parts.BULLET_TYPE = Math.pow(2, 0);
-    parts.ROCKET_TYPE = Math.pow(2, 1);
-
-    parts.BODY_TYPE = Math.pow(2, 0);
-    parts.GUN_TYPE = Math.pow(2, 1);
-    parts.WHEEL_TYPE = Math.pow(2, 2);
-    parts.THRUSTER_TYPE = Math.pow(2, 3);
+    export var BODY_TYPE = Math.pow(2, 0);
+    export var GUN_TYPE = Math.pow(2, 1);
+    export var WHEEL_TYPE = Math.pow(2, 2);
+    export var THRUSTER_TYPE = Math.pow(2, 3);
 
     /*********************************
      *         CALCULATIONS          *
@@ -43,7 +38,7 @@ parts = <any>{};
 
     };
 
-    parts.buildABot = function (partList) {
+    export var buildABot = function (partList) {
 
         var _this = this;
         var b = game.add.existing(new parts.Body1({x:1, y:1}));
@@ -90,7 +85,7 @@ parts = <any>{};
      *        PART CONSTRUCTOR       *
      *********************************/
 
-    var Part = function (spriteName, size, position, scale) {
+    export var Part = function (spriteName, size, position, scale) {
 
         var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
         var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
@@ -114,7 +109,6 @@ parts = <any>{};
         this.max_force = 2000;
 
     };
-    parts.Part = Part;
 
     Part.prototype = Object.create(Phaser.Sprite.prototype);
     Part.prototype.constructor = Part;
@@ -131,7 +125,7 @@ parts = <any>{};
      *             PARTS               *
      ***********************************/
 
-    var Body1 = function(position) {
+    export var Body1 = function(position) {
 
         var size = { height: 2, width: 2 };
         var scale = { x: .1, y: .1 };
@@ -154,12 +148,11 @@ parts = <any>{};
         this.body.outOfBoundsKill = true;
 
     };
-    parts.Body1 = Body1;
 
     Body1.prototype = Object.create(Part.prototype);
     Body1.prototype.constructor = Body1;
 
-    var Thruster = function(position, body, bodyPos, options) {
+    export var Thruster = function(position, body, bodyPos, options) {
 
         this.playerBody = body;
         this.fixed = options ? options.fixed : false;
@@ -193,7 +186,6 @@ parts = <any>{};
         game.physics.p2.createLockConstraint(body, this, [cxy.cx, cxy.cy], 0, this.max_force);
 
     };
-    parts.Thruster = Thruster;
 
     Thruster.prototype = Object.create(Part.prototype);
     Thruster.prototype.constructor = Thruster;
@@ -239,7 +231,7 @@ parts = <any>{};
 
     };
 
-    var Wheel = function(position, body, bodyPos, options) {
+    export var Wheel = function(position, body, bodyPos, options) {
 
         var size = { height: 1, width: 1 };
         var scale = { x: .04, y: .04 };
@@ -264,12 +256,13 @@ parts = <any>{};
             body, [cx, cy], this, [0, 0], this.max_force);
 
     };
-    parts.Wheel = Wheel;
 
     Wheel.prototype = Object.create(Part.prototype);
     Wheel.prototype.constructor = Wheel;
 
     Wheel.prototype.updateCallback = function () {
+
+        // TODO: only enable motors if wheel speed < motor speed
 
         if (robots.cursors.right.isDown || robots.wasd.right.isDown) {
 
@@ -293,7 +286,7 @@ parts = <any>{};
 
     };
 
-    var Chaingun = function(position, body, bodyPos, options) {
+    export var Chaingun = function(position, body, bodyPos, options) {
 
         var size = { height: 1, width: 2 };
         var scale = { x: .2, y: .2 };
@@ -319,7 +312,6 @@ parts = <any>{};
         game.physics.p2.createLockConstraint(body, this, [cx, cy], 0, this.max_force);
 
     };
-    parts.Chaingun = Chaingun;
 
     Chaingun.prototype = Object.create(Part.prototype);
     Chaingun.prototype.constructor = Chaingun;
@@ -355,7 +347,7 @@ parts = <any>{};
      *          PROJECTILES            *
      ***********************************/
 
-    var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
+    export var Projectile = function (x, y, sprite, gun, scale, mainPlayer) {
 
         this._acceleration = 0;
         this._speed = 0;
@@ -384,7 +376,6 @@ parts = <any>{};
         this.fixedRotate = true;
 
     };
-    parts.Projectile = Projectile;
 
     Projectile.prototype = Object.create(Phaser.Sprite.prototype);
     Projectile.prototype.constructor = Projectile;
@@ -401,7 +392,7 @@ parts = <any>{};
 
     }
 
-    var Rocket = function (x, y, gun, mainPlayer) {
+    export var Rocket = function (x, y, gun, mainPlayer?) {
 
         this.collideCallback = missleHit;
         Projectile.call(this, x, y, 'rocket', gun, [.15, .1], mainPlayer);
@@ -411,12 +402,11 @@ parts = <any>{};
         this.body.moveBackward(50);
 
     }
-    parts.Rocket = Rocket;
 
     Rocket.prototype = Object.create(Projectile.prototype);
     Rocket.prototype.constructor = Rocket;
 
-    var Bullet = function (x, y, gun, mainPlayer) {
+    export var Bullet = function (x, y, gun, mainPlayer?) {
 
         Projectile.call(this, x, y, 'bullet', gun, [.34, .34], mainPlayer);
         //this.scale.setTo(.34, .34);
@@ -424,7 +414,6 @@ parts = <any>{};
         //this._acceleration = 1200;
 
     }
-    parts.Bullet = Bullet;
 
     Bullet.prototype = Object.create(Projectile.prototype);
     Bullet.prototype.constructor = Bullet;
@@ -440,4 +429,4 @@ parts = <any>{};
 
     }
 
-}(parts);
+}

@@ -66,14 +66,17 @@
     <Content Include="assets\tiles\stone.png" />
     <Content Include="assets\tiles\tileset-slanted.png" />
     <Content Include="assets\tiles\tileset.png" />
+    <Content Include="scripts\libraries\phaser.js" />
     <Content Include="style\jquery-ui.min.css" />
     <Content Include="style\workshop.css" />
     <Content Include="index.html" />
     <Content Include="scripts\libraries\jquery-2.2.1.min.js" />
     <Content Include="scripts\libraries\jquery-ui.min.js" />
-    <TypeScriptCompile Include="scripts\parts.ts" />
     <Content Include="scripts\libraries\phaser.min.js" />
-    <TypeScriptCompile Include="scripts\robots.ts" />
+    <TypeScriptCompile Include="scripts\parts.ts" />
+    <TypeScriptCompile Include="scripts\robots.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="scripts\state.ts" />
     <TypeScriptCompile Include="scripts\workshop.ts" />
     <Content Include="web.config" />
@@ -94,6 +97,7 @@
     <Content Include="assets\map\tilemap6.json" />
     <Content Include="assets\map\tileset.pdn" />
     <Content Include="README.md" />
+    <Content Include="scripts\libraries\phaser.map" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

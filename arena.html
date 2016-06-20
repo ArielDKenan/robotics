@@ -7,9 +7,8 @@
     <meta charset="UTF-8" />
 
     <title>ROBOTS SHALL INHERIT THE EARTH</title>
-
-    <script src="http://cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
-    <!--<script src="js/libraries/phaser.min.js"></script>-->
+    
+    <!--<script src="http://cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>-->
 
     <style type="text/css">
         body { margin: 0; }
@@ -19,22 +18,24 @@
 
 <body>
 
-<script src="scripts/util.js"></script>
-<script src="scripts/parts.js"></script>
-<script src="scripts/robots.js"></script>
-<script src="scripts/state.js"></script>
+    <script src="scripts/libraries/phaser.js"></script>
 
-<script type="text/javascript">
+    <script src="scripts/util.js"></script>
+    <script src="scripts/parts.js"></script>
+    <script src="scripts/robots.js"></script>
+    <script src="scripts/state.js"></script>
 
-	var game = new Phaser.Game(800, 640, Phaser.AUTO, 'game');
+    <script type="text/javascript">
 
-	game.state.add('Boot', robots.Boot);
-	game.state.add('Preload', robots.Preload);
-	game.state.add('Arena', robots.Robotics);
+	    var game = new Phaser.Game(800, 640, Phaser.AUTO, 'game');
+
+	    game.state.add('Boot', robots.Boot);
+	    game.state.add('Preload', robots.Preload);
+	    game.state.add('Arena', robots.Robotics);
 	
-	game.state.start('Boot', true, true);
+	    game.state.start('Boot', true, true);
 
-</script>
+    </script>
 
 </body>
 

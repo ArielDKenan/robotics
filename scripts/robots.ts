@@ -1,8 +1,7 @@
+﻿
+var robots = <any>{};
 
-declare var robots: any;
-robots = {};
-
-~function (robots) {
+!function (robots) {
 
     'use strict';
 
@@ -14,7 +13,7 @@ robots = {};
         }
 
     }
-    robots.DEBUG_MODE = true;
+    robots.DEBUG_MODE = false;
 
     var Robotics = function () {
 
@@ -64,7 +63,7 @@ robots = {};
     var playerCollisionGroup, player2CollisionGroup, gunCollisionGroup, wheelCollisionGroup,
         projectileCollisionGroup, projectileCollisionGroup2, thrusterCollisionGroup,
         tilesCollisionGroup, collectCollisionGroup;
-    
+
     Robotics.prototype.create = function create() {
 
         this.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -176,7 +175,7 @@ robots = {};
         map.addTilesetImage('mario_star');
         map.addTilesetImage('slanted');
         map.addTilesetImage('slantless');
-        
+
         var layer = map.createLayer('Tile Layer 1');
         var collectLayer = map.createLayer('Collect Layer');
         var otherLayer = map.createLayer('Other Layer');
@@ -186,7 +185,7 @@ robots = {};
         var tileObjects = this.game.physics.p2.convertTilemap(map, layer);
 
         map.setCollisionBetween(0, 5, true, layer);
-        map.setCollision([45,46,47], true, collectLayer);
+        map.setCollision([45, 46, 47], true, collectLayer);
 
         var slantedTiles = this.game.physics.p2.convertCollisionObjects(map, "Object Layer 1");
 
@@ -201,18 +200,18 @@ robots = {};
         map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);*/
 
         var starObjects = this.game.physics.p2.convertTilemap(map, collectLayer);
-        
+
         starObjects.forEach(function (s) {
             s.setCollisionGroup(collectCollisionGroup);
-            s.collides([playerCollisionGroup, player2CollisionGroup], function(a, b){
+            s.collides([playerCollisionGroup, player2CollisionGroup], function (a, b) {
                 //console.log(a);
                 //this.game.physics.p2.removeBody(a);
             }, s);
             // s.animations.add('die', [0], 10, false);
             // s.animations.play('die', null, false, true);
         });
-        
-        
+
+
         /*tileObjects.forEach(function (t) {
             t.setCollisionGroup(tilesCollisionGroup);
             t.collides([playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2]);
@@ -231,24 +230,24 @@ robots = {};
 
     Robotics.prototype.setAllCollisionGroups = function setAllCollisionGroups() {
 
-        playerCollisionGroup        = this.game.physics.p2.createCollisionGroup();
-        player2CollisionGroup       = this.game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup    = this.game.physics.p2.createCollisionGroup();
-        projectileCollisionGroup2   = this.game.physics.p2.createCollisionGroup();
-        gunCollisionGroup           = this.game.physics.p2.createCollisionGroup();
-        wheelCollisionGroup         = this.game.physics.p2.createCollisionGroup();
-        thrusterCollisionGroup      = this.game.physics.p2.createCollisionGroup();
-        tilesCollisionGroup         = this.game.physics.p2.createCollisionGroup();
-        collectCollisionGroup       = this.game.physics.p2.createCollisionGroup();
+        playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        player2CollisionGroup = this.game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        projectileCollisionGroup2 = this.game.physics.p2.createCollisionGroup();
+        gunCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        wheelCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        thrusterCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        collectCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
         this.game.physics.p2.updateBoundsCollisionGroup();
 
-        robots.playerCollisionGroup         = playerCollisionGroup;
-        robots.player2CollisionGroup        = player2CollisionGroup;
-        robots.tilesCollisionGroup          = tilesCollisionGroup;
-        robots.projectileCollisionGroup     = projectileCollisionGroup;
-        robots.projectileCollisionGroup2    = projectileCollisionGroup2;
-        robots.collectCollisionGroup        = collectCollisionGroup;
+        robots.playerCollisionGroup = playerCollisionGroup;
+        robots.player2CollisionGroup = player2CollisionGroup;
+        robots.tilesCollisionGroup = tilesCollisionGroup;
+        robots.projectileCollisionGroup = projectileCollisionGroup;
+        robots.projectileCollisionGroup2 = projectileCollisionGroup2;
+        robots.collectCollisionGroup = collectCollisionGroup;
 
     }
 
@@ -356,10 +355,10 @@ robots = {};
         constraint1 = this.game.physics.p2.createLockConstraint(badguy, mgun, [0, 30], 9, MAX_FORCE);
         constraint2 = this.game.physics.p2.createLockConstraint(badguy, thruster1, [35, 10], 0, MAX_FORCE);
         constraint3 = this.game.physics.p2.createLockConstraint(badguy, thruster2, [-35, 10], 0, MAX_FORCE);
-        leftWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width/2),
-            badguy.height/2], wheel1, [0, 0], MAX_FORCE);
-        rightWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [badguy.width/2,
-            badguy.height/2], wheel2, [0, 0], MAX_FORCE);
+        leftWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [-(badguy.width / 2),
+            badguy.height / 2], wheel1, [0, 0], MAX_FORCE);
+        rightWheel = this.game.physics.p2.createRevoluteConstraint(badguy, [badguy.width / 2,
+            badguy.height / 2], wheel2, [0, 0], MAX_FORCE);
 
         badguy.update = function update() {
 
@@ -370,8 +369,8 @@ robots = {};
             rightWheel.setMotorSpeed(0);
             leftWheel.disableMotor();
             rightWheel.disableMotor();
-            if  (boost_energy > BOOST_MAX_ENERGY) boost_energy = BOOST_MAX_ENERGY;
-            if (cursors.space.isDown && boost_energy>0) {
+            if (boost_energy > BOOST_MAX_ENERGY) boost_energy = BOOST_MAX_ENERGY;
+            if (cursors.space.isDown && boost_energy > 0) {
                 shouldAnimateFire = true;
                 thrustSpeed = BOOST_SPEED;
                 if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
@@ -443,7 +442,7 @@ robots = {};
                 thruster2.body.thrust(thrustSpeed || THRUST_SPEED)
             }
 
-            
+
             fire1.angle = thruster1.angle;
             fire2.angle = thruster2.angle;
 
@@ -451,9 +450,9 @@ robots = {};
                 t2 = thruster2.getBounds();
 
             fire1.x = t1.x;
-            fire1.y = t1.y + t1.height/2;
+            fire1.y = t1.y + t1.height / 2;
             fire2.x = t2.x;
-            fire2.y = t2.y + t2.height/2;
+            fire2.y = t2.y + t2.height / 2;
 
             if (shouldAnimateFire) {
                 fire1.animations.play('on');
@@ -486,5 +485,5 @@ robots = {};
 
     }
 
-}(robots || {});
+} (robots || {});
 
