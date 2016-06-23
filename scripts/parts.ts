@@ -6,7 +6,7 @@ module parts {
     /*********************************
      *            GLOBALS            *
      *********************************/
-    var STARTING_X = 300, STARTING_Y = 0,
+    var STARTING_X = 300, STARTING_Y = 100,
         PART_WIDTH = 45,  PART_HEIGHT = 45,
         DAMPING_FACTOR = .5;
 
@@ -36,10 +36,10 @@ module parts {
 
     };
 
-    /* Takes a JSON of a robot model and builds it */
-    export var buildABot = function (partList) {
-        
-        var b = game.add.existing(new parts.Body1({x:1, y:1}));
+    /* Takes a JSON of a robot model and builds it with Part classes */
+    export function buildABot(partList: any[]): Phaser.Sprite {
+
+        var b = game.add.existing(new parts.Body1({ x: 1, y: 1 }));
 
         partList.forEach(function (p) {
 
@@ -115,6 +115,7 @@ module parts {
             };
 
             this.max_force = 2000;
+
         }
 
         update() {

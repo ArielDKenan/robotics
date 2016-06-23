@@ -39,7 +39,7 @@ module robots {
             this.game.physics.p2.gravity.y = 1500; // Picked arbirary number
             this.game.physics.p2.restitution = 0; // Default value for collision 'bouncing'
             this.game.physics.p2.friction = 200;
-
+            
             this.setAllCollisionGroups();
             this.buildMap();
 
@@ -135,7 +135,6 @@ module robots {
             skyline.scale.setTo(1.5, 1);
             skyline.fixedToCamera = true;
 
-
             var map = this.game.add.tilemap('map', 16, 16);
             map.addTilesetImage('tileset');
             map.addTilesetImage('mario_star');
@@ -195,6 +194,9 @@ module robots {
         }
 
         setAllCollisionGroups() {
+
+            var allCollisionGroups = [playerCollisionGroup, player2CollisionGroup, projectileCollisionGroup, projectileCollisionGroup2,
+                                      gunCollisionGroup, wheelCollisionGroup];
 
             playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
             player2CollisionGroup = this.game.physics.p2.createCollisionGroup();
