@@ -3,7 +3,7 @@ module robots {
 
     'use strict';
 
-    export var DEBUG_MODE = false;
+    export var DEBUG_MODE = true;
 
     export var log = function (msg) {
 
@@ -13,6 +13,8 @@ module robots {
         }
 
     }
+
+    export var player;
 
     export var cursors, wasd;
 
@@ -42,6 +44,8 @@ module robots {
             
             this.setAllCollisionGroups();
             this.buildMap();
+            this.buildInputs();
+            this.buildCharacters();
 
             //this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
             //this.game.physics.p2.setBounds(0, 0, 800, 640, true, true, true, false);
@@ -55,27 +59,7 @@ module robots {
             ground.scale.setTo(3, .2);
             ground.body.immovable = false;*/
 
-            //buildOldBot();
-
-            cursors = this.game.input.keyboard.createCursorKeys();
-            cursors.space = this.game.input.keyboard.addKey(32);
-
-            wasd = {
-                up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
-                down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
-                left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
-                right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
-            };
-
-            if (localStorage.getItem('useDefault') === 'true' || !localStorage.getItem('partList')) {
-                this.buildOldBot();
-            } else {
-                var partList = JSON.parse(localStorage.getItem('partList'));
-                var player = parts.buildABot(partList);
-                this.game.camera.follow(player);
-            }
-
-            var playBot = [
+            /* var playBot = [
                 { type: parts.GUN_TYPE, position: { x: 2, y: 0 }, options: { projectileType: parts.ROCKET_TYPE } },
                 { type: parts.WHEEL_TYPE, position: { x: 0, y: 3 }, options: { movesRight: true } },
                 { type: parts.WHEEL_TYPE, position: { x: 1, y: 3 }, options: { movesRight: true } },
@@ -85,18 +69,7 @@ module robots {
                 { type: parts.THRUSTER_TYPE, position: { x: 3, y: 1 }, options: { fixed: true } }
             ];
 
-            //var player = parts.buildABot(playBot);
-
-            /*var bodyPos = { x: 1, y: 1 };
-            var b = this.game.add.existing(new parts.Body1(bodyPos));
-            var g = this.game.add.existing(new parts.Chaingun({ x: 2, y: 0 }, b, bodyPos, parts.BULLET_TYPE));
-            var w1 = this.game.add.existing(new parts.Wheel({ x: 2, y: 3 }, b, bodyPos, { movesRight: true }));
-            var w2 = this.game.add.existing(new parts.Wheel({ x: 3, y: 3 }, b, bodyPos, { movesRight: true }));
-            var w3 = this.game.add.existing(new parts.Wheel({ x: 1, y: 3 }, b, bodyPos, { movesLeft: true }));
-            var w4 = this.game.add.existing(new parts.Wheel({ x: 0, y: 3 }, b, bodyPos, { movesLeft: true }));
-            //var w5 = this.game.add.existing(new parts.Wheel({ x: 4, y: 3 }, b, bodyPos));
-            var t1 = this.game.add.existing(new parts.Thruster({ x: 3, y: 1}, b, bodyPos, true));
-            var t2 = this.game.add.existing(new parts.Thruster({ x: 0, y: 1}, b, bodyPos, true));*/
+            var player = parts.buildABot(playBot); */
 
         }
 
@@ -112,6 +85,40 @@ module robots {
             if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
             this.game.debug.text(title, 32, 32, '#EE00CC');
             //this.game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
+
+        }
+
+        buildCharacters() {
+
+            if (localStorage.getItem('useDefault') === 'true' || !localStorage.getItem('partList')) {
+
+                this.buildOldBot();
+
+            } else {
+
+                var partList = JSON.parse(localStorage.getItem('partList'));
+                player = parts.buildABot(partList);
+                this.game.camera.follow(player.body);
+
+            }
+
+            log(NPC);
+            var drone = new NPC(700, 300, 'drone');
+
+        }
+
+        buildInputs() {
+
+            cursors = this.game.input.keyboard.createCursorKeys();
+            // cursors.space = this.game.input.keyboard.addKey(32);
+            cursors.space = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+
+            wasd = {
+                up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+                down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+                left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+                right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+            };
 
         }
 
@@ -207,6 +214,7 @@ module robots {
             thrusterCollisionGroup = this.game.physics.p2.createCollisionGroup();
             tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
             collectCollisionGroup = this.game.physics.p2.createCollisionGroup();
+            npcCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
             this.game.physics.p2.updateBoundsCollisionGroup();
 

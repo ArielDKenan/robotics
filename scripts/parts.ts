@@ -37,9 +37,10 @@ module parts {
     };
 
     /* Takes a JSON of a robot model and builds it with Part classes */
-    export function buildABot(partList: any[]): Phaser.Sprite {
+    export function buildABot(partList: any[]): any {
 
         var b = game.add.existing(new parts.Body1({ x: 1, y: 1 }));
+        var player = { body: <Phaser.Sprite>b, part: [] };
 
         partList.forEach(function (p) {
 
@@ -49,11 +50,11 @@ module parts {
             else if (p.type === parts.WHEEL_TYPE) construct = Wheel;
             else if (p.type === parts.THRUSTER_TYPE) construct = Thruster;
 
-            game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options));
+            player.part.push(game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options)));
 
         });
 
-        return b;
+        return player;
 
     }
 
@@ -412,6 +413,10 @@ module parts {
             mainPlayer = true;
             this.body.setCollisionGroup(mainPlayer ? robots.projectileCollisionGroup : robots.projectileCollisionGroup2);
             this.body.collides([robots.tilesCollisionGroup, (!mainPlayer ? robots.playerCollisionGroup : robots.player2CollisionGroup)], this.collideCallback, this);
+            this.body.collides(robots.npcCollisionGroup, (a, b) => {
+                this.collideCallback(a, b);
+                b.sprite.destroy(); // TODO: use safeDestroy
+            }, this);
             this.body.collideWorldBounds = false;
             this.body.outOfBoundsKill = true;
 
@@ -455,7 +460,6 @@ module parts {
             exp.scale.setTo(.5);
             exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
             exp.animations.play('boom', null, false, true);
-            robots.log('hit!');
             if (missile.destroy) missile.destroy();
 
         }

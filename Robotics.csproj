@@ -23,7 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="arena.html" />
+    <Content Include="index.html" />
     <Content Include="assets\img\background.jpg" />
     <Content Include="assets\img\baddie.png" />
     <Content Include="assets\img\body1.png" />
@@ -67,25 +67,26 @@
     <Content Include="assets\tiles\tileset-slanted.png" />
     <Content Include="assets\tiles\tileset.png" />
     <Content Include="scripts\libraries\phaser.js" />
+    <Content Include="scripts\libraries\phaser.min.js" />
     <Content Include="style\jquery-ui.min.css" />
     <Content Include="style\workshop.css" />
-    <Content Include="index.html" />
+    <Content Include="workshop.html" />
     <Content Include="scripts\libraries\jquery-2.2.1.min.js" />
     <Content Include="scripts\libraries\jquery-ui.min.js" />
-    <Content Include="scripts\libraries\phaser.min.js" />
+    <TypeScriptCompile Include="scripts\npcs.ts" />
     <TypeScriptCompile Include="scripts\parts.ts" />
     <TypeScriptCompile Include="scripts\robots.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="scripts\state.ts" />
+    <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
     <TypeScriptCompile Include="scripts\workshop.ts" />
     <Content Include="web.config" />
     <TypeScriptCompile Include="scripts\util.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery.d.ts" />
     <TypeScriptCompile Include="scripts\typings\jqueryui.d.ts" />
     <TypeScriptCompile Include="scripts\typings\p2.d.ts" />
-    <TypeScriptCompile Include="scripts\typings\phaser.comments.d.ts" />
-    <TypeScriptCompile Include="scripts\typings\pixi.comments.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\img\laser.pdn" />

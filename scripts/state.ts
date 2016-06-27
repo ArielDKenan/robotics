@@ -61,8 +61,8 @@ module robots {
             this.load.image('sky', 'assets/tiles/sky.png');
             this.load.image('skyline', 'assets/tiles/skyline.png');
 
-            this.load.image('rocket', 'assets/img/grenada.png');
-            this.load.image('bullet', 'assets/img/bullet.png');
+            this.load.image('star', 'assets/img/star.png');
+            this.load.image('mario_star', 'assets/img/mario_star.png');
 
             this.load.image('wheel', 'assets/img/kirby_wheel.png');
             this.load.image('gun', 'assets/img/machinegun.png');
@@ -70,13 +70,16 @@ module robots {
             this.load.image('body1', 'assets/img/body1.png');
             this.load.image('body2', 'assets/img/body2.png');
 
-            this.load.image('star', 'assets/img/star.png');
-            this.load.image('mario_star', 'assets/img/mario_star.png');
+            this.load.spritesheet('drone', 'assets/img/drone.png', 160, 160);
+
+            this.load.image('rocket', 'assets/img/grenada.png');
+            this.load.image('bullet', 'assets/img/bullet.png');
 
             this.load.spritesheet('explosion', 'assets/img/explosion_h.png', 200, 150);
             this.load.spritesheet('fire', 'assets/img/fire_anim.png', 64, 64);
-            this.load.spritesheet('dude', 'assets/img/dude.png', 32, 48);
-            this.load.spritesheet('baddie', 'assets/img/baddie.png', 32, 32);
+
+            // this.load.spritesheet('dude', 'assets/img/dude.png', 32, 48);
+            // this.load.spritesheet('baddie', 'assets/img/baddie.png', 32, 32);
 
         }
 

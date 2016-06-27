@@ -69,14 +69,14 @@ workshop = {};
             localStorage.setItem('useDefault', 'false');
             var jsonList = JSON.stringify(partList);
             localStorage.setItem('partList', jsonList);
-            document.location.href = '/robots/arena.html';
-            document.location.href = './arena.html';
+            // document.location.href = '/robots/';
+            document.location.href = './';
         });
 
         $('.default-btn').on('click', function () {
             localStorage.setItem('useDefault', 'true');
-            document.location.href = '/robots/arena.html';
-            document.location.href = './arena.html';
+            // document.location.href = '/robots/';
+            document.location.href = './';
         });
 
         $('.reset-btn').on('click', function (){
