@@ -3,6 +3,24 @@ module robots {
 
     'use strict';
 
+    /*** GAME ***/
+
+    export class Game extends Phaser.Game {
+
+        constructor() {
+
+            super(800, 640, Phaser.AUTO, 'game');
+
+            this.state.add('Boot', Boot);
+            this.state.add('Preload', Preload);
+            this.state.add('Arena', Robotics);
+
+            this.state.start('Boot', true, true);
+
+        }
+
+    }
+
     /*** BOOT ***/
 
     export class Boot extends Phaser.State {
@@ -22,8 +40,21 @@ module robots {
 
         create() {
 
+            if (this.game.device.desktop) {
+                this.input.maxPointers = 1;
+                this.stage.disableVisibilityChange = true;
+            } else {
+                this.game.scale.forceLandscape = true;
+            }
+            
+            this.game.scale.minWidth = 480;
+            this.game.scale.minHeight = 260;
+            this.game.scale.maxWidth = 800;
+            this.game.scale.maxHeight = 640;
+
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.pageAlignHorizontally = true;
+
             this.state.start('Preload', true);
 
         }
@@ -93,10 +124,4 @@ module robots {
 
  }
 
-var game = new Phaser.Game(800, 640, Phaser.AUTO, 'game');
-
-game.state.add('Boot', robots.Boot);
-game.state.add('Preload', robots.Preload);
-game.state.add('Arena', robots.Robotics);
-
-game.state.start('Boot', true, true);
+var game = new robots.Game();

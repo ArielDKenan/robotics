@@ -142,7 +142,7 @@ module parts {
 
             super('body2', size, position, scale);
 
-            game.physics.p2.enable(this, robots.DEBUG_MODE);
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.body.setCircle(25);
             this.body.fixedRotation = false;
@@ -177,7 +177,7 @@ module parts {
 
             super('thruster', size, position, scale);
 
-            game.physics.p2.enable(this, robots.DEBUG_MODE);
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.playerBody = body;
             this.fixed = options ? options.fixed : false;
@@ -192,7 +192,7 @@ module parts {
             this.body.collides(this.collidesWith);
             this.body.collides(robots.collectCollisionGroup, this.collectCallback, this);
 
-            this.group = game.add.group(this);
+            this.group = this.game.add.group(this);
             this.fire = this.group.create(-this.width, this.height / 2, 'fire');
             this.fire.scale.setTo(1.5);
             this.fire.animations.add('on', [5, 4, 3, 2, 1, 0, 1, 2, 3, 4], 15, true);
@@ -201,7 +201,7 @@ module parts {
             //this.addChild(fire2);
 
             var cxy = calcCXY(position, bodyPos);
-            game.physics.p2.createLockConstraint(body, this, [cxy.cx, cxy.cy], 0, this.max_force);
+            this.game.physics.p2.createLockConstraint(body, this, [cxy.cx, cxy.cy], 0, this.max_force);
 
         }
 
@@ -275,7 +275,7 @@ module parts {
             this.options = options || { movesRight: true, movesLeft: true };
             this.motor_speed = 30;
 
-            game.physics.p2.enable(this, robots.DEBUG_MODE);
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.body.mass = 1;
             this.body.damping = DAMPING_FACTOR;
@@ -286,7 +286,7 @@ module parts {
 
             var cxy = calcCXY(bodyPos, position);
             var cx = cxy.cx, cy = cxy.cy;
-            this.constraint = game.physics.p2.createRevoluteConstraint(
+            this.constraint = this.game.physics.p2.createRevoluteConstraint(
                 body, [cx, cy], this, [0, 0], this.max_force);
 
         }
@@ -337,7 +337,7 @@ module parts {
             if (this.projectileType === parts.BULLET_TYPE) this.fireRate = 80;
             else if (this.projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
 
-            game.physics.p2.enable(this, robots.DEBUG_MODE);
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.body.mass = 1.5;
             this.body.damping = DAMPING_FACTOR;
@@ -348,30 +348,30 @@ module parts {
 
             var cxy = calcCXY(position, bodyPos);
             var cx = cxy.cx, cy = cxy.cy;
-            game.physics.p2.createLockConstraint(body, this, [cx, cy], 0, this.max_force);
+            this.game.physics.p2.createLockConstraint(body, this, [cx, cy], 0, this.max_force);
 
         }
 
         update() {
 
-            var mouseX = game.input.activePointer.x + game.camera.x;
-            var mouseY = game.input.activePointer.y + game.camera.y;
+            var mouseX = this.game.input.activePointer.x + this.game.camera.x;
+            var mouseY = this.game.input.activePointer.y + this.game.camera.y;
         
             this.body.rotation = Phaser.Math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
 
-            if (game.input.activePointer.isDown) {
+            if (this.game.input.activePointer.isDown) {
 
                 if (this.projectileType === parts.ROCKET_TYPE) {
-                    if (game.time.now > this.lastFire + this.fireRate) {
-                        this.lastFire = game.time.now;
-                        var newR = game.add.existing(new parts.Rocket(this.body.x, this.body.y, this, true));
+                    if (this.game.time.now > this.lastFire + this.fireRate) {
+                        this.lastFire = this.game.time.now;
+                        var newR = this.game.add.existing(new parts.Rocket(this.body.x, this.body.y, this, true));
                     }
 
                 } else if (this.projectileType === parts.BULLET_TYPE) {
 
-                    if (game.time.now > this.lastFire + this.fireRate) {
-                        this.lastFire = game.time.now;
-                        var newB = game.add.existing(new parts.Bullet(this.body.x, this.body.y, this, true));
+                    if (this.game.time.now > this.lastFire + this.fireRate) {
+                        this.lastFire = this.game.time.now;
+                        var newB = this.game.add.existing(new parts.Bullet(this.body.x, this.body.y, this, true));
                     }
                 
                 }
@@ -406,7 +406,7 @@ module parts {
             this._acceleration = 0;
             this._speed = 0;
 
-            game.physics.p2.enable(this, robots.DEBUG_MODE);
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.body.data.gravityScale = 0;
 
@@ -426,7 +426,7 @@ module parts {
 
         }
 
-        collideCallback(a, b) { if (a && a.destroy) a.destroy(); }
+        collideCallback(a, b) { a && a.destroy && a.destroy(); }
 
         update() {
 
@@ -456,7 +456,7 @@ module parts {
 
         collideCallback(missile) {
 
-            var exp = game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
+            var exp = this.game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
             exp.scale.setTo(.5);
             exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
             exp.animations.play('boom', null, false, true);

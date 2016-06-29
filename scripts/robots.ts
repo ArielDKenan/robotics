@@ -3,6 +3,8 @@ module robots {
 
     'use strict';
 
+    var problem: boolean = false;
+
     export var DEBUG_MODE = true;
 
     export var log = function (msg) {
@@ -104,6 +106,8 @@ module robots {
 
             log(NPC);
             var drone = new NPC(700, 300, 'drone');
+            this.game.add.existing(drone);
+            drone.begin([100, 600, 300, 1000], [50, 150]);
 
         }
 

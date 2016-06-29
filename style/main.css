@@ -1,0 +1,13 @@
+﻿
+body {
+    text-align: center;
+}
+
+.stats-box {
+    background-color: chocolate;
+    width: 800px;
+    height: 150px;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
