@@ -31,14 +31,11 @@ namespace robots {
 
     export var npcCollisionGroup;
 
-    function test(config): any {
-        return config;
-    }
-
     export class NPC extends Phaser.Sprite {
 
         path: IPoint[];
         pathIndex: number;
+        running: boolean;
 
         constructor(x, y, key) {
 
@@ -53,12 +50,15 @@ namespace robots {
             this.body.setCollisionGroup(npcCollisionGroup);
             this.body.collides([projectileCollisionGroup, projectileCollisionGroup2]);
 
+            this.running = false;
+
         }
 
         begin(x: number[], y: number[]): void {
 
             this.animations.play('fly', null, true);
             this.plot(x, y);
+            this.running = true;
 
         }
 
@@ -67,7 +67,8 @@ namespace robots {
             this.pathIndex = 0;
             this.path = [];
 
-            var res = Math.max(x.reduce((a, b) => Math.abs(b - a), 0), y.reduce((a, b) => Math.abs(b - a), 0));
+            var summer = (a, b) => { Math.abs(b - a) }
+            var res = Math.max(x.reduce(summer, 0), y.reduce(summer, 0));
             res = 1 / res;
 
             for (var i = 0; i <= 1; i += res) {
@@ -82,15 +83,11 @@ namespace robots {
 
         update() {
 
-            if (this.path) {
+            if (this.running) {
                 this.x = this.path[this.pathIndex].x;
                 this.y = this.path[this.pathIndex].y;
 
-                this.pathIndex++;
-
-                if (this.pathIndex >= this.path.length) {
-                    this.pathIndex = 0;
-                }
+                if (++this.pathIndex >= this.path.length) this.pathIndex = 0;
             }
 
         }

@@ -6,7 +6,7 @@ declare interface String {
     reverse: Function;
 }
 
-String.prototype.reverse = function () { return this.valueOf().split('').reverse().join(''); };
+String.prototype.reverse = function (): string { return this.split('').reverse().join(''); };
 
 var util = {
 
@@ -28,10 +28,12 @@ var util = {
 
         var options, name, src, copy, target = {},
             k = 0, l = arguments.length, deep = false, clone, isArray = false;
+
         if ('boolean' === typeof arguments[0]) {
             deep = arguments[0];
             k++;
         }
+
         for (; k < l; k++) {
             if ((options = arguments[k]) !== null) {
                 for (name in options) {
@@ -42,6 +44,7 @@ var util = {
                 }
             }
         }
+
         return target;
 
     },
@@ -184,13 +187,13 @@ var util = {
 
     debugMode: true,
 
-    debugMsg: function (str, error: boolean) {
+    debugMsg: function (str, error?: boolean) {
 
         if (this.debugMode) {
-            // var printer = error ? console.warn : console.debug;
+            // var printer = error ? console.warn : console.log;
             var text = '%c' + str;
-            console.debug(text, 'color: #0F0; background: #000');
-            console.debug('%cExecuted at line:' + this.getExecutedLine(), 'color: #0CF; background: #000');
+            console.log(text, 'color: #0F0; background: #000');
+            console.log('%cExecuted at line:' + this.getExecutedLine(), 'color: #0CF; background: #000');
         }
 
     },

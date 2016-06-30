@@ -12,7 +12,7 @@
 
     <style>body { margin: 0; }</style>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
     <script src="scripts/stats.js"></script>
 
 </head>
@@ -29,13 +29,14 @@
         
     
     <div style="text-align: center">
-        <div ng-app="" class="stats-box">
-            <form>
-                <input type="radio" name="gun" />Rockets
-                <input type="radio" name="gun" />Bullets
-            </form>
-            <p>Name : <input type="text" ng-model="name" placeholder="Enter name here"></p>
-            <h1>Hello {{name}}</h1>
+        <div ng-app="stats" class="stats-box">
+            <div ng-controller="StatsController as vm">
+                <label ng-repeat="projectile in projectiles">
+                    <input ng-change="changeWeapon()" type="radio" name="projectile-type" ng-model="vm.selectedProjectile" ng-value="projectile.type" />
+                    {{projectile.name}}
+                </label>
+                Selected Projectile: {{projectiles[vm.selectedProjectile - 1].name}}
+            </div>
         </div>
     </div>
 

@@ -13,6 +13,8 @@ module parts {
     export var BULLET_TYPE = Math.pow(2, 0);
     export var ROCKET_TYPE = Math.pow(2, 1);
 
+    export var selectedProjectile = ROCKET_TYPE;
+
     export var BODY_TYPE = Math.pow(2, 0);
     export var GUN_TYPE = Math.pow(2, 1);
     export var WHEEL_TYPE = Math.pow(2, 2);
@@ -40,7 +42,7 @@ module parts {
     export function buildABot(partList: any[]): any {
 
         var b = game.add.existing(new parts.Body1({ x: 1, y: 1 }));
-        var player = { body: <Phaser.Sprite>b, part: [] };
+        var player = { body: <Phaser.Sprite>b, part: [], selectedWeapon: ROCKET_TYPE };
 
         partList.forEach(function (p) {
 
@@ -359,6 +361,14 @@ module parts {
         
             this.body.rotation = Phaser.Math.angleBetween(this.body.x, this.body.y, mouseX, mouseY);
 
+            if (robots.player.selectedProjectile == ROCKET_TYPE) {
+                this.projectileType = ROCKET_TYPE;
+                this.fireRate = 500;
+            } else if (robots.player.selectedProjectile == BULLET_TYPE) {
+                this.projectileType = BULLET_TYPE;
+                this.fireRate = 80;
+            }
+
             if (this.game.input.activePointer.isDown) {
 
                 if (this.projectileType === parts.ROCKET_TYPE) {
@@ -414,8 +424,14 @@ module parts {
             this.body.setCollisionGroup(mainPlayer ? robots.projectileCollisionGroup : robots.projectileCollisionGroup2);
             this.body.collides([robots.tilesCollisionGroup, (!mainPlayer ? robots.playerCollisionGroup : robots.player2CollisionGroup)], this.collideCallback, this);
             this.body.collides(robots.npcCollisionGroup, (a, b) => {
-                this.collideCallback(a, b);
-                b.sprite.destroy(); // TODO: use safeDestroy
+                a.destroy();
+                var exp = this.game.add.sprite(b.x, b.y, 'explosion');
+                exp.scale.setTo(.8);
+                exp.x -= exp.width / 2;
+                exp.y -= exp.height / 2;
+                exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
+                exp.animations.play('boom', null, false, true);
+                b.sprite.destroy(); // TODO: safeDestroy
             }, this);
             this.body.collideWorldBounds = false;
             this.body.outOfBoundsKill = true;
@@ -472,7 +488,7 @@ module parts {
 
             super(x, y, 'bullet', gun, [.34, .34], mainPlayer);
             //this.scale.setTo(.34, .34);
-            this._speed = 2000;
+            this._speed = 1000;
             //this._acceleration = 1200;
 
         }

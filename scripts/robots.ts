@@ -31,8 +31,8 @@ module robots {
         constructor() {
 
             super();
-            robots.log('Arena state.');
-            robots.log('[[ DEBUG MODE IS ON ]]');
+            log('Arena state.');
+            log('[[ DEBUG MODE IS ON ]]');
 
         }
 
@@ -103,8 +103,7 @@ module robots {
                 this.game.camera.follow(player.body);
 
             }
-
-            log(NPC);
+            
             var drone = new NPC(700, 300, 'drone');
             this.game.add.existing(drone);
             drone.begin([100, 600, 300, 1000], [50, 150]);

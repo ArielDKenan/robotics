@@ -3,7 +3,7 @@
 declare var workshop: any;
 workshop = {};
 
-(function (workshop) {
+!function (workshop) {
 
     var GUN_TYPE = Math.pow(2, 1);
     var WHEEL_TYPE = Math.pow(2, 2);
@@ -84,6 +84,6 @@ workshop = {};
         });
     }
 
-})(workshop);
+}(workshop);
 
 $(workshop.init);
