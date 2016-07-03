@@ -31,11 +31,20 @@
     <div style="text-align: center">
         <div ng-app="stats" class="stats-box">
             <div ng-controller="StatsController as vm">
-                <label ng-repeat="projectile in projectiles">
-                    <input ng-change="changeWeapon()" type="radio" name="projectile-type" ng-model="vm.selectedProjectile" ng-value="projectile.type" />
-                    {{projectile.name}}
-                </label>
-                Selected Projectile: {{projectiles[vm.selectedProjectile - 1].name}}
+                <div>
+                    <label ng-repeat="projectile in projectiles">
+                        <input ng-change="changeWeapon()" type="radio" name="projectile-type" ng-model="vm.selectedProjectile" ng-value="projectile.type" />
+                        {{projectile.name}}
+                    </label>
+                    Selected Projectile: {{projectiles[vm.selectedProjectile - 1].name}}
+                </div>
+                <div>
+                    Motor Speed: <input value="30" type="number" min="0" max="99" ng-model="vm.motorSpeed" ng-change="changeMotorSpeed()"/>
+                </div>
+                <div>
+                    <span>X-Velocity: {{velocity.x}}</span>
+                    <span>Y-Velocity: {{velocity.y}}</span>
+                </div>
             </div>
         </div>
     </div>

@@ -20,6 +20,8 @@ module parts {
     export var WHEEL_TYPE = Math.pow(2, 2);
     export var THRUSTER_TYPE = Math.pow(2, 3);
 
+    export var motorSpeed = 30;
+
     /*********************************
      *         CALCULATIONS          *
      *********************************/
@@ -275,7 +277,6 @@ module parts {
             super('wheel', size, position, scale);
 
             this.options = options || { movesRight: true, movesLeft: true };
-            this.motor_speed = 30;
 
             this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
@@ -301,14 +302,14 @@ module parts {
 
                 if (this.options.movesRight) {
                     this.constraint.enableMotor();
-                    this.constraint.setMotorSpeed(-this.motor_speed);
+                    this.constraint.setMotorSpeed(-parts.motorSpeed);
                 }
 
             } else if (robots.cursors.left.isDown || robots.wasd.left.isDown) {
 
                 if (this.options.movesLeft) {
                     this.constraint.enableMotor();
-                    this.constraint.setMotorSpeed(this.motor_speed);
+                    this.constraint.setMotorSpeed(parts.motorSpeed);
                 }
 
             } else {
