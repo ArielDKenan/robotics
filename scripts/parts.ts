@@ -145,11 +145,15 @@ module parts {
             var scale = { x: .1, y: .1 };
 
             super('body2', size, position, scale);
+            //this.rotation = 90;
+            this.worldRotation = 2;
 
             this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
             this.body.setCircle(25);
             this.body.fixedRotation = false;
+            //var bb = new Phaser.Sprite(game, 1, 1);
+            //bb.rotation
             this.body.mass = .5;
             this.body.damping = DAMPING_FACTOR;
             this.body.data.gravityScale = 1;

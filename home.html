@@ -1,110 +1,184 @@
-﻿
-<!doctype html> 
-<html lang="en"> 
+﻿<!DOCTYPE html>
+<html lang="en">
 
-<head> 
+<head>
+    <meta charset="UTF-8">
+    <title>ROBOTS SHALL INHERIT THE EARTH - Workshop</title>
 
-    <meta charset="UTF-8" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+    <link href="style/workshop.css" rel="stylesheet" type="text/css">
+    <link href="style/jquery-ui.min.css" rel="stylesheet" type="text/css">
 
-    <title>ROBOTS SHALL INHERIT THE EARTH - Arena</title>
-
-    <link href="style/main.css" rel="stylesheet" type="text/css">
-
-    <style>body { margin: 0; }</style>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
-    <script src="scripts/stats.js"></script>
-
-    <script>
-
-// var stats;
-// (function (stats) {
-//     var StatsController = (function () {
-//         function StatsController($scope) {
-//             var _this = this;
-//             this.selectedProjectile = 1;
-//             $scope.projectiles = [{
-//                     id: 0,
-//                     type: parts.BULLET_TYPE,
-//                     name: 'Bullets'
-//                 },
-//                 {
-//                     id: 1,
-//                     type: parts.ROCKET_TYPE,
-//                     name: 'Rockets'
-//                 }];
-//             $scope.changeWeapon = function () {
-//                 robots.player.selectedProjectile = _this.selectedProjectile;
-//             };
-//             $scope.changeMotorSpeed = function () {
-//                 parts.motorSpeed = _this.motorSpeed;
-//             };
-//             $scope.velocity = { x: 0, y: 0 };
-//             setInterval(function () {
-//                 if (robots.player && robots.player.body && robots.player.body.body) {
-//                     $scope.velocity = robots.player.body.body.velocity;
-//                     $scope.$apply();
-//                 }
-//             }, 200);
-//         }
-//         return StatsController;
-//     }());
-//     var app = angular.module('stats', []);
-//     app.controller('StatsController', StatsController);
-//     stats.app = app;
-//     stats.StatsController = StatsController;
-//     console.debug(stats);
-// })(stats || (stats = {}));
-
-    </script>
-
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="scripts/workshop.js"></script>
+    <script src="scripts/libraries/jquery-ui.min.js"></script>
 </head>
 
 <body>
-    
-    <script src="scripts/libraries/phaser.js"></script>
 
-    <script src="scripts/util.js"></script>
-    <script src="scripts/parts.js"></script>
-    <script src="scripts/npcs.js"></script>
-    <script src="scripts/robots.js"></script>
-    <script src="scripts/state.js"></script>
-        
-    
-    <div style="text-align: center">
+<div class="main-container">
 
-        <div ng-app="stats" class="stats-box">
-            <div ng-controller="StatsController as vm">
-                <div>
-                    <label ng-repeat="projectile in projectiles">
-                        <input ng-change="changeWeapon()" type="radio" name="projectile-type" ng-model="vm.selectedProjectile" ng-value="projectile.type" />
-                        {{projectile.name}}
-                    </label>
-                    Selected Projectile: {{projectiles[vm.selectedProjectile - 1].name}}
-                </div>
-                <div>
-                    Motor Speed: <input value="30" type="number" min="0" max="99" ng-model="vm.motorSpeed" ng-change="changeMotorSpeed()"/>
-                </div>
-                <div>
-                    <span>X-Velocity: {{velocity.x | number:0}}</span>
-                    <span>Y-Velocity: {{velocity.y | number:0}}</span>
-                </div>
-            </div>
-            
-            <div class="workshop-button">
-                RETURN TO WORKSHOP
-            </div>
-        </div>
+    <h1>WORKSHOP</h1>    
 
-        <div>
-        </div>
-
+    <div class="left-container">
+        <div class="parts-holder"></div>
     </div>
 
-    <script>
-        document.getElementsByClassName('workshop-button')[0].addEventListener('click', (e) => document.location.href = './workshop.html')
-    </script>
+    <div class="right-container">
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">WHEEL</div>
+            <div class="part-thumb wheel">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="true">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">THRUSTER</div>
+            <div class="part-thumb thruster" data-fixed="false">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">RPG</div>
+            <div class="part-thumb rpg">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">RPG</div>
+            <div class="part-thumb rpg">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">CHAINGUN</div>
+            <div class="part-thumb machine-gun">
+                
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="title">CHAINGUN</div>
+            <div class="part-thumb machine-gun">
+                
+            </div>
+        </div>
+        <!--<div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+       <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="item-container">
+            <div class="empty-thumb">
+                <div class="title">EMPTY</div>
+            </div>
+        </div>
+        <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+        <div class="part-thumb thruster" style="opacity: 0;">PIVOTS</div>
+        <div class="part-thumb rpg" style="opacity: 0;">ROCKETS</div>
+        <div class="part-thumb machine-gun" style="opacity: 0;">BULLETS</div>-->
+    </div>
+    <div style="width: 100%; text-align: center; position: relative;">
+        <div style="width: 100%; display: inline-block;"></div>
+        <div class="btn-box" style="position: relative; display: inline-block;">
+            <div class="btn save-btn clickable">DEPLOY BOT</div>
+            <div class="btn default-btn clickable">USE DEFAULT</div>
+            <div class="btn reset-btn clickable">START OVER</div>
+        </div>
+        <div style="width: 100%; display: inline-block;"></div>
+    </div>
+</div>
+<footer>
+
+
+
+</footer>
 
 </body>
-
 </html>

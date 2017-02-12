@@ -104,10 +104,17 @@ module robots {
 
             }
             
-            var drone = new NPC(700, 300, 'drone');
-            this.game.add.existing(drone);
-            drone.begin([100, 600, 300, 1000], [50, 150]);
+            var drone1 = new NPC(700, 300, 'drone');
+            this.game.add.existing(drone1);
+            drone1.begin([100, 600, 300, 1000], [50, 150]);
 
+            var drone2 = new NPC(1000, 100, 'drone');
+            this.game.add.existing(drone2);
+            drone2.begin([100, 600, 300, 1000], [50, 150]);
+
+            var drone3 = new NPC(1400, 300, 'drone');
+            this.game.add.existing(drone3);
+            drone3.begin([100, 600, 300, 1000], [50, 150]);
         }
 
         buildInputs() {

@@ -45,8 +45,10 @@ workshop = {};
                         }
 
                         var id = parseInt($(this).attr('id'));
-                        var x = id % 5;
-                        var y = id / 5;
+                        // var x = id % 5;
+                        // var y = id / 5;
+                        var x = id / 5;
+                        var y = id % 5;
 
                         partList.push({ type: partType, position: { x: x, y: y } });
                     }
@@ -69,14 +71,12 @@ workshop = {};
             localStorage.setItem('useDefault', 'false');
             var jsonList = JSON.stringify(partList);
             localStorage.setItem('partList', jsonList);
-            // document.location.href = '/robots/';
-            document.location.href = './home.html';
+            document.location.href = './arena.html';
         });
 
         $('.default-btn').on('click', function () {
             localStorage.setItem('useDefault', 'true');
-            // document.location.href = '/robots/';
-            document.location.href = './home.html';
+            document.location.href = './arena.html';
         });
 
         $('.reset-btn').on('click', function (){
