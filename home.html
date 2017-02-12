@@ -1,0 +1,110 @@
+﻿
+<!doctype html> 
+<html lang="en"> 
+
+<head> 
+
+    <meta charset="UTF-8" />
+
+    <title>ROBOTS SHALL INHERIT THE EARTH - Arena</title>
+
+    <link href="style/main.css" rel="stylesheet" type="text/css">
+
+    <style>body { margin: 0; }</style>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script src="scripts/stats.js"></script>
+
+    <script>
+
+// var stats;
+// (function (stats) {
+//     var StatsController = (function () {
+//         function StatsController($scope) {
+//             var _this = this;
+//             this.selectedProjectile = 1;
+//             $scope.projectiles = [{
+//                     id: 0,
+//                     type: parts.BULLET_TYPE,
+//                     name: 'Bullets'
+//                 },
+//                 {
+//                     id: 1,
+//                     type: parts.ROCKET_TYPE,
+//                     name: 'Rockets'
+//                 }];
+//             $scope.changeWeapon = function () {
+//                 robots.player.selectedProjectile = _this.selectedProjectile;
+//             };
+//             $scope.changeMotorSpeed = function () {
+//                 parts.motorSpeed = _this.motorSpeed;
+//             };
+//             $scope.velocity = { x: 0, y: 0 };
+//             setInterval(function () {
+//                 if (robots.player && robots.player.body && robots.player.body.body) {
+//                     $scope.velocity = robots.player.body.body.velocity;
+//                     $scope.$apply();
+//                 }
+//             }, 200);
+//         }
+//         return StatsController;
+//     }());
+//     var app = angular.module('stats', []);
+//     app.controller('StatsController', StatsController);
+//     stats.app = app;
+//     stats.StatsController = StatsController;
+//     console.debug(stats);
+// })(stats || (stats = {}));
+
+    </script>
+
+</head>
+
+<body>
+    
+    <script src="scripts/libraries/phaser.js"></script>
+
+    <script src="scripts/util.js"></script>
+    <script src="scripts/parts.js"></script>
+    <script src="scripts/npcs.js"></script>
+    <script src="scripts/robots.js"></script>
+    <script src="scripts/state.js"></script>
+        
+    
+    <div style="text-align: center">
+
+        <div ng-app="stats" class="stats-box">
+            <div ng-controller="StatsController as vm">
+                <div>
+                    <label ng-repeat="projectile in projectiles">
+                        <input ng-change="changeWeapon()" type="radio" name="projectile-type" ng-model="vm.selectedProjectile" ng-value="projectile.type" />
+                        {{projectile.name}}
+                    </label>
+                    Selected Projectile: {{projectiles[vm.selectedProjectile - 1].name}}
+                </div>
+                <div>
+                    Motor Speed: <input value="30" type="number" min="0" max="99" ng-model="vm.motorSpeed" ng-change="changeMotorSpeed()"/>
+                </div>
+                <div>
+                    <span>X-Velocity: {{velocity.x | number:0}}</span>
+                    <span>Y-Velocity: {{velocity.y | number:0}}</span>
+                </div>
+            </div>
+            
+            <div class="workshop-button">
+                RETURN TO WORKSHOP
+            </div>
+        </div>
+
+        <div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementsByClassName('workshop-button')[0].addEventListener('click', (e) => document.location.href = './workshop.html')
+    </script>
+
+</body>
+
+</html>

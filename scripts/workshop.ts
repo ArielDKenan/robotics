@@ -70,13 +70,13 @@ workshop = {};
             var jsonList = JSON.stringify(partList);
             localStorage.setItem('partList', jsonList);
             // document.location.href = '/robots/';
-            document.location.href = './';
+            document.location.href = './home.html';
         });
 
         $('.default-btn').on('click', function () {
             localStorage.setItem('useDefault', 'true');
             // document.location.href = '/robots/';
-            document.location.href = './';
+            document.location.href = './home.html';
         });
 
         $('.reset-btn').on('click', function (){

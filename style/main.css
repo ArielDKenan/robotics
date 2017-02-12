@@ -6,8 +6,19 @@ body {
 .stats-box {
     background-color: chocolate;
     width: 800px;
-    height: 150px;
+    /* height: 70px; */
     margin: 0;
     padding: 0;
     display: inline-block;
+}
+
+.workshop-button {
+    display: inline-block;
+    background-color: mediumseagreen;
+    border: 1px solid black;
+    border-radius: 7px;
+    width: 60%;
+    min-width: 200px;
+    /* margin: 10px auto 10px auto; */
+    cursor: pointer;
 }

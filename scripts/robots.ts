@@ -5,8 +5,8 @@ module robots {
 
     var problem: boolean = false;
 
-    export var DEBUG_MODE = true;
-
+    export var DEBUG_MODE = false;
+    export var fakee = 'nothing';
     export var log = function (msg) {
 
         if (robots.DEBUG_MODE) {
@@ -83,7 +83,7 @@ module robots {
 
         render() {
 
-            var title = 'use WASD or arrow keys to move - use mouse to aim and shoot';
+            var title = 'use WASD or arrow keys to move, Mouse to aim and shoot, Space Bar for boost';
             if (robots.DEBUG_MODE) title += ' [[ DEBUG MODE ]]';
             this.game.debug.text(title, 32, 32, '#EE00CC');
             //this.game.debug.text('Boost Energy: ' + boost_energy, 32, 50);
@@ -238,7 +238,7 @@ module robots {
             var MOVE_SPEED = 0,
                 MOTOR_SPEED = 20,
                 THRUST_SPEED = 10000,
-                BOOST_SPEED = 17000;
+                BOOST_SPEED = 5000;
             var BOOST_COST = 0,
                 BOOST_MAX_ENERGY = 10000,
                 boost_energy = BOOST_MAX_ENERGY,
@@ -293,15 +293,15 @@ module robots {
             wheel2.body.setCircle(18);
             wheel1.body.setCollisionGroup(player2CollisionGroup);
             wheel2.body.setCollisionGroup(player2CollisionGroup);
-            wheel1.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
-            wheel2.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+            wheel1.body.collides([tilesCollisionGroup, playerCollisionGroup]);
+            wheel2.body.collides([tilesCollisionGroup, playerCollisionGroup]);
 
             thruster1.body.mass = 1;
             thruster2.body.mass = 1;
             thruster1.body.setCollisionGroup(player2CollisionGroup);
             thruster2.body.setCollisionGroup(player2CollisionGroup);
-            thruster1.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
-            thruster2.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+            thruster1.body.collides([tilesCollisionGroup, playerCollisionGroup]);
+            thruster2.body.collides([tilesCollisionGroup, playerCollisionGroup]);
 
             badguy.body.setCircle(25);
             badguy.body.fixedRotation = false;
@@ -309,10 +309,10 @@ module robots {
             badguy.body.damping = PLAYER_DAMPING;
             badguy.body.data.gravityScale = 1;
             badguy.body.setCollisionGroup(player2CollisionGroup);
-            badguy.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+            badguy.body.collides([tilesCollisionGroup, playerCollisionGroup]);
 
-            mgun.body.setCollisionGroup(player2CollisionGroup);
-            mgun.body.collides([tilesCollisionGroup, playerCollisionGroup, projectileCollisionGroup]);
+            //mgun.body.setCollisionGroup(player2CollisionGroup);
+            //mgun.body.collides([tilesCollisionGroup, playerCollisionGroup]);
             mgun.body.data.gravityScale = 0;
             mgun.body.damping = PLAYER_DAMPING;
 
@@ -440,12 +440,12 @@ module robots {
                 mgun.body.rotation = this.game.math.angleBetween(mgun.body.x, mgun.body.y, mouseX, mouseY);
 
                 if (this.game.input.activePointer.isDown) {
-                    if (selectedGun === ROCKET_LAUNCHER) {
+                    if (player.selectedProjectile === parts.ROCKET_TYPE) {
                         if (this.game.time.now > lastFire + ROCKET_FIRE_RATE) {
                             lastFire = this.game.time.now;
                             var newR = this.game.add.existing(new parts.Rocket(mgun.body.x, mgun.body.y, mgun));
                         }
-                    } else if (selectedGun === MACHINEGUN) {
+                    } else if (player.selectedProjectile === parts.BULLET_TYPE) {
                         if (this.game.time.now > lastFire + MACHINE_FIRE_RATE) {
                             lastFire = this.game.time.now;
                             var newB = this.game.add.existing(new parts.Bullet(mgun.body.x, mgun.body.y, mgun));
@@ -454,6 +454,8 @@ module robots {
                 }
 
             }
+
+            player = { body: <Phaser.Sprite>badguy, part: [], selectedProjectile: <Number>parts.ROCKET_TYPE };
 
         }
 

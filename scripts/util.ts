@@ -8,7 +8,9 @@ declare interface String {
 
 String.prototype.reverse = function (): string { return this.split('').reverse().join(''); };
 
-var util = {
+declare var util: any;
+
+util = {
 
     isPlainObject: function (obj) {
 

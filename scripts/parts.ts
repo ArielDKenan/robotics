@@ -10,10 +10,10 @@ module parts {
         PART_WIDTH = 45,  PART_HEIGHT = 45,
         DAMPING_FACTOR = .5;
 
-    export var BULLET_TYPE = Math.pow(2, 0);
-    export var ROCKET_TYPE = Math.pow(2, 1);
+    export var ROCKET_TYPE = Math.pow(2, 0);
+    export var BULLET_TYPE = Math.pow(2, 1);
 
-    export var selectedProjectile = ROCKET_TYPE;
+    // export var selectedProjectile = ROCKET_TYPE;
 
     export var BODY_TYPE = Math.pow(2, 0);
     export var GUN_TYPE = Math.pow(2, 1);
@@ -33,7 +33,7 @@ module parts {
             cy = (body2.y - body1.y) * PART_HEIGHT/2;
 
         if (cx !== cx || cy !== cy) {
-            throw new Error("calcCXY(): failed to calculate something that would have prevented you wasting a lot of time");
+            throw new Error("calcCXY(): failed to calculate something that would have prevented wasting a lot of time");
         }
         
         return { cx: cx, cy: cy };
@@ -44,7 +44,7 @@ module parts {
     export function buildABot(partList: any[]): any {
 
         var b = game.add.existing(new parts.Body1({ x: 1, y: 1 }));
-        var player = { body: <Phaser.Sprite>b, part: [], selectedWeapon: ROCKET_TYPE };
+        var player = { body: <Phaser.Sprite>b, part: [], selectedProjectile: <Number>ROCKET_TYPE };
 
         partList.forEach(function (p) {
 
