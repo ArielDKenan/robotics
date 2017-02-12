@@ -103,18 +103,16 @@ module robots {
                 this.game.camera.follow(player.body);
 
             }
-            
-            var drone1 = new NPC(700, 300, 'drone');
-            this.game.add.existing(drone1);
-            drone1.begin([100, 600, 300, 1000], [50, 150]);
 
-            var drone2 = new NPC(1000, 100, 'drone');
-            this.game.add.existing(drone2);
-            drone2.begin([100, 600, 300, 1000], [50, 150]);
+            var droneXarr = [770, 1000, 1400, 1850],
+                droneYarr = [330, 100, 300, 60];
 
-            var drone3 = new NPC(1400, 300, 'drone');
-            this.game.add.existing(drone3);
-            drone3.begin([100, 600, 300, 1000], [50, 150]);
+            for (var ctr=0; ctr<droneXarr.length; ctr++) {
+                var tempDrone = new NPC(droneXarr[ctr], droneYarr[ctr], 'drone');
+                this.game.add.existing(tempDrone);
+                tempDrone.begin([100, 600, 300, 1000], [50, 150]);
+            }
+
         }
 
         buildInputs() {
@@ -244,8 +242,9 @@ module robots {
             var MAX_FORCE = 20000;
             var MOVE_SPEED = 0,
                 MOTOR_SPEED = 20,
-                THRUST_SPEED = 10000,
-                BOOST_SPEED = 5000;
+                THRUST_SPEED = 12000,
+                BOOST_SPEED = 25000,
+                H_BOOST_SPEED = 5000;
             var BOOST_COST = 0,
                 BOOST_MAX_ENERGY = 10000,
                 boost_energy = BOOST_MAX_ENERGY,
@@ -342,7 +341,8 @@ module robots {
             badguy.update = function update() {
 
                 // badguy.body.setZeroVelocity();
-                var thrustSpeed = 0;
+                var thrustSpeed = 0,
+                    h_thrustSpeed = 0;
                 var shouldAnimateFire = false;
                 leftWheel.setMotorSpeed(0);
                 rightWheel.setMotorSpeed(0);
@@ -352,6 +352,7 @@ module robots {
                 if (cursors.space.isDown && boost_energy > 0) {
                     shouldAnimateFire = true;
                     thrustSpeed = BOOST_SPEED;
+                    h_thrustSpeed = H_BOOST_SPEED;
                     if (!robots.DEBUG_MODE) boost_energy -= BOOST_COST;
                 } else if (boost_energy < BOOST_MAX_ENERGY) {
                     if (!boost_energy) {
@@ -388,8 +389,8 @@ module robots {
 
                     thruster1.body.angle = 90;
                     thruster2.body.angle = 90;
-                    thruster1.body.thrust(thrustSpeed);
-                    thruster2.body.thrust(thrustSpeed);
+                    thruster1.body.thrust(h_thrustSpeed);
+                    thruster2.body.thrust(h_thrustSpeed);
                 } else {
                     badguy.body.setZeroRotation();
                     badguy.animations.stop();
