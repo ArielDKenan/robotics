@@ -1,21 +1,16 @@
 
+module workshop {
 
-declare var workshop: any;
-workshop = {};
+    // var GUN_TYPE = Math.pow(2, 1);
+    // var WHEEL_TYPE = Math.pow(2, 2);
+    // var THRUSTER_TYPE = Math.pow(2, 3);
 
-!function (workshop) {
+    // var BULLET_TYPE = Math.pow(2, 0);
+    // var ROCKET_TYPE = Math.pow(2, 1);
 
-    var GUN_TYPE = Math.pow(2, 1);
-    var WHEEL_TYPE = Math.pow(2, 2);
-    var THRUSTER_TYPE = Math.pow(2, 3);
+    export var partList: Array<any> = [];
 
-    var BULLET_TYPE = Math.pow(2, 0);
-    var ROCKET_TYPE = Math.pow(2, 1);
-
-    var partList = [];
-    workshop.partList = partList;
-
-    workshop.init = function () {
+    export var init: Function = function () {
 
         var $cont = $('.parts-holder');
         for (var ctr=0; ctr<25; ctr++) {
@@ -37,18 +32,18 @@ workshop = {};
 
                         var partType;
                         if ($d.hasClass('machine-gun') || $d.hasClass('rpg')) {
-                            partType = GUN_TYPE;
+                            partType = parts.GUN_TYPE;
                         } else if ($d.hasClass('wheel')) {
-                            partType = WHEEL_TYPE;
+                            partType = parts.WHEEL_TYPE;
                         } else if ($d.hasClass('thruster')) {
-                            partType = THRUSTER_TYPE;
+                            partType = parts.THRUSTER_TYPE;
                         }
 
                         var id = parseInt($(this).attr('id'));
-                        // var x = id % 5;
-                        // var y = id / 5;
-                        var x = id / 5;
-                        var y = id % 5;
+                        var x = id % 5;
+                        var y = id / 5;
+                        // var x = id / 5;
+                        // var y = id % 5;
 
                         partList.push({ type: partType, position: { x: x, y: y } });
                     }
@@ -85,6 +80,6 @@ workshop = {};
         
     }
 
-}(workshop);
+}
 
 $(workshop.init);

@@ -1,4 +1,5 @@
-﻿interface Array<T> {
+﻿
+interface Array<T> {
     first: ()=>T;
 }
 
@@ -41,15 +42,6 @@ namespace robots {
 
             super(game, x, y, key);
 
-            this.scale.setTo(.4);
-            this.animations.add('fly', null, 30);
-
-            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
-
-            this.body.data.gravityScale = 0;
-            this.body.setCollisionGroup(npcCollisionGroup);
-            this.body.collides([projectileCollisionGroup, projectileCollisionGroup2]);
-
             this.running = false;
 
         }
@@ -57,8 +49,8 @@ namespace robots {
         begin(x: number[], y: number[]): void {
 
             this.animations.play('fly', null, true);
-            this.plot(x, y);
-            this.running = true;
+            // this.plot(x, y);
+            // this.running = true;
 
         }
 
@@ -68,14 +60,13 @@ namespace robots {
             this.path = [];
 
             var summer = (a, b) => { Math.abs(b - a) }
-            var res = Math.max(x.reduce(summer, 0), y.reduce(summer, 0));
-            res = 1 / res;
+            var res = 1 / Math.max(x.reduce(summer, 0), y.reduce(summer, 0));
 
             for (var i = 0; i <= 1; i += res) {
                 var px = Phaser.Math.catmullRomInterpolation(x, i);
                 var py = Phaser.Math.catmullRomInterpolation(y, i);
 
-                var something = { 'x': px, 'y': py };
+                var something = { x: px, y: py };
                 this.path.push(something);
             }
 
@@ -89,6 +80,26 @@ namespace robots {
 
                 if (++this.pathIndex >= this.path.length) this.pathIndex = 0;
             }
+
+        }
+
+    }
+
+    export class Drone extends NPC {
+
+        constructor(x, y) {
+
+            super(x, y, 'drone');
+            
+            this.scale.setTo(.4);
+            this.animations.add('fly', null, 30);
+
+            this.game.physics.p2.enable(this, robots.DEBUG_MODE);
+
+            this.body.setCollisionGroup(npcCollisionGroup);
+            this.body.collides([projectileCollisionGroup, projectileCollisionGroup2]);
+
+            this.body.data.gravityScale = 0;
 
         }
 

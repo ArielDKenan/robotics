@@ -7,7 +7,7 @@ module parts {
      *            GLOBALS            *
      *********************************/
     var STARTING_X = 300, STARTING_Y = 100,
-        PART_WIDTH = 45,  PART_HEIGHT = 45,
+        PART_WIDTH = 40,  PART_HEIGHT = 40,
         DAMPING_FACTOR = .5;
 
     export var ROCKET_TYPE = Math.pow(2, 0);
@@ -44,7 +44,7 @@ module parts {
     export function buildABot(partList: any[]): any {
 
         var b = game.add.existing(new parts.Body1({ x: 1, y: 1 }));
-        var player = { body: <Phaser.Sprite>b, part: [], selectedProjectile: <Number>ROCKET_TYPE };
+        var player = { body: <Phaser.Sprite>b, parts: [], selectedProjectile: <Number>ROCKET_TYPE };
 
         partList.forEach(function (p) {
 
@@ -54,7 +54,8 @@ module parts {
             else if (p.type === parts.WHEEL_TYPE) construct = Wheel;
             else if (p.type === parts.THRUSTER_TYPE) construct = Thruster;
 
-            player.part.push(game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options)));
+            var tempPart = game.add.existing(new construct(p.position, b, { x: 1, y: 1 }, p.options));
+            player.parts.push(tempPart);
 
         });
 
@@ -100,8 +101,10 @@ module parts {
 
         constructor(spriteName: string, size, position, scale) {
 
-            var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
-            var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
+            // var x = position.x * PART_WIDTH + (size.width * PART_WIDTH / 2) + STARTING_X;
+            // var y = position.y * PART_HEIGHT + (size.height * PART_HEIGHT / 2) + STARTING_Y;
+            var x = position.x * PART_WIDTH + STARTING_X;
+            var y = position.y * PART_HEIGHT + STARTING_Y;
 
             robots.log(spriteName + ': ' + x + ', ' + y);
 
@@ -145,15 +148,12 @@ module parts {
             var scale = { x: .1, y: .1 };
 
             super('body2', size, position, scale);
-            //this.rotation = 90;
-            this.worldRotation = 2;
 
             this.game.physics.p2.enable(this, robots.DEBUG_MODE);
 
-            this.body.setCircle(25);
+            this.body.setCircle(30);
             this.body.fixedRotation = false;
-            //var bb = new Phaser.Sprite(game, 1, 1);
-            //bb.rotation
+
             this.body.mass = .5;
             this.body.damping = DAMPING_FACTOR;
             this.body.data.gravityScale = 1;
@@ -341,6 +341,8 @@ module parts {
 
             this.lastFire = 0;
             this.projectileType = options ? options.projectileType : parts.ROCKET_TYPE;
+            // TODO: this.projectileType = options && options.projectileType ? options.projectileType : parts.ROCKET_TYPE;
+
             if (this.projectileType === parts.BULLET_TYPE) this.fireRate = 80;
             else if (this.projectileType === parts.ROCKET_TYPE) this.fireRate = 500;
 
@@ -429,19 +431,19 @@ module parts {
             this.body.setCollisionGroup(mainPlayer ? robots.projectileCollisionGroup : robots.projectileCollisionGroup2);
             this.body.collides([robots.tilesCollisionGroup, (!mainPlayer ? robots.playerCollisionGroup : robots.player2CollisionGroup)], this.collideCallback, this);
             this.body.collides(robots.npcCollisionGroup, (a, b) => {
-                a.destroy();
                 var exp = this.game.add.sprite(b.x, b.y, 'explosion');
                 exp.scale.setTo(.8);
                 exp.x -= exp.width / 2;
                 exp.y -= exp.height / 2;
                 exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
                 exp.animations.play('boom', null, false, true);
-                b.sprite.destroy(); // TODO: safeDestroy
+                a && a.destroy && a.destroy();
+                b && b.sprite && b.sprite.destroy(); // TODO: safeDestroy
             }, this);
             this.body.collideWorldBounds = false;
             this.body.outOfBoundsKill = true;
 
-            this.fixedRotate = true;
+            this.fixedRotate = false;
             this.body.maintainAngle = gun.body.angle - 90;
             this.body.angle = this.body.maintainAngle;
 
@@ -477,11 +479,13 @@ module parts {
 
         collideCallback(missile) {
 
-            var exp = this.game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
-            exp.scale.setTo(.5);
-            exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
-            exp.animations.play('boom', null, false, true);
-            if (missile.destroy) missile.destroy();
+            if (missile) {
+                var exp = this.game.add.sprite(missile.x - 40, missile.y - 50, 'explosion');
+                exp.scale.setTo(.5);
+                exp.animations.add('boom', [0, 1, 2, 3, 4, 5], 20, false);
+                exp.animations.play('boom', null, false, true);
+                missile.destroy && missile.destroy();
+            }
 
         }
 

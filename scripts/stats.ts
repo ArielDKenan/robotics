@@ -1,6 +1,8 @@
 ﻿
 module stats {
 
+    export var app = angular.module('stats', []);
+
     class StatsController {
 
         selectedProjectile: number = 1;
@@ -48,7 +50,6 @@ module stats {
 
     }
 
-    var app = angular.module('stats', []);
     app.controller('StatsController', StatsController);
 
 }

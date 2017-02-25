@@ -61,9 +61,6 @@ module robots {
 
     }
 
-    // Boot.prototype = Object.create(Phaser.State.prototype);
-    // Boot.prototype.constructor = Boot;
-
     /*** PRELOAD ***/
 
     export class Preload extends Phaser.State {
@@ -122,6 +119,6 @@ module robots {
 
     };
 
- }
+}
 
 var game = new robots.Game();

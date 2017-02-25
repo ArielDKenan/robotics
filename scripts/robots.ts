@@ -3,15 +3,15 @@ module robots {
 
     'use strict';
 
-    var problem: boolean = false;
+    export var DEBUG_MODE = true;
+    
+    export var log = function (msg, error?: boolean) {
 
-    export var DEBUG_MODE = false;
-    export var fakee = 'nothing';
-    export var log = function (msg) {
-
-        if (robots.DEBUG_MODE) {
-            // console.debug('%cROBOT DEBUG: ' + msg, 'color: #0F0; background: #000');
-            util.debugMsg(msg, false);
+        if (DEBUG_MODE) {
+            var printer = error ? console.warn : console.log;
+            var text = error ? '%cERROR: ' + msg : '%c' + msg;
+            printer(text, 'color: #0F0; background: #000;');
+            printer('%cExecuted at line:' + util.getExecutedLine(), 'color: #0CF; background: #000;');
         }
 
     }
@@ -104,11 +104,11 @@ module robots {
 
             }
 
-            var droneXarr = [770, 1000, 1400, 1850],
-                droneYarr = [330, 100, 300, 60];
+            var droneXarr = [110, 910, 910, 1360, 1850, 2500],
+                droneYarr = [270, 370, 100, 280, 60, 440];
 
             for (var ctr=0; ctr<droneXarr.length; ctr++) {
-                var tempDrone = new NPC(droneXarr[ctr], droneYarr[ctr], 'drone');
+                var tempDrone = new Drone(droneXarr[ctr], droneYarr[ctr]);
                 this.game.add.existing(tempDrone);
                 tempDrone.begin([100, 600, 300, 1000], [50, 150]);
             }
@@ -118,7 +118,6 @@ module robots {
         buildInputs() {
 
             cursors = this.game.input.keyboard.createCursorKeys();
-            // cursors.space = this.game.input.keyboard.addKey(32);
             cursors.space = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
             wasd = {
@@ -134,12 +133,12 @@ module robots {
 
             this.game.stage.backgroundColor = '#2d2d2d';
 
-            var sky = this.game.add.sprite(0, 0, 'sky');
-            sky.scale.set(14, 1);
+            // var sky = this.game.add.sprite(0, 0, 'sky');
+            // sky.scale.set(14, 1);
 
-            var stars = this.game.add.tileSprite(0, 0, 640, 800, 'stars');
-            stars.scale.set(1.25, 1.57);
-            stars.fixedToCamera = true;
+            // var stars = this.game.add.tileSprite(0, 0, 640, 800, 'stars');
+            // stars.scale.set(1.25, 1.57);
+            // stars.fixedToCamera = true;
 
             //var hills = this.game.add.sprite(0, 0, 'hills');
             //hills = this.game.add.tileSprite(0, 0, 1956, 640, 'hills');
@@ -179,17 +178,17 @@ module robots {
             stars.physicsBodyType = Phaser.Physics.P2JS;
             map.createFromObjects('Object Layer 1', 4, 'baddie', 0, true, false, stars);*/
 
-            var starObjects = this.game.physics.p2.convertTilemap(map, collectLayer);
+            // var starObjects = this.game.physics.p2.convertTilemap(map, collectLayer);
 
-            starObjects.forEach(function (s) {
-                s.setCollisionGroup(collectCollisionGroup);
-                s.collides([playerCollisionGroup, player2CollisionGroup], function (a, b) {
-                    //console.log(a);
-                    //this.game.physics.p2.removeBody(a);
-                }, s);
-                // s.animations.add('die', [0], 10, false);
-                // s.animations.play('die', null, false, true);
-            });
+            // starObjects.forEach(function (s) {
+            //     s.setCollisionGroup(collectCollisionGroup);
+            //     s.collides([playerCollisionGroup, player2CollisionGroup], function (a, b) {
+            //         //console.log(a);
+            //         //this.game.physics.p2.removeBody(a);
+            //     }, s);
+            //     // s.animations.add('die', [0], 10, false);
+            //     // s.animations.play('die', null, false, true);
+            // });
 
 
             /*tileObjects.forEach(function (t) {
@@ -198,7 +197,7 @@ module robots {
             });*/
 
             tileObjects = this.game.physics.p2.convertTilemap(map, layer);
-            robots.log(tileObjects.length);
+            robots.log('tileObjects.length: ' + tileObjects.length);
 
             for (var i = 0; i < tileObjects.length; i++) {
                 var tileBody = tileObjects[i];
@@ -463,7 +462,7 @@ module robots {
 
             }
 
-            player = { body: <Phaser.Sprite>badguy, part: [], selectedProjectile: <Number>parts.ROCKET_TYPE };
+            player = { body: <Phaser.Sprite>badguy, parts: [], selectedProjectile: <Number>parts.ROCKET_TYPE };
 
         }
 
