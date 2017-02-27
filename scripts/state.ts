@@ -1,8 +1,6 @@
 
 module robots {
 
-    'use strict';
-
     /*** GAME ***/
 
     export class Game extends Phaser.Game {
@@ -120,5 +118,3 @@ module robots {
     };
 
 }
-
-var game = new robots.Game();

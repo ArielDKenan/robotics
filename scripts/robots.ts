@@ -1,7 +1,22 @@
 ﻿
-module robots {
+interface IPoint {
+    x: number;
+    y: number;
+}
 
-    'use strict';
+interface IMovable {
+    xVel: number;
+    yVel: number;
+}
+
+interface I3DPoint extends IPoint {
+    z: number;
+}
+
+//declare var util: any;
+//util = window.util;
+
+module robots {
 
     export var DEBUG_MODE = true;
     
@@ -37,6 +52,8 @@ module robots {
         }
 
         create() {
+
+            this.stage.disableVisibilityChange = false;
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true); //  Turn on impact events for the world; without this we get no collision callbacks
@@ -116,6 +133,20 @@ module robots {
         }
 
         buildInputs() {
+
+            this.input.maxPointers = 1;
+
+            if (this.game.device.desktop) {
+                //  If you have any desktop specific settings, they can go in here
+                this.stage.scale.minWidth = 480;
+                this.stage.scale.minHeight = 260;
+                this.stage.scale.maxWidth = 1024;
+                this.stage.scale.maxHeight = 768;
+                this.stage.scale.forceLandscape = true;
+                this.stage.scale.pageAlignHorizontally = true;
+            } else {
+                //  Same goes for mobile settings.
+            }
 
             cursors = this.game.input.keyboard.createCursorKeys();
             cursors.space = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);

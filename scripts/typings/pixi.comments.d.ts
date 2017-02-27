@@ -867,7 +867,10 @@ declare module PIXI {
         /**
         * The scale factor of the object.
         */
-        scale: Point;
+        //scale: Point;
+        /* ROBOTICS 'fix' ***/
+        scale: Phaser.ScaleManager;
+        /*** ROBOTICS 'fix' */
 
         /**
         * [read-only] The stage the display object is connected to, or undefined if it is not connected to the stage.

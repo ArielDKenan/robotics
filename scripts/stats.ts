@@ -39,11 +39,12 @@ module stats {
                 if (typeof newVal !== 'undefined') $scope.velocity = newVal;
             });*/
             setInterval(() => {
-                if (robots.player && robots.player.body && robots.player.body.body) {
-                    $scope.velocity = robots.player.body.body.velocity;
-                    $scope.$apply();
-                    //console.log($scope.x);
-                }
+                // if (robots.player && robots.player.body && robots.player.body.body) {
+                //     $scope.velocity = robots.player.body.body.velocity;
+                //     $scope.$apply();
+                // }
+                $scope.velocity = util.traverse(robots, 'player.body.body.velocity');
+                $scope.$apply();
             }, 200);
 
         }

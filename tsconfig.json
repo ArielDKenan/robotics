@@ -1,10 +1,26 @@
 {
+    // "compilerOptions": {
+    //     "target": "es5",
+    //     "module": "commonjs",
+    //     "declaration": false,
+    //     "noImplicitAny": false,
+    //     "removeComments": true,
+    //     "noLib": false
+    // },
     "compilerOptions": {
         "target": "es5",
-        "module": "commonjs",
+        "module": "system",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
-        "noLib": false
-    }
+        "noLib": false,
+        "sourceMap": true,
+        "outFile": "scripts/game.js"
+    },
+    "exclude": [
+        "scripts/typings/phaser.comments.2.4.8.d.ts",
+        "scripts/typings/phaser.d.ts",
+        "scripts/typings/pixi.comments.248.d.ts",
+        "scripts/typings/pixi.d.ts"
+    ]
 }

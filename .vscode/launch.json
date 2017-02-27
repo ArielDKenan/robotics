@@ -1,0 +1,19 @@
+{
+    "version": "0.1.0",
+    "configurations": [
+        {
+            "name": "Launch localhost",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost/robotscript/arena.html",
+            "webRoot": "${workspaceRoot}"
+        },
+        {
+            "name": "Launch arena.html (disable sourcemaps)",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMaps": false,
+            "file": "${workspaceRoot}/arena.html"
+        }
+    ]
+}

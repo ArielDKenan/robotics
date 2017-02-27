@@ -10,7 +10,7 @@ module workshop {
 
     export var partList: Array<any> = [];
 
-    export var init: Function = function () {
+    export var init: Function = () => {
 
         var $cont = $('.parts-holder');
         for (var ctr=0; ctr<25; ctr++) {
@@ -81,5 +81,3 @@ module workshop {
     }
 
 }
-
-$(workshop.init);

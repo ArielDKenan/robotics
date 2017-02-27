@@ -7,24 +7,7 @@ Array.prototype.first = function () {
     return this[0];
 }
 
-interface IPoint {
-    x: number;
-    y: number;
-}
-
-interface IMovable {
-    xVel: number;
-    yVel: number;
-}
-
-interface I3DPoint extends IPoint {
-    z: number;
-}
-
-var arr = [3, 2, 1];
-var t = arr.first();
-var arr2 = ['a', 'b', 'c'];
-var t2 = arr2.first();
+'use strict';
 
 namespace robots {
 

@@ -8,9 +8,27 @@ declare interface String {
 
 String.prototype.reverse = function (): string { return this.split('').reverse().join(''); };
 
+declare interface Window {
+    util: any;
+}
+
+'use strict';
+
 declare var util: any;
 
 util = {
+
+    traverse: function (obj, str) {
+
+        var props = str.split('.');
+
+        for (var i=0; i<props.length && obj; i++) {
+            obj = obj[props[i]];
+        }
+
+        return obj;
+
+    },
 
     isPlainObject: function (obj) {
 
